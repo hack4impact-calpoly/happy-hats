@@ -10,8 +10,8 @@ function Announcement(props) {
     );
 
     function handleChange(event) {
-        const {box, value} = event.target;
-        if (box === "title") {
+        const {name, value} = event.target;
+        if (name === "content") {
             setAnnoucement(
                 {title: annoucment['title'], content: value}
             );
@@ -23,7 +23,7 @@ function Announcement(props) {
     }
 
     function submitForm() {
-        props.handleSubmit(annoucment);
+        //props.handleSubmit(annoucment); Need to connect to backend
         setAnnoucement({title: '', content: '', id:''});
     }
 
