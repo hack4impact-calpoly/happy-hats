@@ -1,0 +1,8 @@
+html {
+    background-color: #FFDDD2;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+}

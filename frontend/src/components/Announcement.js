@@ -1,4 +1,5 @@
-import React, {useState} from 'react'
+import React, {useState} from 'react';
+import styles from '../styles/announcement.module.css'
 
 function Announcement(props) {
     const [annoucment, setAnnoucement] = useState(
@@ -30,7 +31,7 @@ function Announcement(props) {
     return(
         <div>
             <h1>Make An Accouncement</h1>
-            <form>
+            <form id="form">
                 <label htmlFor="title">Annoucement Title</label>
                 <input 
                     type="text"
