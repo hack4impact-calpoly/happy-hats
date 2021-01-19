@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import '../styles/announcement.module.css'
+import styles from '../styles/announcement.module.css'
 
 function Announcement(props) {
     const [annoucment, setAnnoucement] = useState(
@@ -31,23 +31,28 @@ function Announcement(props) {
     return(
         <div>
             <h1>Make An Accouncement</h1>
-            <form id='form'>
+
+            <div className={styles.create}>
                 <label htmlFor="title">Annoucement Title</label>
-                <input 
-                    type="text"
+                <textarea className={styles.titleBox}
                     name="title"
                     id="title"
                     value={annoucment.title}
-                    onChange={handleChange} />
-                <label htmlFor='content'>Annoucement Description</label>
-                <input
-                    type="text"
+                    onChange={handleChange}
+                    rows={2}
+                    cols={75} />
+
+                <label htmlFor="content">Annoucement Description</label>
+                <textarea
                     name="content"
                     id="content"
                     value={annoucment.content}
-                    onChange={handleChange} />
+                    onChange={handleChange}
+                    rows={10}
+                    cols={75} />    
+
                 <input type="button" value="Submit Annoucement" onClick={submitForm} />
-            </form>
+            </div>
         </div>
     );
 }

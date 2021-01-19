@@ -2,7 +2,9 @@ html {
     background-color: #FFDDD2;
 }
 
-.form {
+ .create {
     display: flex;
     flex-direction: column;
+    align-content: space-around;
+    padding: 5%;
 }
