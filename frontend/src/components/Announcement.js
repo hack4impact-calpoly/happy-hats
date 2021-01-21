@@ -6,7 +6,9 @@ function Announcement(props) {
         {
             title: '',
             content: '',
-            id:''
+            id:'',
+            author: '',
+            date: ''
         }
     );
 
@@ -25,7 +27,7 @@ function Announcement(props) {
 
     function submitForm() {
         //props.handleSubmit(annoucment); Need to connect to backend
-        setAnnoucement({title: '', content: '', id:''});
+        setAnnoucement({title: '', content: '', id:'', author: '', date: ''});
     }
 
     return(
