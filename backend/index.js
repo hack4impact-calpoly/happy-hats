@@ -26,22 +26,6 @@ app.use((req, res, next) => {
   next()
 })
 
-const getAllAnnoucements = async (name) => {
-  return await annoucement.find({})
-}
-
-const getAnnouncementByTitle = async (title) => {
-  return await annoucement.find({title: title})
-}
-
-const getAnnouncementByAuthor = async (author) => {
-  return await annoucement.find({author: author})
-}
-
-const getAnnouncementByDate = async (date) => {
-  return await annoucement.find({date: date})
-}
-
 app.get('/', (request, response) => {
   response.status(200)
   response.send('Hello from Announcement')
@@ -55,31 +39,29 @@ app.get('/api/announcement', async (req, res) => {
   res.json(a)
 })
 
-app.get('/api/recipe/:title', async (req, res) => {
+app.get('/api/announcement/t/:title', async (req, res) => {
   const title = req.params.title
-
   res.status(200)
-  let announcement
-  announcement = await getSpecifiedRecipe(title)
-  res.json(announcement)
+  let a = await annoucement.find({title: title})
+  console.log(a)
+  res.json(a)
 })
 
-app.get('/api/recipe/:author', async (req, res) => {
+app.get('/api/announcement/a/:author', async (req, res) => {
   const author = req.params.author
 
   res.status(200)
-  let announcement
-  announcement = await getSpecifiedRecipe(author)
-  res.json(announcement)
+  let a = await annoucement.find({author: author})
+  console.log(a)
+  res.json(a)
 })
 
-app.get('/api/recipe/:date', async (req, res) => {
+app.get('/api/announcement/d/:date', async (req, res) => {
   const date = req.params.date
-
   res.status(200)
-  let announcement
-  announcement = await getSpecifiedRecipe(date)
-  res.json(announcement)
+  let a= await annoucement.find({date: date})
+  console.log(a)
+  res.json(a)
 })
 
 app.use(express.static('public'))
