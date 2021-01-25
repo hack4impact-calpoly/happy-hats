@@ -8,3 +8,7 @@ html {
     align-content: space-around;
     padding: 5%;
 }
+
+.block{
+    background-color: blue;
+}
