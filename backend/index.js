@@ -42,11 +42,17 @@ const getAnnouncementByDate = async (date) => {
   return await annoucement.find({date: date})
 }
 
+app.get('/', (request, response) => {
+  response.status(200)
+  response.send('Hello from Announcement')
+  
+})
+
 app.get('/api/announcement', async (req, res) => {
   res.status(200)
-  let announcements
-  announcements = await getAllAnnoucements()
-  res.json(annoucements)
+  a = await annoucement.find({})
+  console.log(a)
+  res.json(a)
 })
 
 app.get('/api/recipe/:title', async (req, res) => {
