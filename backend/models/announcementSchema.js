@@ -4,7 +4,6 @@ const mongoose = require('mongoose')
 const announcementSchema = new mongoose.Schema({
   title: String,
   content: String,
-  id: String,
   author: String,
   date: String 
 }, {collection: "announcements"})
