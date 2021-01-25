@@ -9,14 +9,14 @@ app.use((req, res, next) => {
   next();
 });
 
-mongoose.connect("mongodb+srv://plandsman:MongoDB1122!@cluster0.omjjl.mongodb.net/happyhats?retryWrites=true&w=majority", {
+mongoose.connect("mongodb+srv://parker:h4i@cluster0.omjjl.mongodb.net/happyhats?retryWrites=true&w=majority", {
 useNewUrlParser: true,
 useUnifiedTopology: true,
 useFindAndModify: false,
 useCreateIndex: true
 }).then(() => console.log('Connected to MongoDB'))
 
-const annoucement = require('../model/announcementSchema');
+const annoucement = require('./models/announcementSchema');
 
 app.use(bodyParser.json())
 
