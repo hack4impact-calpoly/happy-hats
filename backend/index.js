@@ -65,16 +65,17 @@ app.get('/api/announcement/d/:date', async (req, res) => {
 })
 
 app.post('/api/announcement', async (request, response) => {  
-  const title = request.body.tile
-  const content = request.body.content
-  const author = request.body.author
-
+  const t = request.body.title
+  const c = request.body.content
+  const a = request.body.author
+  const d = request.body.date
+  
   response.status(200)
 
-  await happyhats.announcements.insert(request);
+  announcement.create({title: t, content: c, author: a, date: d});
 
-  console.log("New announcement" + title + " posted by " + author)
-  response.send("New announcement" + title + " posted by " + author)
+  console.log("New announcement " + t + " posted by " + a)
+  response.send("New announcement " + t + " posted by " + a)
 })
 
 app.use(express.static('public'))
