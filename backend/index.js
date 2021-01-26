@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Con    tent-Type, Accept");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
 
@@ -65,6 +65,7 @@ app.get('/api/announcement/d/:date', async (req, res) => {
 })
 
 app.post('/api/announcement', async (request, response) => {  
+  console.log(request.body)
   const t = request.body.title
   const c = request.body.content
   const a = request.body.author

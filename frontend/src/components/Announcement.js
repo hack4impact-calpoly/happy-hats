@@ -26,8 +26,31 @@ function Announcement(props) {
     }
 
     function submitForm() {
-        //props.handleSubmit(annoucment); Need to connect to backend
+        
+        const aData = {
+            "title": document.getElementById('title').value,
+            "content": document.getElementById('content').value,
+            "id":'',
+            "author": '',
+            "date": new Date()
+        }
+        console.log(aData)
+
+        try {
+            fetch('http://localhost:3001/api/announcement', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }, 
+                body: JSON.stringify(aData) 
+            });
+
+        } catch (error) {
+            console.error(error)
+        }
+
         setAnnoucement({title: '', content: '', id:'', author: '', date: ''});
+
     }
 
     return(
