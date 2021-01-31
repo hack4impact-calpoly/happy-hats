@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+require('dotenv').config();
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -9,7 +10,8 @@ app.use((req, res, next) => {
   next();
 });
 
-mongoose.connect("mongodb+srv://parker:h4i@cluster0.omjjl.mongodb.net/happyhats?retryWrites=true&w=majority", {
+
+mongoose.connect(process.env.DB_LINK, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
