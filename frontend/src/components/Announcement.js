@@ -67,7 +67,7 @@ function Announcement(props) {
                     rows={2}
                     cols={75} />
 
-                <label htmlFor="content">Annoucement Description</label>
+                <label htmlFor="content">Announcement Description</label>
                 <textarea
                     name="content"
                     id="content"
@@ -82,5 +82,5 @@ function Announcement(props) {
     );
 }
 
-export default Announcement
+export default Announcement;
 

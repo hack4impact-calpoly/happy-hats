@@ -42,5 +42,5 @@ class AnouncementBlock extends React.Component {
     
 }
 
-export default AnouncementBlock
+export default AnouncementBlock;
 

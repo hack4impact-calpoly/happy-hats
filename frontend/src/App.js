@@ -1,14 +1,22 @@
-import './App.css';
-import Anouncement from './components/Announcement.js'
-import AnouncementBlock from './components/AnnouncementBlock.js'
+import "./App.css";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import Header from './components/Header';
+import AnnouncementPage from './pages/AnnouncementPage.js';
 
 function App() {
   return (
-    <div>
-      <Anouncement/>
-      <AnouncementBlock/>
-    </div>
-    
+    <BrowserRouter>
+    <Header></Header>
+      <Switch>
+        <Route path="/" exact></Route>
+        <Route path="/login"></Route>
+        <Route path="/announcements">
+          <AnnouncementPage></AnnouncementPage>
+        </Route>
+        <Route path="/login/:type"></Route>
+      </Switch>
+    </BrowserRouter>
+
   );
 }
 
