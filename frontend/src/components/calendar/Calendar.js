@@ -118,7 +118,7 @@ class Calendar extends React.Component {
           selectable={true}
           popup={false}
           onSelectSlot={() => console.log('hello')}
-          onSelectEvent={(event) => console.log('seclted event', event)}
+          onSelectEvent={(event) => console.log('selected event', event)}
           startAccessor="start"
           endAccessor="end"
           style={{ height: '80vh', margin: '1% 2%' }}
