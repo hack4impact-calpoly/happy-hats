@@ -4,21 +4,17 @@ import { NavLink } from "react-router-dom";
 function NavBar() {
   return (
     <Navbar bg="light" expand="lg">
-      <Navbar.Brand href="#home">Happy Hats</Navbar.Brand>
+      <Navbar.Brand href="#home"><Nav.Link as={NavLink} to="/">Happy Hats</Nav.Link></Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="mr-auto">
-          <Nav.Link as={NavLink} to="/">
-            Home
+        <Nav className="ml-auto">
+          <Nav.Link component={NavLink} to="/login">
+            Announcements
           </Nav.Link>
           <Nav.Link component={NavLink} to="/login">
-            Login
+            Calendar
           </Nav.Link>
         </Nav>
-        <Form inline>
-          <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-          <Button variant="outline-success">Search</Button>
-        </Form>
       </Navbar.Collapse>
     </Navbar>
   );
