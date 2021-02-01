@@ -52,7 +52,7 @@ const checkResourceAndAuth = async (res, eventId, eventUser) => {
   
   // Confirm person deleting this is one who made it
   // TEMPORARY until clarified. Just proof of conect I suppose for now
-  if (!retrievedUserObjectId || !eventUserObjectId.equals(retrievedUserObjectId)) {
+  if (!eventUserObjectId.equals(retrievedUserObjectId)) {
     res.status(401).json({
       message: 'Authorization denied',
     });
