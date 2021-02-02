@@ -11,18 +11,23 @@ if (!url) {
     process.exit(1);
 }
 
-// Singleton design pattern
+/* Singleton design pattern */
 const MongooseConnector = (() => {
+    /* Must be object so it is passed by reference and updated correctly */
     const internals = {
         connected: false,
     };
 
+    /* May be changed in future to allow optional callback. Any errors that are not
+        handled in code will be caught and dealt with here */ 
     const handleError = (error) => {
         console.log('Encountered error: ');
         console.log(error);
         return false;
     };
 
+    /* Wrapper (higher order) function around given one that handles catching errors
+        and making sure server is connected to DB */
     const fnWrapper = async (fn, rest) => {
         if (internals.connected) {
             try {
@@ -30,6 +35,8 @@ const MongooseConnector = (() => {
             } catch (error) {
                 return handleError(error);
             }
+        } else {
+            console.warn('Not connected to DB but making DB call...');
         }
     };
 
