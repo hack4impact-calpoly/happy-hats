@@ -7,8 +7,8 @@ import Navbar from "./components/Navbar";
 function App() {
   return (
     <BrowserRouter>
+      <Navbar />
       <Switch>
-        <Navbar />
         <Route path="/" exact></Route>
         <Route path="/login"></Route>
         <Route path="/login/:type"></Route>

@@ -1,4 +1,4 @@
-// API Endpoints for calendar
+/* API Endpoints for calendar */
 const mongoose = require('mongoose');
 const MongooseConnector = require('../db-helper');
 const { CalendarEventTypes } = require('./models/calendar-schema');

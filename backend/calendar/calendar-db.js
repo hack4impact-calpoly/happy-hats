@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
 const { calendarEventSchema, COLLECTION_NAME } = require('./models/calendar-schema');
 
+/* Create calendar model */
 const CalendarEvent = mongoose.model('CalendarEvent', calendarEventSchema, COLLECTION_NAME);
 
+/* Object containing functions we will use to interact with the DB */
 const calendarEventFns = {
     getAllCalendarEvents: async () => {
         // Split right now for easy debugging
