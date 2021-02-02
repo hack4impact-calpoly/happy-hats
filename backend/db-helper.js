@@ -5,7 +5,11 @@ const { calendarEventFns, CalendarEvent } = require('./calendar/calendar-db');
 // Load .env into environment
 dotenv.config();
 
-const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.omjjl.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
+const url = process.env.DB_LINK;
+if (!url) {
+    console.log('Now DB_LINK environment found...');
+    process.exit(1);
+}
 
 // Singleton design pattern
 const MongooseConnector = (() => {
