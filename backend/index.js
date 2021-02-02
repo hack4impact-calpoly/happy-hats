@@ -31,6 +31,10 @@ app.get('/', (req, res) => {
 require('./calendar/calendar-api')(app);
 
 const PORT = Number(process.env.PORT);
+if (!PORT) {
+  console.error('No PORT environment var found... add it to your .env file!');
+  process.exit(1);
+}
 
 (async () => {
   await MongooseConnector.connect();

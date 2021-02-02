@@ -8,7 +8,7 @@ dotenv.config();
 /* Ensure DB_LINK exists */ 
 const url = process.env.DB_LINK;
 if (!url) {
-    console.log('No DB_LINK environment var found...');
+    console.error('No DB_LINK environment var found... add it to your .env file!');
     process.exit(1);
 }
 
@@ -68,7 +68,6 @@ const MongooseConnector = (() => {
         connected: internals.connected,
         /* Call to connect to atlas DB */
         connect: async () => {
-            // Copied
             if (!internals.connected) {
                 try {
                     internals.connected = true;
