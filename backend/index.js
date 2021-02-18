@@ -54,9 +54,7 @@ app.get('/api/announcement', async (req, res) => {
     announcements = await announcement.find({})
     res.status(200).json(announcements)
   }
-  
 })
-
 
 app.get('/', (req, res) => {
   res.send('Hello world!')
