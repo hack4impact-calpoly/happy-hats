@@ -1,6 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const dotenv = require('./.env');
+const dotenv = require('dotenv');
 const MongooseConnector = require('./db-helper');
 const app = express()
 
@@ -23,13 +23,6 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
-
-mongoose.connect("mongodb+srv://anna:h4i@cluster0.omjjl.mongodb.net/happyhats?retryWrites=true&w=majority", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true
-}).then(() => console.log('Connected to MongoDB'))
 
 const announcement = require('./models/announcementSchema');
 
@@ -64,23 +57,6 @@ app.get('/api/announcement', async (req, res) => {
   
 })
 
-// app.get('/api/announcement/t/:title', async (req, res) => {
-//   const title = req.params.title
-//   let a = await announcement.find({title: title})
-//   res.status(200).json(a)
-// })
-
-// app.get('/api/announcement/a/:author', async (req, res) => {
-//   const author = req.params.author
-//   let a = await announcement.find({author: author})
-//   res.status(200).json(a)
-// })
-
-// app.get('/api/announcement/d/:date', async (req, res) => {
-//   const date = req.params.date
-//   let a = await announcement.find({date: date})
-//   res.status(200).json(a)
-// })
 
 app.get('/', (req, res) => {
   res.send('Hello world!')
