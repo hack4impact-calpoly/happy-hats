@@ -9,7 +9,7 @@ app.use((req, res, next) => {
   next();
 });
 
-mongoose.connect("mongodb+srv://parker:h4i@cluster0.omjjl.mongodb.net/happyhats?retryWrites=true&w=majority", {
+mongoose.connect("mongodb+srv://anna:h4i@cluster0.omjjl.mongodb.net/happyhats?retryWrites=true&w=majority", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
