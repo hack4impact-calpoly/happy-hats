@@ -1,7 +1,28 @@
 const express = require('express')
+const bodyParser = require('body-parser')
+const dotenv = require('dotenv');
+const MongooseConnector = require('./db-helper');
 const app = express()
 const mongoose = require('mongoose')
+<<<<<<< HEAD
 const bodyParser = require('body-parser')
+=======
+
+
+// Load .env into environment
+dotenv.config();
+
+app.use((req, res, next) => {
+  bodyParser.json()(req, res, err => {
+      if (err) {
+          console.log('Bad JSON formatting for body');
+          return res.sendStatus(400); // Bad request
+      }
+
+      next();
+  });
+});
+>>>>>>> 9c9934c4f8fa3cc9015a733248e25f382dfc28a8
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -9,6 +30,7 @@ app.use((req, res, next) => {
   next();
 });
 
+<<<<<<< HEAD
 mongoose.connect("mongodb+srv://parker:h4i@cluster0.omjjl.mongodb.net/happyhats?retryWrites=true&w=majority", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -30,55 +52,26 @@ app.get('/', (request, response) => {
   response.status(200)
   response.send('Hello from Announcement')
   
+=======
+require('./user-auth/user-auth-api')(app);
+require('./calendar/calendar-api')(app);
+
+app.get('*', (req, res) => {
+  res.send('404 Page not found')
+>>>>>>> 9c9934c4f8fa3cc9015a733248e25f382dfc28a8
 })
 
-app.get('/api/announcement', async (req, res) => {
-  res.status(200)
-  a = await announcement.find({})
-  console.log(a)
-  res.json(a)
-})
+const PORT = Number(process.env.PORT);
+if (!PORT) {
+  console.error('No PORT environment var found... add it to your .env file!');
+  process.exit(1);
+}
 
-app.get('/api/announcement/t/:title', async (req, res) => {
-  const title = req.params.title
-  res.status(200)
-  let a = await announcement.find({title: title})
-  console.log(a)
-  res.json(a)
-})
+(async () => {
+  await MongooseConnector.connect();
 
-app.get('/api/announcement/a/:author', async (req, res) => {
-  const author = req.params.author
-
-  res.status(200)
-  let a = await announcement.find({author: author})
-  console.log(a)
-  res.json(a)
-})
-
-app.get('/api/announcement/d/:date', async (req, res) => {
-  const date = req.params.date
-  res.status(200)
-  let a = await announcement.find({date: date})
-  console.log(a)
-  res.json(a)
-})
-
-app.post('/api/announcement', async (request, response) => {  
-  console.log(request.body)
-  const t = request.body.title
-  const c = request.body.content
-  const a = request.body.author
-  const d = request.body.date
-  
-  response.status(200)
-
-  announcement.create({title: t, content: c, author: a, date: d});
-
-  console.log("New announcement " + t + " posted by " + a)
-  response.send("New announcement " + t + " posted by " + a)
-})
-
-app.use(express.static('public'))
-
-app.listen(3001)
+  // Satisfy react default port
+  app.listen(PORT, 'localhost', () => {
+      console.log(`Listening on port ${PORT}`);
+  });
+})();
