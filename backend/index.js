@@ -14,57 +14,22 @@ app.use((req, res, next) => {
       next();
   });
 });
+
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
-const announcement = require('./models/announcementSchema');
+
 app.use(bodyParser.json())
-app.use((req, res, next) => {
-  req.timestamp = new Date()
-  next()
-})
-app.get('/api/announcement', async (req, res) => {
-  const date = req.query.date
-  const author = req.query.author
-  const title = req.query.title
-  if(date !== undefined){
-    let announcements = await announcement.find({date: date})
-    res.status(200).json(announcements)
-  }
-  else if(author !== undefined){
-    let announcements = await announcement.find({author: author})
-    res.status(200).json(announcements)
-  }
-  else if(title !== undefined){
-    let announcements = await announcement.find({title: title})
-    res.status(200).json(announcements)
-  }
-  else{
-    announcements = await announcement.find({})
-    res.status(200).json(announcements)
-  }
-
-})
-app.post('/api/announcement', async (request, response) => {  
-  console.log(request.body)
-  const t = request.body.title
-  const c = request.body.content
-  const a = request.body.author
-  const d = request.body.date
-  
-  response.status(200)
-
-  announcement.create({title: t, content: c, author: a, date: d});
-
-  response.send("New announcement " + t + " posted by " + a)
-})
 
 app.get('/', (req, res) => {
   res.send('Hello world!')
 })
+
 require('./calendar/calendar-api')(app);
+require('./announcement/announcement-api')(app);
+
 const PORT = Number(process.env.PORT);
 if (!PORT) {
   console.error('No PORT environment var found... add it to your .env file!');
