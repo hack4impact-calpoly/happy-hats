@@ -3,6 +3,8 @@ const bodyParser = require('body-parser')
 const dotenv = require('dotenv');
 const MongooseConnector = require('./db-helper');
 const app = express()
+const mongoose = require('mongoose')
+
 
 // Load .env into environment
 dotenv.config();
@@ -24,11 +26,12 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/', (req, res) => {
-  res.send('Hello world!')
-})
-
+require('./user-auth/user-auth-api')(app);
 require('./calendar/calendar-api')(app);
+
+app.get('*', (req, res) => {
+  res.send('404 Page not found')
+})
 
 const PORT = Number(process.env.PORT);
 if (!PORT) {
