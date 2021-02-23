@@ -32,7 +32,6 @@ function Announcement(props) {
             "content": document.getElementById('content').value,
             "id":'',
             "author": '',
-            "date": new Date()
         }
         console.log(aData)
 

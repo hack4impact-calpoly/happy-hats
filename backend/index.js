@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
   res.send('Hello world!')
 })
 
-//require('./user-auth/user-auth-api')(app); Said to add back, but breaks code
+require('./user-auth/user-auth-api')(app); 
 require('./calendar/calendar-api')(app);
 require('./announcement/announcement-api')(app);
 

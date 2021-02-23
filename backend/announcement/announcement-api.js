@@ -45,28 +45,21 @@ module.exports = (app) => {
     })
 
     app.post('/api/announcement', async (request, response) => {  
-      if (request.body.title && request.body.content && request.body.date) {
-        //It should be working on true??
-        if (confirmValidDate(request.body.date) === false) {
-          const newAnnouncement = {
-            title: request.body.title,
-            content: request.body.content,
-            author: request.body.author,
-            date: request.body.date
-          }
-          const success = await MongooseConnector.postAnnouncement(newAnnouncement);
-          checkSuccess(response, success)
-        } else {
-          response.status(500).json({
-            message: 'Invalid Date',
-            });
+      if (request.body.title && request.body.content) {
+        const newAnnouncement = {
+          title: request.body.title,
+          content: request.body.content,
+          author: request.body.author,
+          date: new Date()
         }
+        const success = await MongooseConnector.postAnnouncement(newAnnouncement);
+        checkSuccess(response, success)
             
-        } else {
-          response.status(400).json({
+      } else {
+        response.status(400).json({
           message: 'Did not supply all needed post attributes',
-          });
-        }
+        });
+      }
    })
 
 }
