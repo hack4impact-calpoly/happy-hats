@@ -21,8 +21,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(bodyParser.json())
-
 app.get('/', (req, res) => {
   res.send('Hello world!')
 })
@@ -43,10 +41,9 @@ if (!PORT) {
 }
 (async () => {
   await MongooseConnector.connect();
+
   // Satisfy react default port
   app.listen(PORT, 'localhost', () => {
       console.log(`Listening on port ${PORT}`);
   });
 })();
-
-

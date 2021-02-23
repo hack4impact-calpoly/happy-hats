@@ -26,7 +26,7 @@ module.exports = (app) => {
         const author = req.query.author
         const title = req.query.title
         if (confirmValidDate(date)) {
-          let announcements = await MongooseConnector.getAnnouncementByDate();
+          let announcements = await MongooseConnector.getAnnouncementByDate(date);
           res.status(200).json(announcements)
         }
         else if(author){
@@ -45,7 +45,7 @@ module.exports = (app) => {
     })
 
     app.post('/api/announcement', async (request, response) => {  
-      if (request.body.title && request.body.content) {
+      if (request.body.title && request.body.content && request.body.author) {
         const newAnnouncement = {
           title: request.body.title,
           content: request.body.content,

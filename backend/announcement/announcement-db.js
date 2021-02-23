@@ -10,15 +10,15 @@ const announcementFns = {
       const val = await Announcement.find({});
       return val;
   },
-  getAnnouncementByDate: async () => {
+  getAnnouncementByDate: async (date) => {
     const val = await Announcement.find({date: date})
     return val;
   },
-  getAnnouncementByAuthor: async () => {
+  getAnnouncementByAuthor: async (author) => {
     const val = await Announcement.find({author: author})
     return val;
   },
-  getAnnouncementByTitle: async () => {
+  getAnnouncementByTitle: async (title) => {
     const val = await Announcement.find({title: title})
     return val;
   },
