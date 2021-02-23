@@ -27,8 +27,14 @@ app.get('/', (req, res) => {
   res.send('Hello world!')
 })
 
+//require('./user-auth/user-auth-api')(app); Said to add back, but breaks code
 require('./calendar/calendar-api')(app);
 require('./announcement/announcement-api')(app);
+
+
+app.get('*', (req, res) => {
+  res.send('404 Page not found')
+})
 
 const PORT = Number(process.env.PORT);
 if (!PORT) {

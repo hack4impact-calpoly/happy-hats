@@ -49,6 +49,7 @@ function Announcement(props) {
             console.error(error)
         }
 
+        //Left blank to create a hole to be updated later
         setAnnoucement({title: '', content: '', id:'', author: '', date: ''});
 
     }

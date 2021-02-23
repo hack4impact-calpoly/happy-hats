@@ -25,16 +25,16 @@ module.exports = (app) => {
         const date = req.query.date
         const author = req.query.author
         const title = req.query.title
-        if(date !== undefined){
+        if (confirmValidDate(date)) {
           let announcements = await MongooseConnector.getAnnouncementByDate();
           res.status(200).json(announcements)
         }
-        else if(author !== undefined){
-          let announcements = await MongooseConnector.getAnnouncementByAuthor();
+        else if(author){
+          let announcements = await MongooseConnector.getAnnouncementByAuthor(author);
           res.status(200).json(announcements)
         }
-        else if(title !== undefined){
-          let announcements = await MongooseConnector.getAnnouncementByTitle();
+        else if(title){
+          let announcements = await MongooseConnector.getAnnouncementByTitle(title);
           res.status(200).json(announcements)
         }
         else{
@@ -45,15 +45,28 @@ module.exports = (app) => {
     })
 
     app.post('/api/announcement', async (request, response) => {  
-        const newAnnouncement = {
+      if (request.body.title && request.body.content && request.body.date) {
+        //It should be working on true??
+        if (confirmValidDate(request.body.date) === false) {
+          const newAnnouncement = {
             title: request.body.title,
             content: request.body.content,
             author: request.body.author,
             date: request.body.date
+          }
+          const success = await MongooseConnector.postAnnouncement(newAnnouncement);
+          checkSuccess(response, success)
+        } else {
+          response.status(500).json({
+            message: 'Invalid Date',
+            });
         }
-
-        const success = await MongooseConnector.postAnnouncement(newAnnouncement);
-        checkSuccess(response, success)
-    })
+            
+        } else {
+          response.status(400).json({
+          message: 'Did not supply all needed post attributes',
+          });
+        }
+   })
 
 }
