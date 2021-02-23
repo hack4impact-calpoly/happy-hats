@@ -6,12 +6,8 @@
     "@testing-library/jest-dom": "^5.11.8",
     "@testing-library/react": "^11.2.2",
     "@testing-library/user-event": "^12.6.0",
-<<<<<<< HEAD
-    "install": "^0.13.0",
-=======
     "moment": "^2.29.1",
     "bootstrap": "^4.6.0",
->>>>>>> 2be1b59ea728e92048833d32a823a925fce87341
     "react": "^17.0.1",
     "react-big-calendar": "^0.30.0",
     "react-bootstrap": "^1.4.3",
