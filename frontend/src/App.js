@@ -1,22 +1,24 @@
-import "./App.css";
+import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import Header from './components/Header';
-import AnnouncementPage from './pages/AnnouncementPage.js';
+import Calendar from './components/calendar/Calendar';
+import Navbar from "./components/Navbar";
+import AnnouncementPage from "./components/announcements/AnnouncementPage";
 
 function App() {
   return (
     <BrowserRouter>
-    <Header></Header>
+      <Navbar />
       <Switch>
         <Route path="/" exact></Route>
         <Route path="/login"></Route>
-        <Route path="/announcements">
-          <AnnouncementPage></AnnouncementPage>
-        </Route>
+        <Route path="/announcements"> <AnnouncementPage> </AnnouncementPage></Route>
         <Route path="/login/:type"></Route>
+        <Route path="/calendar"> {/* Temporary route for now */}
+          <Calendar accountType="volunteer" />
+        </Route>
       </Switch>
     </BrowserRouter>
-
   );
 }
 
