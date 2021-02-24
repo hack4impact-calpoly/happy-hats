@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from 'react';
 import { BrowserRouter, Switch, Route, NavLink } from 'react-router-dom';
  
@@ -33,6 +34,29 @@ function App() {
       </form>
     </div>
   </div>
+=======
+import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import Calendar from './components/calendar/Calendar';
+import Navbar from "./components/Navbar";
+import AnnouncementPage from "./components/announcements/AnnouncementPage";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Navbar />
+      <Switch>
+        <Route path="/" exact></Route>
+        <Route path="/login"></Route>
+        <Route path="/announcements"> <AnnouncementPage> </AnnouncementPage></Route>
+        <Route path="/login/:type"></Route>
+        <Route path="/calendar"> {/* Temporary route for now */}
+          <Calendar accountType="volunteer" />
+        </Route>
+      </Switch>
+    </BrowserRouter>
+>>>>>>> 8a95b907b6862730a3b81771e58515b74e0d1754
   );
 }
  
