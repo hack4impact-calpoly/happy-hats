@@ -1,0 +1,60 @@
+.Home{
+    background-image: url('../../imgs/happyhatsBG.png');
+    width: 100%;
+    height: auto;
+    
+    min-width: 750px;
+    min-height: 700px;
+
+    overflow: hidden;
+
+    /* scale bg image proportionately */
+    background-size: 100% 700px;
+}
+
+.welcomeMsg{
+    font-size: 52px;
+    font-weight: 250;
+    color: #0B52AF;
+}
+
+.link{
+    font-weight: 400;
+    color: #0B52AF;
+}
+
+.link:hover{
+    text-decoration: none;
+    color: #fff;
+}
+
+.buttonFormat{
+    text-align: center;
+    width: 160px;
+    height: 160px;
+    padding: 13px;
+    border-radius: 50%;
+    font-size: 22px;
+    border: 0px;
+    background-repeat: no-repeat;
+    color: #0B52AF;
+    font-weight: 500;
+}
+
+
+.buttonFormat:hover{
+    cursor: pointer;
+    /*animation: colorChange 0.4s forwards;*/
+}
+
+.volunteer{
+    background-image: url('../../imgs/hat.png');
+}
+
+.announcement{
+    background-image: url('../../imgs/hat2.png');
+}
+
+.calendar{
+    background-image: url('../../imgs/hat3.png');
+}
