@@ -1,6 +1,7 @@
 import './App.css';
 import './components/Login/Login.css';
 import Login from './components/Login/Login';
+import Footer from './components/footer/footer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Calendar from './components/calendar/Calendar';
@@ -30,6 +31,7 @@ function App() {
             </button>
           </form>
         </div>
+        <Footer/>
     </BrowserRouter>
   );
 }
