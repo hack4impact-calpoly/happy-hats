@@ -1,0 +1,9 @@
+p, button, span {
+    font-family: 'Permanent Marker', cursive !important;
+    color: #004aac !important;
+}
+
+main .rbc-toolbar-label {
+    font-size: 2rem;
+    font-weight: bold;
+}

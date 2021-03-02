@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { calendarEventSchema, COLLECTION_NAME } = require('./models/calendar-schema');
+const { calendarEventSchema, COLLECTION_NAME, CalendarEventTypes } = require('./models/calendar-schema');
 
 /* Create calendar model */
 const CalendarEvent = mongoose.model('CalendarEvent', calendarEventSchema, COLLECTION_NAME);
@@ -10,6 +10,10 @@ const calendarEventFns = {
         // Split right now for easy debugging
         const val = await CalendarEvent.find({}).exec();
         return val;
+    },
+    getEventsWithFilter: async (filter) => {
+        const events = await CalendarEvent.find(filter).exec();
+        return events;
     },
     saveCalendarEvent: async (calendarEvent) => {
         const newEvent = new CalendarEvent(calendarEvent);
@@ -27,8 +31,6 @@ const calendarEventFns = {
         return val?.eventUser;
     },
     updateCalendarEvent: async (eventId, calendarEvent) => {
-        // Make sure calendarEvent object is OK...
-        const newEvent = new CalendarEvent(calendarEvent);
         const oldDoc = await CalendarEvent.findOneAndReplace(
             {
                 _id: eventId,

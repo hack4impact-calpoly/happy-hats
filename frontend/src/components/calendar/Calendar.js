@@ -1,3 +1,5 @@
+import './Calendar.css';
+
 import React from "react";
 import moment from 'moment';
 import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
@@ -56,13 +58,8 @@ class Calendar extends React.Component {
     switch (this.props.accountType) {
       case 'hospital': {
         return {
-          defaultView: "month",
-          views: ["month", "week"],
           components: {
             event: CapeOrderEvent,
-            week: {
-              header: CapeHeaderComponent
-            },
             month: {
               dateHeader: CapeHeaderComponent
             }
@@ -71,13 +68,8 @@ class Calendar extends React.Component {
       }
       case 'admin': {
         return {
-          defaultView: "week",
-          views: ["month", "week", "day"],
           components: {
             event: EventComp,
-            week: {
-              header: CapeHeaderComponent
-            },
             month: {
               dateHeader: CapeHeaderComponent
             }
@@ -87,8 +79,6 @@ class Calendar extends React.Component {
       }
       case 'volunteer': {
         return {
-          defaultView: "week",
-          views: ["month", "week", "day"],
           components: {
             event: EventComp,
           },
@@ -103,11 +93,12 @@ class Calendar extends React.Component {
   }
 
   render() {
-    const { events } = this.props.data;
+    const events = this.props.data;
     const whereToStart = new Date();
+    console.log('temp');
     whereToStart.setHours(whereToStart.getHours() - 5);
     return (
-      <div>
+      <main>
         <BigCalendar
           localizer={localizer}
           defaultDate={new Date()}
@@ -122,12 +113,27 @@ class Calendar extends React.Component {
           startAccessor="start"
           endAccessor="end"
           style={{ height: '80vh', margin: '1% 2%' }}
+          defaultView="month"
+          views={["month"]}
           {...this.getCorrectCalendarByAccount()}
           events={events || []}
         />
-      </div>
+      </main>
     );
   }
 }
 
-export default withFetch(Calendar, 'http://localhost:3001/events');
+const calendarEventFormatter = ({events}) => {
+  if (!events) {
+    return;
+  }
+  for (const ev of events) {
+    console.log(ev);
+    ev.start = new Date(ev.start);
+    ev.end = new Date(ev.end);
+  }
+
+  return events;
+};
+
+export default withFetch(Calendar, 'http://localhost:3001/api/events?event_user=4edd40c86762e0fb12000003', calendarEventFormatter);

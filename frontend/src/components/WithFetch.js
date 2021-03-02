@@ -7,7 +7,7 @@ function withFetch(WrappedComponent, reqUrl, formatter = null) {
 
     useEffect(() => {
       // setFetchData();
-      setData(mockedData());
+      mockedData();
     }, []);
 
     const setFetchData = async () => {
