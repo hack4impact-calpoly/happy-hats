@@ -31,7 +31,9 @@ function App() {
             </button>
           </form>
         </div>
-        <Footer/>
+        <div className="Footer">
+           <Footer/>
+       </div>
     </BrowserRouter>
   );
 }
