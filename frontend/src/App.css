@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Permanent+Marker&display=swap');
+
+/* use Montserrat: font-family: 'Montserrat', sans-serif;
+   use Permanent Marker: font-family: 'Permanent Marker', cursive;
+*/
+
 .App {
   text-align: center;
 }

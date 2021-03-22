@@ -6,9 +6,16 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Calendar from './components/calendar/Calendar';
 import Navbar from "./components/Navbar";
 import AnnouncementPage from "./components/announcements/AnnouncementPage";
+import background from "./imgs/bg.png";
 
 function App() {
   return (
+    <div style={{ 
+        backgroundImage: `url(${background})`,
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat'
+    }}>
     <BrowserRouter>
       <Navbar />
       <Switch>
@@ -31,6 +38,7 @@ function App() {
           </form>
         </div>
     </BrowserRouter>
+    </div>
   );
 }
  
