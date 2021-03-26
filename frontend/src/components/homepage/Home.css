@@ -2,7 +2,7 @@
     background-image: url('../../imgs/happyhatsBG.png');
     width: 100%;
     height: auto;
-    
+
     min-width: 750px;
     min-height: 700px;
 
@@ -47,7 +47,7 @@
     /*animation: colorChange 0.4s forwards;*/
 }
 
-.volunteer{
+.volunteer, .order{
     background-image: url('../../imgs/hat.png');
 }
 
