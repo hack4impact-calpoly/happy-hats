@@ -1,11 +1,11 @@
+import './Navbar.css';
 import { Navbar, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import styles from "./Navbar.css";
 import logo from "../imgs/logo.png";
 
 function NavBar() {
   return (
-    <Navbar style={{styles}} expand="md">
+    <Navbar expand="md">
       <Navbar.Brand>
         <Link to="/"><img
           src={logo}
@@ -18,10 +18,10 @@ function NavBar() {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto">
-          <Link style={{textDecoration: 'none'}} className="link_text" to ="/announcements">
+          <Link className="link-text" to ="/announcements">
             Announcements
           </Link>
-          <Link style={{textDecoration: 'none'}} className="link_text" to="/calendar">
+          <Link className="link-text" to="/calendar">
             Calendar
           </Link>
         </Nav>

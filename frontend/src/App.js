@@ -1,4 +1,6 @@
+
 import './App.css';
+
 import './components/Login/Login.css';
 import Login from './components/Login/Login';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -10,23 +12,18 @@ import background from "./imgs/bg.png";
 
 function App() {
   return (
-    <div style={{ 
-        backgroundImage: `url(${background})`,
-        backgroundPosition: 'center',
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat'
-    }}>
     <BrowserRouter>
-      <Navbar />
-      <Switch>
-        <Route path="/" exact></Route>
-        <Route path="/login"><Login /></Route>
-        <Route path="/announcements"> <AnnouncementPage> </AnnouncementPage></Route>
-        <Route path="/login/:type"></Route>
-        <Route path="/calendar"> {/* Temporary route for now */}
-          <Calendar accountType="volunteer" />
-        </Route>
-      </Switch>
+      <div style={{'backgroundImage': `url(${background})`}} class="page">
+        <Navbar />
+        <Switch>
+          <Route path="/" exact></Route>
+          <Route path="/login"><Login /></Route>
+          <Route path="/announcements"> <AnnouncementPage> </AnnouncementPage></Route>
+          <Route path="/login/:type"></Route>
+          <Route path="/calendar"> {/* Temporary route for now */}
+            <Calendar accountType="volunteer" />
+          </Route>
+        </Switch>
         <div className="buttonStack">
           <form action="http://localhost:3001/auth/google">
             <button type="submit" className="google-button">
@@ -37,9 +34,9 @@ function App() {
             </button>
           </form>
         </div>
+      </div>
     </BrowserRouter>
-    </div>
   );
 }
- 
+
 export default App;
