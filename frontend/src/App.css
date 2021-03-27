@@ -1,3 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Permanent+Marker&display=swap');
+
+/* use Montserrat: font-family: 'Montserrat', sans-serif;
+    use Permanent Marker: font-family: 'Permanent Marker', cursive;
+*/
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  min-height: 100%;
+  min-width: 100%;
+}
+
 .App {
   text-align: center;
 }
@@ -24,4 +37,13 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.page {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  min-height: 100%;
+  min-width: 100%;
+  overflow-x: hidden;
 }
