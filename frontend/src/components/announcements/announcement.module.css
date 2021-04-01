@@ -1,6 +1,4 @@
-html {
-    /* background-color: #FFDDD2; */
-}
+
 
  .create {
     display: flex;
@@ -9,6 +7,38 @@ html {
     padding: 5%;
 }
 
-.block{
-    background-color: blue;
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+.AnnouncementTitle{
+    color: #007bff;
+    padding-left: 40px;
+    font-family: 'Permanent Marker', cursive;
+    text-decoration: none !important;
+    font-size: 40px;
+}
+
+.formLabel {
+    color: #007bff;
+    padding-top: 40px;
+    font-size: 24px;
+    font-family: 'Permanent Marker', cursive;
+    text-decoration: none !important;
+}
+
+.submitButton{
+    background-color: #007bff;
+    color:white;
+    font-family: 'Permanent Marker', cursive;
+    text-decoration: none !important;
+    font-size: 20px;
+    border-radius: 1em;
+    margin-top: 10px;
+}
+
+
+.contentBox{
+    border-radius: 1em;
 }
