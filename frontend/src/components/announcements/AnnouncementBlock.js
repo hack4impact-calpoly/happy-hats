@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-
+import dateFormat from 'dateformat';
 const url = "http://localhost:3001/api/announcement"
 
 class AnouncementBlock extends React.Component {
@@ -27,7 +27,7 @@ class AnouncementBlock extends React.Component {
                     const title = a.title;
                     const author = a.author;
                     const content = a.content;
-                    const date = a.date;
+                    const date = dateFormat(a.date, "mmmm dS, hh:mm");
                 
                     count ++;
     
