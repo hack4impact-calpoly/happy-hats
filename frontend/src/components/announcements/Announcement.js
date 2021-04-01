@@ -55,28 +55,31 @@ function Announcement(props) {
 
     return(
         <div>
-            <h1 className={styles.AnnouncementTitle} >Make An Accouncement</h1>
+            <h1 className={styles.AnnouncementTitle} > Accouncements</h1>
 
-            <div className={styles.create}>
-                <label className={styles.formLabel} htmlFor="title">Announcement Title</label>
-                <textarea className={styles.contentBox} 
-                    name="title"
-                    id="title"
-                    value={annoucment.title}
-                    onChange={handleChange}
-                    rows={2}
-                    cols={75} />
+            <div className={styles.MakeAnnouncementBlock} >
+                <h1 className={styles.MakeAnnouncementTitle} > Make an Accouncement</h1>
+                <div className={styles.create}>
+                    <label className={styles.formLabel} htmlFor="title">Announcement Title</label>
+                    <textarea className={styles.contentBox} 
+                        name="title"
+                        id="title"
+                        value={annoucment.title}
+                        onChange={handleChange}
+                        rows={2}
+                        cols={75} />
 
-                <label className={styles.formLabel} htmlFor="content">Announcement Description</label>
-                <textarea className={styles.contentBox} 
-                    name="content"
-                    id="content"
-                    value={annoucment.content}
-                    onChange={handleChange}
-                    rows={10}
-                    cols={75} />    
+                    <label className={styles.formLabel} htmlFor="content">Announcement Description</label>
+                    <textarea className={styles.contentBox} 
+                        name="content"
+                        id="content"
+                        value={annoucment.content}
+                        onChange={handleChange}
+                        rows={10}
+                        cols={75} />    
 
-                <input className={styles.submitButton} type="button" value="Submit Announcement" onClick={submitForm} />
+                    <input className={styles.submitButton} type="button" value="Submit Announcement" onClick={submitForm} />
+                </div>
             </div>
         </div>
     );
