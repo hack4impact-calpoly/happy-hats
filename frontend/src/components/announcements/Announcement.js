@@ -60,22 +60,22 @@ function Announcement(props) {
             <div className={styles.MakeAnnouncementBlock} >
                 <h1 className={styles.MakeAnnouncementTitle} > Make an Accouncement</h1>
                 <div className={styles.create}>
-                    <label className={styles.formLabel} htmlFor="title">Announcement Title</label>
+                    <label className={styles.formLabel} htmlFor="title">Title: </label>
                     <textarea className={styles.contentBox} 
                         name="title"
                         id="title"
                         value={annoucment.title}
                         onChange={handleChange}
-                        rows={2}
+                        rows={1}
                         cols={75} />
 
-                    <label className={styles.formLabel} htmlFor="content">Announcement Description</label>
+                    <label className={styles.formLabel} htmlFor="content">Message: </label>
                     <textarea className={styles.contentBox} 
                         name="content"
                         id="content"
                         value={annoucment.content}
                         onChange={handleChange}
-                        rows={10}
+                        rows={8}
                         cols={75} />    
 
                     <input className={styles.submitButton} type="button" value="Submit Announcement" onClick={submitForm} />

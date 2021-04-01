@@ -12,13 +12,23 @@
     flex-direction: column;
 }
 
+.MakeAnnouncementBlock{
+    margin: 50px;
+    border-style: solid;
+    border-radius: 46px;
+    border-color: #004AAC;
+    background-color: #FFFCEF;
+    box-shadow: -10px 10px 5px #F3D352;
+}
+
 .MakeAnnouncementTitle{
+    text-align: center;
     color: #004AAC;
     padding-left: 50px;
     padding-top: 40px;
     font-family: 'Permanent Marker', cursive;
     text-decoration: none !important;
-    font-size: 30px;
+    font-size: 48px;
 }
 
 .AnnouncementTitle{
@@ -26,14 +36,13 @@
     padding-left: 50px;
     font-family: 'Permanent Marker', cursive;
     text-decoration: none !important;
-    font-size: 40px;
+    font-size: 72px;
 }
 
 .formLabel {
     color: #004AAC;
     padding-top: 40px;
     padding-bottom: 0px;
-
     font-size: 24px;
     font-family: 'Permanent Marker', cursive;
     text-decoration: none !important;
@@ -45,13 +54,14 @@
     font-family: 'Permanent Marker', cursive;
     text-decoration: none !important;
     font-size: 20px;
-    border-radius: 1em;
     margin-top: 10px;
 }
 
 
 .contentBox{
-    border-radius: 1em;
+    font-family: 'Permanent Marker', cursive;
+    font-size: 20px;
+    color: #64aeff;
 }
 
 .create{
