@@ -55,11 +55,11 @@ function Announcement(props) {
 
     return(
         <div>
-            <h1>Make An Accouncement</h1>
+            <h1 className={styles.AnnouncementTitle} >Make An Accouncement</h1>
 
             <div className={styles.create}>
-                <label htmlFor="title">Announcement Title</label>
-                <textarea className={styles.titleBox}
+                <label className={styles.formLabel} htmlFor="title">Announcement Title</label>
+                <textarea className={styles.contentBox} 
                     name="title"
                     id="title"
                     value={annoucment.title}
@@ -67,8 +67,8 @@ function Announcement(props) {
                     rows={2}
                     cols={75} />
 
-                <label htmlFor="content">Announcement Description</label>
-                <textarea
+                <label className={styles.formLabel} htmlFor="content">Announcement Description</label>
+                <textarea className={styles.contentBox} 
                     name="content"
                     id="content"
                     value={annoucment.content}
@@ -76,7 +76,7 @@ function Announcement(props) {
                     rows={10}
                     cols={75} />    
 
-                <input type="button" value="Submit Announcement" onClick={submitForm} />
+                <input className={styles.submitButton} type="button" value="Submit Announcement" onClick={submitForm} />
             </div>
         </div>
     );
