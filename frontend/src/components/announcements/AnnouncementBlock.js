@@ -19,20 +19,30 @@ class AnouncementBlock extends React.Component {
     }
 
     render(){
+        const announcementCount = 2;
+        var count = 0;
         return(
             <div id="announce">
                 {this.state.announcementList && this.state.announcementList.map(a => {
                     const title = a.title;
                     const author = a.author;
                     const content = a.content;
+                    const date = a.date;
+                
+                    count ++;
     
-                    return (
-                        <div id="block"> 
-                            <h1>{title}</h1>
-                            <h3>{author} </h3>
-                            <p>{content}</p>
-                        </div>
-                    )
+                    if (count <= announcementCount) {
+                        return (
+                            <div id="block"> 
+                                <div id ="top3rd">
+                                    <h1>{title}</h1>
+                                    <h3>{author} </h3>
+                                </div>
+                                    <p id="content">{content}</p>
+                                    <p id="date">{date}</p>
+                            </div>
+                        )
+                    }
                 })}
                 
             </div>
