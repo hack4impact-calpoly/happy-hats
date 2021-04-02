@@ -55,6 +55,11 @@
     text-decoration: none !important;
     font-size: 20px;
     margin-top: 10px;
+    border-radius: 46px;
+}
+
+.submitButton:focus{
+    outline: none;
 }
 
 
@@ -62,8 +67,24 @@
     font-family: 'Permanent Marker', cursive;
     font-size: 20px;
     color: #64aeff;
+    padding: 20px;
+    padding-top:10px;
+    border-radius: 46px;
+}
+
+.contentBox:focus{
+    outline: none;
 }
 
 .create{
    padding-top: 0px;
+}
+
+.Announcement{
+    margin: 50px;
+    border-style: solid;
+    border-radius: 46px;
+    border-color: #004AAC;
+    background-color: #FFFCEF;
+    padding-left: 30px;
 }
