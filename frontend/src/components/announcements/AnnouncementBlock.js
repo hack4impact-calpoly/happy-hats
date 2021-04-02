@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import dateFormat from 'dateformat';
+import styles from "./announcement.module.css"
 const url = "http://localhost:3001/api/announcement"
+
 
 class AnouncementBlock extends React.Component {
 
@@ -22,7 +24,7 @@ class AnouncementBlock extends React.Component {
         const announcementCount = 2;
         var count = 0;
         return(
-            <div id="announce">
+            <div >
                 {this.state.announcementList && this.state.announcementList.map(a => {
                     const title = a.title;
                     const author = a.author;
@@ -33,13 +35,13 @@ class AnouncementBlock extends React.Component {
     
                     if (count <= announcementCount) {
                         return (
-                            <div id="block"> 
-                                <div id ="top3rd">
-                                    <h1>{title}</h1>
-                                    <h3>{author} </h3>
+                            <div className={styles.Announcement}> 
+                                <div className={styles.top}>
+                                    <h1 className={styles.Title} >{title}</h1>
+                                    <h3 className={styles.Author} >{author} </h3>
                                 </div>
-                                    <p id="content">{content}</p>
-                                    <p id="date">{date}</p>
+                                    <p className={styles.Content}>{content}</p>
+                                    <p className={styles.Date}>{date}</p>
                             </div>
                         )
                     }

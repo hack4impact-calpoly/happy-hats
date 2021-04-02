@@ -12,33 +12,112 @@
     flex-direction: column;
 }
 
-.AnnouncementTitle{
-    color: #007bff;
-    padding-left: 40px;
+.MakeAnnouncementBlock{
+    margin: 50px;
+    border-style: solid;
+    border-radius: 46px;
+    border-color: #004AAC;
+    background-color: #FFFCEF;
+    box-shadow: -10px 10px 5px #F3D352;
+}
+
+.MakeAnnouncementTitle{
+    text-align: center;
+    color: #004AAC;
+    padding-left: 50px;
+    padding-top: 40px;
     font-family: 'Permanent Marker', cursive;
     text-decoration: none !important;
-    font-size: 40px;
+    font-size: 48px;
+}
+
+.AnnouncementTitle{
+    color: #004AAC;
+    padding-left: 50px;
+    font-family: 'Permanent Marker', cursive;
+    text-decoration: none !important;
+    font-size: 72px;
 }
 
 .formLabel {
-    color: #007bff;
+    color: #004AAC;
     padding-top: 40px;
+    padding-bottom: 0px;
     font-size: 24px;
     font-family: 'Permanent Marker', cursive;
     text-decoration: none !important;
 }
 
 .submitButton{
-    background-color: #007bff;
+    background-color: #004AAC;
     color:white;
     font-family: 'Permanent Marker', cursive;
     text-decoration: none !important;
     font-size: 20px;
-    border-radius: 1em;
     margin-top: 10px;
+    border-radius: 46px;
+}
+
+.submitButton:focus{
+    outline: none;
 }
 
 
 .contentBox{
-    border-radius: 1em;
+    font-family: 'Permanent Marker', cursive;
+    font-size: 20px;
+    color: #64aeff;
+    padding: 20px;
+    padding-top:10px;
+    border-radius: 46px;
+}
+
+.contentBox:focus{
+    outline: none;
+}
+
+.create{
+   padding-top: 0px;
+}
+
+.Announcement{
+    margin: 50px;
+    border-style: solid;
+    border-radius: 46px;
+    border-color: #004AAC;
+    background-color: #FFFCEF;
+    padding-left: 30px;
+    font-family: 'Permanent Marker', cursive;
+}
+
+.top{
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    color:  #004AAC;
+    padding-right: 30px;
+    padding-top: 20px;
+
+}
+
+.Title{
+    text-align: left;
+    font-size: 24px;
+}
+
+.Author{
+    text-align: right;
+    font-size: 22px;
+}
+
+.Content{
+    color: #3c86e8;
+    font-size: 18px;
+}
+
+.Date{
+    color: #3c86e8;
+    font-size: 18px;
+    text-align: right;
+    padding-right: 30px;
 }
