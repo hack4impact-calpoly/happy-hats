@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const { calendarEventFns, CalendarEvent } = require('./calendar/calendar-db');
 const { announcementFns, Announcement} = require('./announcement/announcement-db')
+const { volunteerFns, Volunteer } = require("./volunteer/volunteer-db");
 
 /* Load .env into environment */
 dotenv.config();
@@ -81,6 +82,7 @@ const MongooseConnector = (() => {
                     });
                     /* Initialize models */
                     await CalendarEvent.init();
+                    await Volunteer.init();
 
                     console.log('Connected to MongoDB');
                     return true;
@@ -110,7 +112,8 @@ const MongooseConnector = (() => {
                 "...convert(givenFNs)"
         */
         ...convertFns(calendarEventFns),
-        ...convertFns(announcementFns)
+        ...convertFns(announcementFns),
+        ...convertFns(volunteerFns)
     };
 })();
 
