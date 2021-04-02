@@ -86,8 +86,8 @@
     border-radius: 46px;
     border-color: #004AAC;
     background-color: #FFFCEF;
-    padding-left: 30px;
     font-family: 'Permanent Marker', cursive;
+    padding: 30px;
 }
 
 .top{
@@ -95,8 +95,6 @@
     flex-wrap: nowrap;
     justify-content: space-between;
     color:  #004AAC;
-    padding-right: 30px;
-    padding-top: 20px;
 
 }
 
@@ -119,5 +117,4 @@
     color: #3c86e8;
     font-size: 18px;
     text-align: right;
-    padding-right: 30px;
 }
