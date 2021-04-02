@@ -36,12 +36,12 @@ class AnouncementBlock extends React.Component {
                     if (count <= announcementCount) {
                         return (
                             <div className={styles.Announcement}> 
-                                <div id ="top3rd">
-                                    <h1>{title}</h1>
-                                    <h3>{author} </h3>
+                                <div className={styles.top}>
+                                    <h1 className={styles.Title} >{title}</h1>
+                                    <h3 className={styles.Author} >{author} </h3>
                                 </div>
-                                    <p id="content">{content}</p>
-                                    <p id="date">{date}</p>
+                                    <p className={styles.Content}>{content}</p>
+                                    <p className={styles.Date}>{date}</p>
                             </div>
                         )
                     }
