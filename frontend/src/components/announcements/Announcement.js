@@ -64,8 +64,8 @@ function Announcement(props) {
                     id="title"
                     value={annoucment.title}
                     onChange={handleChange}
-                    rows={2}
-                    cols={75} />
+                    rows={1}
+                    cols={50} />
 
                 <label className={styles.formLabel} htmlFor="content">Announcement Description</label>
                 <textarea className={styles.contentBox} 
