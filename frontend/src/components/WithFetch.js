@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import moment from 'moment';
+import { findNearestWeekday } from "../utility/date-time";
 
 function withFetch(WrappedComponent, reqUrl, formatter = null) {
   function WithFetch(props) {
@@ -7,8 +8,8 @@ function withFetch(WrappedComponent, reqUrl, formatter = null) {
 
     useEffect(() => {
       // setFetchData();
-      mockedData();
-    }, []);
+      setData(mockedData().events);
+    }, [props.user.userType]);
 
     const setFetchData = async () => {
       try {
@@ -25,16 +26,29 @@ function withFetch(WrappedComponent, reqUrl, formatter = null) {
     };
 
     const mockedData = () => {
-      switch (props.accountType) {
+      switch (props.user.userType) {
         case 'volunteer':
         case 'admin': {
           return {
             events: [
               {
-                start: moment().toDate(),
+                start: findNearestWeekday(moment().add(1, "days").toDate()),
                 allDay: false,
-                end: moment().add(1, "hours").toDate(),
+                end: findNearestWeekday(moment().add(1, "days").add(1, "hours").toDate()),
                 title: "Some title",
+                description: "More info about soem of the other stuff",
+                volunteers: [
+                  {
+                    name: 'Freddie J',
+                    start: moment().add(1, "days").add(30, "minutes").toDate(),
+                    end: moment().add(1, "days").add(1, "hours").toDate()
+                  },
+                  {
+                    name: 'Freddie J Numero dos',
+                    start: moment().add(1, "days").add(12, "minutes").toDate(),
+                    end: moment().add(1, "days").add(72, "minutes").toDate()
+                  },
+                ],
                 resource: "test"
               },
               {
@@ -49,6 +63,26 @@ function withFetch(WrappedComponent, reqUrl, formatter = null) {
                 allDay: false,
                 end: moment().add(1, "hours").toDate(),
                 title: "More",
+                resource: "test"
+              },
+              {
+                start: moment().add(-5, "days").toDate(),
+                allDay: false,
+                end: moment().add(-5, "days").add(1, "hours").toDate(),
+                title: "Some title",
+                description: "More info about soem of the other stuff",
+                volunteers: [
+                  {
+                    name: 'Freddie J',
+                    start: moment().add(1, "days").add(30, "minutes").toDate(),
+                    end: moment().add(1, "days").add(1, "hours").toDate()
+                  },
+                  {
+                    name: 'Freddie J Numero dos',
+                    start: moment().add(1, "days").add(12, "minutes").toDate(),
+                    end: moment().add(1, "days").add(72, "minutes").toDate()
+                  },
+                ],
                 resource: "test"
               },
             ],
@@ -74,7 +108,7 @@ function withFetch(WrappedComponent, reqUrl, formatter = null) {
         }
         default: {
           console.log('Invalid stuff');
-          break;
+          return { events: [] };
         }
       }
     };

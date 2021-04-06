@@ -1,9 +1,72 @@
-p, button, span {
-    font-family: 'Permanent Marker', cursive !important;
-    color: #004aac !important;
+:root {
+  --day-border-radius: 1rem;
 }
 
-main .rbc-toolbar-label {
-    font-size: 2rem;
-    font-weight: bold;
+body,
+main p,
+main button,
+main span,
+main a,
+main .rbc-toolbar button {
+  font-family: "Permanent Marker", cursive;
+  color: var(--font-color);
+}
+
+main {
+  text-align: center;
+  margin: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+/* Styling for calendar */
+
+.rbc-toolbar .rbc-btn-group button {
+  border: 1px solid var(--font-color);
+}
+
+.rbc-toolbar-label {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.rbc-header + .rbc-header, .rbc-day-bg + .rbc-day-bg {
+  border-left: 1px solid var(--font-color) !important;
+}
+
+.rbc-month-view {
+  border: 1px solid var(--font-color) !important;
+  border-radius: var(--day-border-radius);
+}
+
+.rbc-header {
+  border-bottom: 0;
+}
+
+.rbc-month-row {
+  border-top: 1px solid var(--font-color) !important;
+}
+
+.day-outline {
+  border: 0;
+}
+
+.day-outline-bottom-left {
+  border-bottom-left-radius: var(--day-border-radius);
+}
+
+.day-outline-bottom-right {
+  border-bottom-right-radius: var(--day-border-radius);
+}
+
+.rbc-date-cell button.add-event {
+  padding: 0;
+  padding-left: 2px;
+}
+
+button.date-number {
+  border: 0;
+  background: transparent;
 }
