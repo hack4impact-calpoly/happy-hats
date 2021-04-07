@@ -12,6 +12,8 @@ const calendarEventFns = {
         return val;
     },
     getEventsWithFilter: async (filter) => {
+        // Split right now for easy debugging and if we want to change it in future
+        // to do something more
         const events = await CalendarEvent.find(filter).exec();
         return events;
     },

@@ -138,6 +138,8 @@ module.exports = (app) => {
         break;
       }
       default: {
+        // In this case something bad happened. The user's account type
+        // would be something other than the 3 things above
         res.json(500).json({
           message: 'Unknown event user type found',
         });
