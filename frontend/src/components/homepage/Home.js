@@ -5,7 +5,13 @@ import { useState, useEffect } from 'react'
 export default function Home(props){
     const [pageContent, setPageContent] = useState()
 
+
+
     useEffect(() => {
+
+        // 1. Retrieve Google ID
+        // 2. Query MongoDB by Google ID to retrieve role
+
         if(props.role === "admin"){
             setPageContent(<div style={{display: 'flex', width: '66%', justifyContent: 'center'}}>
                 <div style={{display: 'flex', justifyContent: 'space-between', width: '60%', height: '180px', flexDirection: 'column', marginTop: '80px'}}>

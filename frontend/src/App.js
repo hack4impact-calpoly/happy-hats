@@ -17,7 +17,7 @@ function App() {
         <Route path="/login"><Login /></Route>
         <Route path="/announcements"> <AnnouncementPage> </AnnouncementPage></Route>
         <Route path="/login/:type"></Route>
-        <Route path="/home"><Homepage role={'user'} name={'Username'} /></Route>
+        <Route path="/home"><Homepage /></Route>
         <Route path="/calendar"> {/* Temporary route for now */}
           <Calendar accountType="volunteer" />
         </Route>
