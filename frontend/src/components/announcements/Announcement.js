@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import styles from "./announcement.module.css"
+import { Link } from 'react-router-dom'
 
 function Announcement(props) {
     const [annoucment, setAnnoucement] = useState(
@@ -26,7 +27,7 @@ function Announcement(props) {
     }
 
     function submitForm() {
-        
+        console.log("HERE")
         const aData = {
             "title": document.getElementById('title').value,
             "content": document.getElementById('content').value,
@@ -53,10 +54,11 @@ function Announcement(props) {
 
     }
 
+
     return(
         <div>
             <h1 className={styles.AnnouncementTitle} > Accouncements</h1>
-
+            <Link className="create-announcement" to ="/create-announcements" className={styles.createButton}> Create an Announcements</Link>
             <div className={styles.MakeAnnouncementBlock} >
                 <h1 className={styles.MakeAnnouncementTitle} > Make an Accouncement</h1>
                 <div className={styles.create}>
@@ -77,7 +79,6 @@ function Announcement(props) {
                         onChange={handleChange}
                         rows={8}
                         cols={75} />    
-
                     <input className={styles.submitButton} type="button" value="Submit Announcement" onClick={submitForm} />
                 </div>
             </div>
