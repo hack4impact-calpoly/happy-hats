@@ -22,7 +22,7 @@ class AnouncementBlock extends React.Component {
 
     render(){
         return(
-            <div >
+            <div>
                 {this.state.announcementList && this.state.announcementList.map(a => {
                     const title = a.title;
                     const author = a.author;
