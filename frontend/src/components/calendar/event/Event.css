@@ -1,0 +1,12 @@
+.event-month-view {
+  text-align: center;
+  border-radius: 10px;
+  width: 90%;
+  margin: 5px auto;
+  color: white;
+  background-color: var(--font-color);
+}
+
+.rbc-event {
+  background: none !important;
+}
