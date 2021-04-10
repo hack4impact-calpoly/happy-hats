@@ -16,13 +16,11 @@ class AnouncementBlock extends React.Component {
     componentDidMount(){
         fetch(url)
         .then(response => response.json())
+        .then(data => data.reverse())
         .then(data => this.setState({ announcementList : data}));
-        
     }
 
     render(){
-        const announcementCount = 2;
-        var count = 0;
         return(
             <div >
                 {this.state.announcementList && this.state.announcementList.map(a => {
@@ -31,20 +29,16 @@ class AnouncementBlock extends React.Component {
                     const content = a.content;
                     const date = dateFormat(a.date, "mmmm dS, hh:mm");
                 
-                    count ++;
-    
-                    if (count <= announcementCount) {
-                        return (
-                            <div className={styles.Announcement}> 
-                                <div className={styles.top}>
-                                    <h1 className={styles.Title} >{title}</h1>
-                                    <h3 className={styles.Author} >{author} </h3>
-                                </div>
-                                    <p className={styles.Content}>{content}</p>
-                                    <p className={styles.Date}>{date}</p>
+                    return (
+                        <div className={styles.Announcement}> 
+                            <div className={styles.top}>
+                                <h1 className={styles.Title} >{title}</h1>
+                                <h3 className={styles.Author} >{author} </h3>
                             </div>
-                        )
-                    }
+                                <p className={styles.Content}>{content}</p>
+                                <p className={styles.Date}>{date}</p>
+                        </div>
+                    )
                 })}
                 
             </div>

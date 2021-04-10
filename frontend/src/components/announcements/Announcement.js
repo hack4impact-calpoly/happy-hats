@@ -26,7 +26,7 @@ function Announcement(props) {
     }
 
     function submitForm() {
-        
+        console.log("In SubmitForm")
         const aData = {
             "title": document.getElementById('title').value,
             "content": document.getElementById('content').value,
@@ -36,7 +36,7 @@ function Announcement(props) {
         console.log(aData)
 
         try {
-            fetch('http://localhost:3001/api/announcement', {
+            fetch("http://localhost:3001/api/announcement", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
