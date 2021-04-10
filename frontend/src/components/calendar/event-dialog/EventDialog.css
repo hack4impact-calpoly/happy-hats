@@ -1,0 +1,26 @@
+.volunteer-time {
+  text-align: right;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+#volunteer-sign-up {
+  float: right;
+}
+
+#volunteer-sign-up button {
+  background-color: rgb(96, 211, 96);
+  color: white;
+}
+
+#volunteer-sign-up button:hover {
+  background-color: rgb(51, 151, 51);
+}
+
+#volunteer-sign-up button:disabled {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+h6 {
+  font-size: 1.2rem;
+}

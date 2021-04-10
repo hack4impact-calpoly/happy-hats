@@ -84,7 +84,7 @@ const MongooseConnector = (() => {
                     await CalendarEvent.init();
                     await Volunteer.init();
 
-                    console.log('Connected to MongoDB');
+                    console.log('Connected to Atlas');
                     return true;
                 } catch (error) {
                     console.log(error);
@@ -99,7 +99,7 @@ const MongooseConnector = (() => {
                 try {
                     await mongoose.disconnect();
                     internals.connected = false;
-                    console.log('Disconnected');
+                    console.log('Disconnected from Atlas');
                     return true;
                 } catch (error) {
                     console.log(error);

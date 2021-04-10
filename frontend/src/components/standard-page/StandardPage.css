@@ -1,0 +1,8 @@
+.page {
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  min-height: 100%;
+  min-width: 100%;
+  overflow-x: hidden;
+}

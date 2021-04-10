@@ -1,0 +1,44 @@
+section.day-box {
+  border: 2px solid var(--font-color);
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  transform: translateY(-50%);
+  width: 20%;
+  height: 60%;
+  background-color: var(--default-background-color);
+  overflow: auto;
+  text-align: center;
+  margin: 0;
+}
+
+section.day-box li:last-child {
+  margin-bottom: 0 !important;
+}
+
+section.day-box p {
+  margin-bottom: 0;
+  padding-left: 10px;
+  width: 100%;
+  text-align: left;
+}
+
+section.day-box li {
+  list-style-type: none;
+  margin: 2rem auto;
+  width: 90%;
+}
+
+section.day-box button {
+  background: none;
+  border: 2px solid var(--font-color);
+  border-radius: 15px;
+  width: 100%;
+  padding: 5px auto;
+  overflow-x: auto;
+}
+
+section.day-box button:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+}

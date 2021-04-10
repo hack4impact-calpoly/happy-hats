@@ -102,15 +102,58 @@ const checkCapeOrderEndpointBody = (req, res, onSuccess) => {
 };
 
 module.exports = (app) => {
-  app.get('/api/events', async (req, res) => {
+  app.get('/api/all-events', async (req, res) => {
     const events = await MongooseConnector.getAllCalendarEvents();
     res.status(200).json({
       events: events
     });
   });
 
-  app.get('/api/event', async (req, res) => {
+  /* Main endpoint for retrieving events to be displayed to user */
+  app.get('/api/events', async (req, res) => {
     // Not sure what to do here
+    const eventUser = req.query.event_user;
+    if (!eventUser || !confirmValidObjectId(eventUser)) {
+      res.status(400).json({
+        message: 'No event user specified',
+      });
+      return;
+    }
+
+    const eventUserType = 'volunteer';
+    let events;
+    switch (eventUserType) {
+      case 'volunteer': {
+        events = await MongooseConnector.getEventsWithFilter({
+          eventType: CalendarEventTypes.VOLUNTEER,
+        });
+        break;
+      }
+      case 'hospital': {
+        // TODO
+        break;
+      }
+      case 'admin': {
+        // TODO
+        break;
+      }
+      default: {
+        // In this case something bad happened. The user's account type
+        // would be something other than the 3 things above
+        res.json(500).json({
+          message: 'Unknown event user type found',
+        });
+        return;
+      };
+    }
+
+    res.status(200).json({
+      events: events,
+    });
+  });
+
+  app.get('/api/event', async (req, res) => {
+    // still need to figure this out
     res.status(200).json({
       event: {},
     });
