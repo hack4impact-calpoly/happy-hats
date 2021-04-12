@@ -1,0 +1,14 @@
+.volunteerContainer{
+    margin: 50px;
+    border-style: solid;
+    border-radius: 46px;
+    border-color: #004AAC;
+    background-color: #FFFCEF;
+    font-family: 'Open Sans', sans-serif;
+    padding: 30px;
+    box-shadow: -10px 10px 5px #F3D352;
+}
+
+.scroll{
+    overflow-y: scroll;
+}
