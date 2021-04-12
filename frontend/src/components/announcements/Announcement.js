@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import styles from "./announcement.module.css"
 import { Link } from 'react-router-dom'
+import axios from 'axios';
 
 function Announcement(props) {
     const [annoucment, setAnnoucement] = useState(
         {
             title: '',
             content: '',
-            id:'',
             author: '',
             date: ''
         }
@@ -31,8 +31,7 @@ function Announcement(props) {
         const aData = {
             "title": document.getElementById('title').value,
             "content": document.getElementById('content').value,
-            "id":'',
-            "author": '',
+            "author": 'Parker and McKenna',
         }
         console.log(aData)
 
