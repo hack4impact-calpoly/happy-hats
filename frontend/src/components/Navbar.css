@@ -1,0 +1,10 @@
+.navbar {
+  margin-bottom: 25px;
+}
+
+.link-text {
+  font-family: 'Permanent Marker', cursive;
+  text-decoration: none !important;
+  font-size: 30px;
+  margin: 25px;
+}

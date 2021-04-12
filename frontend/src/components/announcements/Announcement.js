@@ -32,7 +32,6 @@ function Announcement(props) {
             "content": document.getElementById('content').value,
             "id":'',
             "author": '',
-            "date": new Date()
         }
         console.log(aData)
 
@@ -49,6 +48,7 @@ function Announcement(props) {
             console.error(error)
         }
 
+        //Left blank to create a hole to be updated later
         setAnnoucement({title: '', content: '', id:'', author: '', date: ''});
 
     }

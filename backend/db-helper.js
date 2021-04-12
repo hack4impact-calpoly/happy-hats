@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const { calendarEventFns, CalendarEvent } = require('./calendar/calendar-db');
+const { announcementFns, Announcement} = require('./announcement/announcement-db')
+const { volunteerFns, Volunteer } = require("./volunteer/volunteer-db");
 
 /* Load .env into environment */
 dotenv.config();
@@ -80,8 +82,9 @@ const MongooseConnector = (() => {
                     });
                     /* Initialize models */
                     await CalendarEvent.init();
+                    await Volunteer.init();
 
-                    console.log('Connected to MongoDB');
+                    console.log('Connected to Atlas');
                     return true;
                 } catch (error) {
                     console.log(error);
@@ -96,7 +99,7 @@ const MongooseConnector = (() => {
                 try {
                     await mongoose.disconnect();
                     internals.connected = false;
-                    console.log('Disconnected');
+                    console.log('Disconnected from Atlas');
                     return true;
                 } catch (error) {
                     console.log(error);
@@ -108,7 +111,9 @@ const MongooseConnector = (() => {
             Put yours by doing:
                 "...convert(givenFNs)"
         */
-        ...convertFns(calendarEventFns)
+        ...convertFns(calendarEventFns),
+        ...convertFns(announcementFns),
+        ...convertFns(volunteerFns)
     };
 })();
 
