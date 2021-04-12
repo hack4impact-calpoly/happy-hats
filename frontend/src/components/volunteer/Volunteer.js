@@ -24,7 +24,8 @@ class Volunteer extends React.Component {
     render(){
         return(
             <div>
-                <h1>Volunteers</h1>
+                <div className={styles.title}>Volunteers</div>
+                <div className={styles.scroll}>
                 {this.state.vol.map(v => {
                     console.log(this.state.volunteers)
                     const fName = v.firstName;
@@ -35,18 +36,19 @@ class Volunteer extends React.Component {
                     const notCompleted = v.nonCompletedHours;
                     return (
                         <div className={styles.volunteerContainer}> 
-                            <h1>Volunteer Name: <b>{fName} {lName}</b></h1>
+                            <h1>Volunteer Name: {fName} {lName}</h1>
                             <h3> Contact: {email} </h3>
                             <Container>
                                 <Row>
-                                    <Col>Completed Hours: {completed}</Col>
-                                    <Col>Scheduled Hours: {scheduled}</Col>
-                                    <Col>Hours not Completed: {notCompleted}</Col>
+                                    <Col><div className={styles.hours}>Completed Hours: {completed}</div></Col>
+                                    <Col><div className={styles.hours}>Scheduled Hours: {scheduled}</div></Col>
+                                    <Col><div className={styles.hours}>Hours not Completed: {notCompleted}</div></Col>
                                 </Row>
                             </Container>
                         </div>
                     )
                 })}
+                </div>
                 
             </div>
         );
