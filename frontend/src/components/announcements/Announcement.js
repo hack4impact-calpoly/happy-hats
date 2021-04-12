@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import styles from "./announcement.module.css"
 import { Link } from 'react-router-dom'
-import axios from 'axios';
 
 function Announcement(props) {
     const [annoucment, setAnnoucement] = useState(
@@ -17,11 +16,15 @@ function Announcement(props) {
         const {name, value} = event.target;
         if (name === "content") {
             setAnnoucement(
-                {title: annoucment['title'], content: value}
+                {title: annoucment['title'], content: value, author: annoucment["author"]}
+            );
+        } else if (name === "title") {
+            setAnnoucement(
+                {title: value, content: annoucment['content'], author: annoucment["author"] }
             );
         } else {
             setAnnoucement(
-                {title: value, content: annoucment['content']}
+                {title: annoucment['title'], content: annoucment['content'], author: value }
             );
         }
     }
@@ -31,7 +34,7 @@ function Announcement(props) {
         const aData = {
             "title": document.getElementById('title').value,
             "content": document.getElementById('content').value,
-            "author": 'Parker and McKenna',
+            "author": document.getElementById('author').value,
         }
         console.log(aData)
 
@@ -69,6 +72,15 @@ function Announcement(props) {
                         onChange={handleChange}
                         rows={1}
                         cols={75} />
+
+                    <label className={styles.formLabel} htmlFor="author">Publisher: </label>
+                    <textarea className={styles.contentBox} 
+                        name="author"
+                        id="author"
+                        value={annoucment.author}
+                        onChange={handleChange}
+                        rows={1}
+                        cols={75} />   
 
                     <label className={styles.formLabel} htmlFor="content">Message: </label>
                     <textarea className={styles.contentBox} 
