@@ -46,7 +46,7 @@ function CreateAnnouncementBlock(props) {
                 }, 
                 body: JSON.stringify(aData) 
             });
-
+            alert("Announcement Successfully Posted")
         } catch (error) {
             console.error(error)
         }
