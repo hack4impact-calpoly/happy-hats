@@ -32,12 +32,13 @@ function CreateAnnouncementBlock(props) {
     function submitForm() {
         console.log("In SubmitForm")
         const aData = {
+    
             "title": document.getElementById('title').value,
             "content": document.getElementById('content').value,
             "author": document.getElementById('author').value,
         }
         console.log(aData)
-
+        if (aData.title != '' && aData.content != '' && aData.author != '') {
         try {
             fetch("http://localhost:3001/api/announcement", {
                 method: 'POST',
@@ -53,7 +54,9 @@ function CreateAnnouncementBlock(props) {
 
         //Left blank to create a hole to be updated later
         setAnnoucement({title: '', content: '', id:'', author: '', date: ''});
-
+        } else {
+            alert("Please Fill All Fields before Submitting Announcement.");
+        }
     }
 
 
