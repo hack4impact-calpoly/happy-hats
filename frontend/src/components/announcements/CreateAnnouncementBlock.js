@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import styles from "./announcement.module.css"
-import { Link } from 'react-router-dom'
+import moment from 'moment';
 
 function CreateAnnouncementBlock(props) {
     const [annoucment, setAnnoucement] = useState(
@@ -36,24 +36,25 @@ function CreateAnnouncementBlock(props) {
             "title": document.getElementById('title').value,
             "content": document.getElementById('content').value,
             "author": document.getElementById('author').value,
+            "date": new Date()
         }
-        console.log(aData)
+           
         if (aData.title != '' && aData.content != '' && aData.author != '') {
-        try {
-            fetch("http://localhost:3001/api/announcement", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }, 
-                body: JSON.stringify(aData) 
-            });
-            alert("Announcement Successfully Posted")
-        } catch (error) {
-            console.error(error)
-        }
+            try {
+                fetch("http://localhost:3001/api/announcement", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }, 
+                    body: JSON.stringify(aData) 
+                });
+                alert("Announcement Successfully Posted")
+            } catch (error) {
+                console.error(error)
+            }
 
-        //Left blank to create a hole to be updated later
-        setAnnoucement({title: '', content: '', id:'', author: '', date: ''});
+            //Left blank to create a hole to be updated later
+            setAnnoucement({title: '', content: '', id:'', author: '', date: ''});
         } else {
             alert("Please Fill All Fields before Submitting Announcement.");
         }
