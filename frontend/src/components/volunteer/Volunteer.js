@@ -3,7 +3,6 @@ import { Row } from 'react-bootstrap';
 import styles from "./volunteer.module.css";
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
-var ScrollArea = require('react-scrollbar');
 
 const url = "http://localhost:3001/api/volunteers"
 
@@ -24,7 +23,7 @@ class Volunteer extends React.Component {
     render(){
         return(
             <div>
-                <div className={styles.title}>Volunteers</div>
+                <h1 className={styles.title}>Volunteers</h1>
                 <div className={styles.scroll}>
                 {this.state.vol.map(v => {
                     console.log(this.state.volunteers)

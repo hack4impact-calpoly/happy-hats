@@ -1,5 +1,5 @@
 .volunteerContainer{
-    margin: 50px;
+    margin: 3%;
     border-style: solid;
     border-radius: 46px;
     border-color: #004AAC;
@@ -21,6 +21,5 @@
 }
 
 .title{
-    margin-left: 30px;
-    font-size: 50px;
+    margin-left: 5%;
 }
