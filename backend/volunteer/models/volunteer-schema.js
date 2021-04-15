@@ -15,6 +15,6 @@ const volunteerSchema = new mongoose.Schema(
    });
 
 module.exports = {
-   volunteerSchema,
-   COLLECTION_NAME,
+   volunteerSchema: volunteerSchema,
+   COLLECTION_NAME: COLLECTION_NAME,
 };
