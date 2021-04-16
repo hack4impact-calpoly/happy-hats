@@ -12,6 +12,7 @@ import AnnouncementPage from "./components/announcements/AnnouncementPage";
 import Volunteer from "./components/volunteer/Volunteer";
 import GoogleSignIn from "./components/Login/GoogleSignIn";
 import Store from './store/Store';
+import CreateAnnouncementBlock from "./components/announcements/CreateAnnouncementBlock";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/" exact></Route>
             <Route path="/login"><Login /></Route>
             <Route path="/announcements"> <AnnouncementPage> </AnnouncementPage></Route>
+            <Route path="/create-announcements"> <CreateAnnouncementBlock> </CreateAnnouncementBlock></Route>
             <Route path="/volunteer"> <Volunteer> </Volunteer></Route>
             <Route path="/login/:type"></Route>
             <Route path="/calendar"> {/* Temporary route for now */}
