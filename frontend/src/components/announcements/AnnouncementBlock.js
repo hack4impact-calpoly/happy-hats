@@ -1,8 +1,6 @@
 import React, {useState} from 'react';
-import dateFormat from 'dateformat';
 import styles from "./announcement.module.css"
-import {getDayMonthDateStr} from "../../utility/date-time.js"
-import {formatAMPM} from "../../utility/date-time.js"
+import {getDayMonthDateStr, formatAMPM} from "../../utility/date-time.js"
 const url = "http://localhost:3001/api/announcement"
 
 
@@ -38,8 +36,9 @@ class AnouncementBlock extends React.Component {
                                 <h1 className={styles.Title} >{title}</h1>
                                 <h3 className={styles.Author} >{author} </h3>
                             </div>
-                                <p className={styles.Content}>{content}</p>
-                                <p className={styles.Date}>{date}</p>
+                            
+                            <p className={styles.Content}>{content}</p>
+                            <p className={styles.Date}>{date}</p>
                         </div>
                     )
                 })}

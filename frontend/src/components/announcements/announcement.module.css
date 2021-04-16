@@ -13,9 +13,9 @@
 }
 
 .MakeAnnouncementBlock{
-    margin: 50px;
+    margin: 5%;
     border-style: solid;
-    border-radius: 46px;
+    border-radius: 5%;
     border-color: #004AAC;
     background-color: #FFFCEF;
     box-shadow: -10px 10px 5px #F3D352;
@@ -25,25 +25,25 @@
     width:50%;
     text-align: center;
     color: #004AAC;
-    padding-left: 50px;
-    padding-top: 40px;
+    padding-left: 5%;
+    padding-top: 4%;
     font-family: 'Permanent Marker', cursive;
     text-decoration: none !important;
-    font-size: 48px;
+    font-size: 48 rhm;
 }
 
 .AnnouncementTitle{
     color: #004AAC;
-    padding-left: 50px;
-    padding-bottom: 30px;
+    padding-left: 5%;
+    padding-bottom: 3%;
     font-family: 'Permanent Marker', cursive;
     text-decoration: none !important;
-    font-size: 72px;
+    font-size: 72 rhm;
 }
 
 .formLabel {
     color: #004AAC;
-    padding-top: 40px;
+    padding-top: 4%;
     padding-bottom: 0px;
     font-size: 24px;
     font-family: 'Permanent Marker', cursive;
@@ -67,8 +67,8 @@
     text-decoration: none !important;
     font-size: 20px;
     border-radius: 46px;
-    margin-left: 50px;
-    margin-bottom: 100px;
+    margin-left: 5%;
+    margin-bottom: 10%;
     padding:12px;
 }
 
@@ -98,7 +98,7 @@
 }
 
 .Announcement{
-    margin: 50px;
+    margin: 5%;
     border-style: solid;
     border-radius: 46px;
     border-color: #004AAC;
