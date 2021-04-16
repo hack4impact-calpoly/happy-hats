@@ -36,7 +36,7 @@ class AnouncementBlock extends React.Component {
                                 <h1 className={styles.Title} >{title}</h1>
                                 <h3 className={styles.Author} >{author} </h3>
                             </div>
-                            
+
                             <p className={styles.Content}>{content}</p>
                             <p className={styles.Date}>{date}</p>
                         </div>

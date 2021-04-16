@@ -21,6 +21,9 @@ function NavBar() {
           <Link className="link-text" to ="/announcements">
             Announcements
           </Link>
+          <Link className="link-text" to="/volunteer">
+            Volunteers
+          </Link>
           <Link className="link-text" to="/calendar">
             Calendar
           </Link>
