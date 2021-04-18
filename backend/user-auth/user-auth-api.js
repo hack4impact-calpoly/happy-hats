@@ -58,14 +58,25 @@ module.exports = (app) => {
   )
 
   app.get("/auth/google/callback",
-    passport.authenticate("google", { failureRedirect: "http://localhost:3000/failedLogin" }),
+    passport.authenticate("google", { failureRedirect: "http://localhost:3000/login" }),
     function(req, res) {
       // Successful authentication, redirect secrets.
       res.redirect("http://localhost:3000/home")
+      // res.send({user: req.user, path: '/home'})
     }
   )
 
   app.get("/logout", function(req, res){
     res.redirect("http://localhost:3000/")
   })
+
+  // app.get("/getUser", function(req, res){
+  //   User.find({ googleId: req.params.id }, function(err, user){
+  //     if(err === null){
+  //       res.send(user)
+  //     }
+  //     res.send(null)
+  //   })
+  // })
+
 }

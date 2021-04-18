@@ -1,18 +1,38 @@
 import { Link } from "react-router-dom";
 import './Home.css';
 import { useState, useEffect } from 'react'
+import  { Redirect } from 'react-router-dom'
 
 export default function Home(props){
     const [pageContent, setPageContent] = useState()
-
-
+    const [layerContent, setLayerContent] = useState(
+        <></>
+    )
 
     useEffect(() => {
 
         // 1. Retrieve Google ID
-        // 2. Query MongoDB by Google ID to retrieve role
+        var role = props.user.role
+        var loggedIn = false
 
-        if(props.role === "admin"){
+        if(role == null){
+            console.log(role)
+            setLayerContent(<Redirect to='/login' />)
+
+        }else{
+            setLayerContent(
+            <div className="Home" style={{paddingLeft: '8%', paddingTop: '90px'}}>
+
+                <h1 className='welcomeMsg'>Welcome, {props.name}</h1>
+
+                {pageContent}
+
+            </div>)
+
+            loggedIn = true
+        }
+        
+        if(role === "admin" && loggedIn){
             setPageContent(<div style={{display: 'flex', width: '66%', justifyContent: 'center'}}>
                 <div style={{display: 'flex', justifyContent: 'space-between', width: '60%', height: '180px', flexDirection: 'column', marginTop: '80px'}}>
                     <div style={{display: 'inline-flex', justifyContent: 'space-between', width: '100%'}}>
@@ -34,7 +54,7 @@ export default function Home(props){
                 </div>
             </div>)
 
-        }else if(props.role === "hospital"){
+        }else if(role === "hospital" && loggedIn){
             setPageContent(<div style={{display: 'flex', width: '66%', justifyContent: 'center'}}>
                 <div style={{display: 'flex', justifyContent: 'space-between', width: '60%', height: '180px', flexDirection: 'column', marginTop: '80px'}}>
                     <div style={{display: 'inline-flex', justifyContent: 'space-between', width: '100%'}}>
@@ -50,7 +70,7 @@ export default function Home(props){
                 </div>
             </div>)
 
-        }else{
+        }else if(role === 'user' && loggedIn){
             setPageContent(<div style={{display: 'flex', width: '66%', justifyContent: 'center'}}>
                 <div style={{display: 'flex', justifyContent: 'space-between', width: '60%', height: '180px', flexDirection: 'column', marginTop: '80px'}}>
                     <div style={{display: 'inline-flex', justifyContent: 'space-between', width: '100%'}}>
@@ -66,15 +86,11 @@ export default function Home(props){
                 </div>
             </div>)
         }
-    })
+    }, [props.user.role])
 
     return (
-        <div className="Home" style={{paddingLeft: '8%', paddingTop: '90px'}}>
-
-            <h1 className='welcomeMsg'>Welcome, {props.name}</h1>
-
-            {pageContent}
-
-        </div>
+        <>
+        {layerContent}
+        </>
     )
 }
