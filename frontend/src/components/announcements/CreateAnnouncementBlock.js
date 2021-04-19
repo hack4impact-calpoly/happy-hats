@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import styles from "./announcement.module.css"
-import moment from 'moment';
 
 function CreateAnnouncementBlock(props) {
     const [annoucment, setAnnoucement] = useState(
@@ -39,7 +38,7 @@ function CreateAnnouncementBlock(props) {
             "date": new Date()
         }
            
-        if (aData.title != '' && aData.content != '' && aData.author != '') {
+        if (aData.title !== '' && aData.content !== '' && aData.author !== '') {
             try {
                 fetch("http://localhost:3001/api/announcement", {
                     method: 'POST',

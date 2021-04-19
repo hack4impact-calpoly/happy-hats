@@ -1,28 +1,23 @@
 import React, { useState, useEffect } from "react";
 import moment from 'moment';
 import { findNearestWeekday } from "../utility/date-time";
+import { GetRequestHelpers } from "../utility/request-helpers";
 
-function withFetch(WrappedComponent, reqUrl, formatter = null) {
+function withFetch(WrappedComponent, reqUrl, formatter = null, useMock = false) {
   function WithFetch(props) {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-      // setFetchData();
-      setData(mockedData().events);
-    }, [props.user.userType]);
+      if (useMock) {
+        setData(mockedData().events);
+      } else {
+        setFetchData();
+      }
+    }, props.user ? [props.user.userType] : []);
 
     const setFetchData = async () => {
-      try {
-        const response = await fetch(reqUrl);
-        if (!response.ok) {
-          console.log(response);
-          return;
-        }
-        const jsonResponse = await response.json();
-        setData(!!formatter ? formatter(jsonResponse) : jsonResponse);
-      } catch (e) {
-        console.log(e);
-      }
+      const jsonResponse = await GetRequestHelpers.makeRequestAndGetResponse(reqUrl);
+      setData(!!formatter ? formatter(jsonResponse) : jsonResponse);
     };
 
     const mockedData = () => {
@@ -113,7 +108,7 @@ function withFetch(WrappedComponent, reqUrl, formatter = null) {
       }
     };
 
-    return <WrappedComponent data={data} {...props} />;
+    return <WrappedComponent fetchedData={data} {...props} />;
   }
 
   return WithFetch;
