@@ -32,9 +32,9 @@ class Volunteer extends React.Component {
 
             return (
               <div className={styles.volunteerContainer}>
-                <h1>
+                <h2>
                   Volunteer Name: {firstName} {lastName}
-                </h1>
+                </h2>
                 <h3> Contact: {email} </h3>
                 <Container>
                   <Row>
