@@ -1,9 +1,5 @@
 import './Footer.css';
 import title from "../../imgs/footerLogo.png";
-import facebook from "../../imgs/facebook.png";
-import twitter from "../../imgs/twitter.png";
-import youtube from "../../imgs/youtube.png";
-import instagram from "../../imgs/ig.png";
 
 function Footer() {
   return (
@@ -29,40 +25,7 @@ function Footer() {
                     alt="Happy Hats"
                     />
                 </div>
-                <div className="social-media-row"> 
-                    <div className="sm-col"> 
-                        <img
-                        src={facebook}
-                        width="35"
-                        height="35"
-                        alt="FB"
-                        />
-                    </div>
-                    <div className="sm-col"> 
-                        <img
-                        src={twitter}
-                        width="35"
-                        height="35"
-                        alt="Twitter"
-                        />
-                    </div>
-                    <div className="sm-col"> 
-                        <img
-                        src={youtube}
-                        width="35"
-                        height="35"
-                        alt="Youtube"
-                        />
-                    </div>
-                    <div className="sm-col"> 
-                        <img
-                        src={instagram}
-                        width="35"
-                        height="35"
-                        alt="IG"
-                        />
-                    </div>
-                </div>
+                <p className="hack"> Made with love by Hack4Impact &hearts; </p>
             </div>
         </div>
     </div>
