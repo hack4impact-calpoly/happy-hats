@@ -4,7 +4,6 @@
     border-radius: 46px;
     border-color: #004AAC;
     background-color: #FFFCEF;
-    /* //font-family: 'Open Sans', sans-serif; */
     padding: 30px;
     box-shadow: -10px 10px 5px #F3D352;
 }
@@ -17,7 +16,7 @@
 }
 
 .hours{
-    font-size: 25px;
+    font-size: 20px;
 }
 
 .title{

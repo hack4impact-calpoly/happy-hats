@@ -66,7 +66,7 @@ function CustomFormControl(props) {
   );
 }
 
-function CustomBasicFormControl(props) {
+export function CustomBasicFormControl(props) {
   const { formikProps, formControlChildren, children, ...others} = props;
 
   return (

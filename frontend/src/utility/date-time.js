@@ -30,6 +30,11 @@ export function compareDatesWithoutTime(d1, d2) {
   return getTopOfDay(d1).getTime() === getTopOfDay(d2).getTime();
 }
 
+export function getMilitaryTimeFromDate(date) {
+  const timeStr = date.toTimeString();
+  return timeStr.substring(0, timeStr.indexOf(' '));
+}
+
 export function findNearestWeekday(oldDate) {
   const weekendDays = [0, 6];
   const date = new Date(oldDate);
