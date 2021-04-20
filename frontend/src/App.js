@@ -31,7 +31,6 @@ function App() {
               <Calendar />
             </Route>
           </Switch>
-          <GoogleSignIn />
         </StandardPage>
       </BrowserRouter>
     </Store>
