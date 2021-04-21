@@ -1,0 +1,26 @@
+.main-footer{
+    background-color:#004AAC;
+    width: 100%;
+    color: #FFFCEF;
+    position: absolute; 
+    bottom: 0px;
+}
+
+.column {
+    float: left;
+    text-align: center;
+    padding: 20px;
+    width: 33.33%;
+}
+
+.hack{
+    padding-top:5%;
+}
+
+.title{
+    font-family: Pacifico;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 28.8295px;
+    line-height: 51px;
+}

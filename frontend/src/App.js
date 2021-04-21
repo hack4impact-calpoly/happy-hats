@@ -13,6 +13,7 @@ import Volunteer from "./components/volunteer/Volunteer";
 import GoogleSignIn from "./components/Login/GoogleSignIn";
 import Store from './store/Store';
 import CreateAnnouncementBlock from "./components/announcements/CreateAnnouncementBlock";
+import Footer from "./components/Footer/Footer";
 
 function App() {
   return (
@@ -31,6 +32,8 @@ function App() {
               <Calendar />
             </Route>
           </Switch>
+          <GoogleSignIn />
+          <Footer/>
         </StandardPage>
       </BrowserRouter>
     </Store>
