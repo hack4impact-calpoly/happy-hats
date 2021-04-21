@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Login.css';
+import GoogleSignIn from './GoogleSignIn';
  
 function Login(props) {
   const username = useFormInput('');
@@ -13,18 +14,12 @@ function Login(props) {
   }
  
   return (
-    <div>
-      Login<br /><br />
-      <div>
-        Username<br />
-        <input type="text" {...username} autoComplete="new-password" />
+    <div className="top">
+      <h1 className="container">Welcome!</h1>
+      <h3 className="container">Please continue to sign in.</h3>
+      <div className="container">
+        <GoogleSignIn />
       </div>
-      <div style={{ marginTop: 10 }}>
-        Password<br />
-        <input type="password" {...password} autoComplete="new-password" />
-      </div>
-      {error && <><small style={{ color: 'red' }}>{error}</small><br /></>}<br />
-      <input type="button" value={loading ? 'Loading...' : 'Login'} onClick={handleLogin} disabled={loading} /><br />
     </div>
   );
 }

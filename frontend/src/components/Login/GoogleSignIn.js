@@ -1,6 +1,10 @@
+import React from 'react';
+import './Login.css';
+
+
 function GoogleSignIn() {
   return (
-    <div className="buttonStack" hidden>
+    <div className="buttonStack">
       {" "}
       {/* Hide this until it gets fixed. Still renders in DOM at least */}
       <form action="http://localhost:3001/auth/google">
