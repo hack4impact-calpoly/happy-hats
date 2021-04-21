@@ -14,8 +14,12 @@ function Login(props) {
   }
  
   return (
-    <div>
-      <GoogleSignIn />
+    <div className="top">
+      <h1 className="container">Welcome!</h1>
+      <h3 className="container">Please continue to sign in.</h3>
+      <div className="container">
+        <GoogleSignIn />
+      </div>
     </div>
   );
 }
