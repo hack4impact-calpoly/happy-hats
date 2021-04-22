@@ -2,14 +2,14 @@ import React from "react";
 import styles from "./announcement.module.css";
 import { getDayMonthDateStr, formatAMPM } from "../../utility/date-time.js";
 import withFetch from "../WithFetch";
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 
 const url = "announcement";
 class AnouncementBlock extends React.Component {
 
   render() {
     const announcementList = this.props.fetchedData;
-
-    console.log(announcementList);
 
     return (
       <div>
