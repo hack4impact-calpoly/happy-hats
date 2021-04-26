@@ -40,7 +40,7 @@ function CreateAnnouncementBlock(props) {
            
         if (aData.title !== '' && aData.content !== '' && aData.author !== '') {
             try {
-                fetch("http://localhost:3001/api/announcement", {
+                fetch("process.env.REACT_APP_SERVER_URL/api/announcement", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
