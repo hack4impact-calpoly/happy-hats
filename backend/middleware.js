@@ -1,4 +1,16 @@
-const { Logger } = require("@hack4impact/logger")
+const { Logger } = require('@hack4impact/logger');
+const passport = require("passport");
+
+// Parse authHeader to retrieve token
+const getBearerToken = (authHeader) => {
+   // Format: "Bearer <token>"
+   return authHeader.split(" ")[1];
+};
+
+// Checks if the provided token is a valid token
+const verifyTokenAndGetUID = (token) => {
+   // Need access to db here...
+};
 
 const isUserAuthenticated = (req, res, next) => {
    const authHeader = req.headers.authorization;
@@ -12,6 +24,7 @@ const isUserAuthenticated = (req, res, next) => {
       const token = getBearerToken(authHeader);
 
       if (token) {
+         // TODO: Add verifyTokenAndGetUID function
          return verifyTokenAndGetUID(token)
             .then((userId) => {
                res.locals.auth = {
