@@ -28,6 +28,7 @@ app.get('/', (req, res) => {
 require('./user-auth/user-auth-api')(app); 
 require('./calendar/calendar-api')(app);
 require('./announcement/announcement-api')(app);
+require('./volunteer/volunteer-api')(app);
 
 
 app.get('*', (req, res) => {

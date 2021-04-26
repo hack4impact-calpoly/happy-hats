@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './Login.css';
 import { Link } from 'react-router-dom';
- 
+import GoogleSignIn from './GoogleSignIn';
+
 function Login(props) {
   const username = useFormInput('');
   const password = useFormInput('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
- 
+
   // handle button click of login form
   const handleLogin = () => {
     props.history.push('/dashboard');
@@ -23,13 +24,13 @@ function Login(props) {
   //     })
   //     .catch(console.log("error"))
   // }
- 
+
   return (
-    <div>
-      Login<br /><br />
-      <div>
-        Username<br />
-        <input type="text" {...username} autoComplete="new-password" />
+    <div className="top">
+      <h1 className="container">Welcome!</h1>
+      <h3 className="container">Please continue to sign in.</h3>
+      <div className="container">
+        <GoogleSignIn />
       </div>
       <div style={{ marginTop: 10 }}>
         Password<br />
@@ -48,14 +49,13 @@ function Login(props) {
                 </button>
             </form>
         </div>
-
     </div>
   );
 }
- 
+
 const useFormInput = initialValue => {
   const [value, setValue] = useState(initialValue);
- 
+
   const handleChange = e => {
     setValue(e.target.value);
   }
@@ -64,5 +64,5 @@ const useFormInput = initialValue => {
     onChange: handleChange
   }
 }
- 
+
 export default Login;

@@ -1,45 +1,47 @@
-import React, {useState} from 'react';
+import React from "react";
+import styles from "./announcement.module.css";
+import { getDayMonthDateStr, formatAMPM } from "../../utility/date-time.js";
+import withFetch from "../WithFetch";
 
-const url = "http://localhost:3001/api/announcement"
-
+const url = "announcement";
 class AnouncementBlock extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            announcementList: []
-        };
-    }
+  render() {
+    const announcementList = this.props.fetchedData;
 
-    componentDidMount(){
-        fetch(url)
-        .then(response => response.json())
-        .then(data => this.setState({ announcementList : data}));
-        
-    }
+    console.log(announcementList);
 
-    render(){
-        return(
-            <div id="announce">
-                {this.state.announcementList && this.state.announcementList.map(a => {
-                    const title = a.title;
-                    const author = a.author;
-                    const content = a.content;
-    
-                    return (
-                        <div id="block"> 
-                            <h1>{title}</h1>
-                            <h3>{author} </h3>
-                            <p>{content}</p>
-                        </div>
-                    )
-                })}
-                
-            </div>
-        );
-     }
-    
+    return (
+      <div>
+        {announcementList &&
+          announcementList.map(({
+            title,
+            author,
+            content,
+            date,
+          }, index) => {
+            const tempDate = new Date(date);
+            date = getDayMonthDateStr(tempDate) + " " + formatAMPM(tempDate);
+
+            return (
+              <div className={styles.Announcement} key={`announcement-${index}`}>
+                <div className={styles.top}>
+                  <h1 className={styles.Title}>{title}</h1>
+                  <h3 className={styles.Author}>{author} </h3>
+                </div>
+
+                <p className={styles.Content}>{content}</p>
+                <p className={styles.Date}>{date}</p>
+              </div>
+            );
+          })}
+      </div>
+    );
+  }
 }
 
-export default AnouncementBlock;
+const formatterFn = (data) => {
+  return data?.reverse();
+};
 
+export default withFetch(AnouncementBlock, url, formatterFn);
