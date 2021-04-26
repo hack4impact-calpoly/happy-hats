@@ -130,3 +130,12 @@
     font-size: 18px;
     text-align: right;
 }
+
+.return {
+    border-style: solid;
+    border-radius: 46px;
+    color: #004AAC;
+    background-color: #FFFCEF;
+    margin-left: 300%;
+    text-shadow: none;
+}

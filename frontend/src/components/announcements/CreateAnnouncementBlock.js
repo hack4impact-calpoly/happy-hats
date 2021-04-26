@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import styles from "./announcement.module.css"
 import { Link } from 'react-router-dom'
-import { confirmAlert } from 'react-confirm-alert'; // Import
-import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
+import { IconButton } from '@material-ui/core';
 
 function CreateAnnouncementBlock(props) {
     const [annoucment, setAnnoucement] = useState(
@@ -66,7 +66,11 @@ function CreateAnnouncementBlock(props) {
     return(
         <div>
             <h1 className={styles.AnnouncementTitle} > Create Accouncements</h1>
-            <Link to ="/announcements" className={styles.createButton}>Return to Announcements</Link>
+            <IconButton
+                component={ Link } 
+                to ="/announcements" >
+                <KeyboardReturnIcon className={styles.return}/>
+            </IconButton>
             <div className={styles.MakeAnnouncementBlock} >
                 <h1 className={styles.MakeAnnouncementTitle} > Make an Accouncement</h1>
                 <div className={styles.create}>
@@ -104,4 +108,3 @@ function CreateAnnouncementBlock(props) {
 }
 
 export default CreateAnnouncementBlock;
-
