@@ -3,12 +3,15 @@
   --amplify-primary-tint: rgb(10, 77, 171);
   --amplify-primary-shade: rgb(10, 77, 171);
   --amplify-font-family: 'Raleway', sans-serif;
+  --amplify-background-color: rgb(255, 252, 240);
 }
 amplify-authenticator {
+  border-color:rgb(10, 77, 171);
   display: flex;
   justify-content: center;
   align-items: center;
   flex: 1;
   --container-height: 50vh;
+  --border-radius: 5%;
   margin: none;
 }

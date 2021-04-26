@@ -107,7 +107,7 @@ const AuthStateApp = () => {
           required: true,
         }
       ]} />
-      <AmplifySignOut>Hello</AmplifySignOut>
+      <AmplifySignOut></AmplifySignOut>
     </AmplifyAuthenticator>
   );
 }
