@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "happyhats0c067f87": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}

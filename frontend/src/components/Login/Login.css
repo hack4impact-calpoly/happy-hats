@@ -1,63 +1,14 @@
-.top{
-  margin-top:10%;
+:root {
+  --amplify-primary-color: rgb(10, 77, 171);
+  --amplify-primary-tint: rgb(10, 77, 171);
+  --amplify-primary-shade: rgb(10, 77, 171);
+  --amplify-font-family: 'Raleway', sans-serif;
 }
-
-
-.container {
+amplify-authenticator {
   display: flex;
   justify-content: center;
-  align-items:center;
-}
-
-.welcome-text{
-  display: inline-block;
-  vertical-align: middle;
-  padding: 0 24px;
-  color: rgb(10, 77, 171);
-  font-size: 14px;
-  }
-
-.google-button {
-  padding: 5px;
-  border-radius: 5px;
-  border-color:rgb(10, 77, 171);
-  background-color:rgb(255, 252, 240);
-  box-shadow: 1px 1px 0px 1px rgba(0, 53, 197, 0.3);
-  transition-property: background-color, box-shadow;
-  transition-duration: 150ms;
-  transition-timing-function: ease-in-out;
-  transform: scale(1.4);
-}
-.google-button:hover, .google-button:focus{
-  box-shadow: 1px 4px 5px 1px rgba(0, 53, 197, 0.3);
-  outline: none;
-  transform: scale(1.4) skewX(-0.4deg);
-  cursor: pointer;
-}
-.google-button:active{
-  outline: none;
-  box-shadow: 1px 4px 5px 1px rgba(0, 53, 197, 0.3);
-  transition-duration: 10ms;
-}
-.google-button__icon {
-  display: inline-block;
-  vertical-align: middle; 
-  width: 15px;
-  height: 15px;
-  box-sizing: border-box;
-  margin: 0;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  position: relative;
-}
-.google-button__icon--plus {
-  width: 27px;
-}
-.google-button__text {
-  display: inline-block;
-  vertical-align: middle;
-  padding: 0 24px;
-  color: rgb(10, 77, 171);
-  font-size: 14px;
+  align-items: center;
+  flex: 1;
+  --container-height: 50vh;
+  margin: none;
 }
