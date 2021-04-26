@@ -9,8 +9,6 @@ class AnouncementBlock extends React.Component {
   render() {
     const announcementList = this.props.fetchedData;
 
-    console.log(announcementList);
-
     return (
       <div>
         {announcementList &&
