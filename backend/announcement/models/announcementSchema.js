@@ -1,13 +1,15 @@
-const mongoose = require('mongoose')
-const COLLECTION_NAME = 'announcements';
+const mongoose = require("mongoose");
+const COLLECTION_NAME = "announcements";
 
-
-const announcementSchema = new mongoose.Schema({
-  title: String,
-  content: String,
-  author: String,
-  date: Date 
-}, {collection: COLLECTION_NAME});
+const announcementSchema = new mongoose.Schema(
+  {
+    title: String,
+    content: String,
+    author: String,
+    date: Date,
+  },
+  { collection: COLLECTION_NAME }
+);
 
 module.exports = {
   announcementSchema: announcementSchema,

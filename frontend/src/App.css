@@ -1,10 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Permanent+Marker&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&family=Permanent+Marker&display=swap");
 
 /* use Montserrat: font-family: 'Montserrat', sans-serif;
     use Permanent Marker: font-family: 'Permanent Marker', cursive;
 */
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   width: 100%;
   min-height: 100%;

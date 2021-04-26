@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import moment from 'moment';
+import moment from "moment";
 
 function withFetch(WrappedComponent, reqUrl, formatter = null) {
   function WithFetch(props) {
@@ -26,8 +26,8 @@ function withFetch(WrappedComponent, reqUrl, formatter = null) {
 
     const mockedData = () => {
       switch (props.accountType) {
-        case 'volunteer':
-        case 'admin': {
+        case "volunteer":
+        case "admin": {
           return {
             events: [
               {
@@ -35,45 +35,45 @@ function withFetch(WrappedComponent, reqUrl, formatter = null) {
                 allDay: false,
                 end: moment().add(1, "hours").toDate(),
                 title: "Some title",
-                resource: "test"
+                resource: "test",
               },
               {
                 start: moment().toDate(),
                 allDay: false,
                 end: moment().add(1, "hours").toDate(),
                 title: "Other stuff",
-                resource: "test"
+                resource: "test",
               },
               {
                 start: moment().add(2, "hours").toDate(),
                 allDay: false,
                 end: moment().add(1, "hours").toDate(),
                 title: "More",
-                resource: "test"
+                resource: "test",
               },
             ],
-          }
+          };
         }
-        case 'hospital': {
+        case "hospital": {
           return {
             events: [
               {
                 start: moment().toDate(),
                 allDay: false,
                 end: moment().add(1, "hours").toDate(),
-                resource: "cape order"
+                resource: "cape order",
               },
               {
                 start: moment().add(1, "days").toDate(),
                 allDay: false,
                 end: moment().add(1, "days").toDate(),
-                resource: "cape order"
+                resource: "cape order",
               },
             ],
-          }
+          };
         }
         default: {
-          console.log('Invalid stuff');
+          console.log("Invalid stuff");
           break;
         }
       }

@@ -1,14 +1,14 @@
 html {
-    /* background-color: #FFDDD2; */
+  /* background-color: #FFDDD2; */
 }
 
- .create {
-    display: flex;
-    flex-direction: column;
-    align-content: space-around;
-    padding: 5%;
+.create {
+  display: flex;
+  flex-direction: column;
+  align-content: space-around;
+  padding: 5%;
 }
 
-.block{
-    background-color: blue;
+.block {
+  background-color: blue;
 }

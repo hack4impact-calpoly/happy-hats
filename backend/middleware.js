@@ -1,15 +1,24 @@
 const { Logger } = require('@hack4impact/logger');
-const passport = require("passport");
+const passport = require('passport');
+const { User } = require('./user-auth/user-auth-db');
 
 // Parse authHeader to retrieve token
 const getBearerToken = (authHeader) => {
    // Format: "Bearer <token>"
-   return authHeader.split(" ")[1];
+   return authHeader.split(' ')[1];
 };
 
 // Checks if the provided token is a valid token
 const verifyTokenAndGetUID = (token) => {
-   // Need access to db here...
+  return new Promise((resolve, reject) => {
+    User.find({
+      googleId: token,
+      username: token
+    }, (err, user) => {
+      if(err) reject(err);
+      else resolve(user.googleId);
+    })
+  })
 };
 
 const isUserAuthenticated = (req, res, next) => {
