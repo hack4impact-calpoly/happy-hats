@@ -1,60 +1,81 @@
-.Home{
-    background-image: url('../../imgs/happyhatsBG.png');
-    width: 100%;
-    height: auto;
+.Home {
+  background-image: url("../../imgs/happyhatsBG.png");
+  width: 100%;
+  height: auto;
 
-    min-width: 750px;
-    min-height: 700px;
+  min-width: 750px;
+  min-height: 700px;
 
-    overflow: hidden;
+  overflow: hidden;
 
-    /* scale bg image proportionately */
-    background-size: 100% 700px;
+  /* scale bg image proportionately */
+  background-size: 100% 700px;
 }
 
-.welcomeMsg{
-    font-size: 52px;
-    font-weight: 250;
-    color: #0B52AF;
+.welcomeMsg {
+  font-size: 52px;
+  font-weight: 250;
+  color: #0b52af;
 }
 
-.link{
-    font-weight: 400;
-    color: #0B52AF;
+.link {
+  font-weight: 400;
+  color: #0b52af;
 }
 
-.link:hover{
-    text-decoration: none;
-    color: #fff;
+.link:hover {
+  text-decoration: none;
+  color: #fff;
 }
 
-.buttonFormat{
-    text-align: center;
-    width: 160px;
-    height: 160px;
-    padding: 13px;
-    border-radius: 50%;
-    font-size: 22px;
-    border: 0px;
-    background-repeat: no-repeat;
-    color: #0B52AF;
-    font-weight: 500;
+.buttonFormat {
+  text-align: center;
+  width: 160px;
+  height: 160px;
+  padding: 13px;
+  border-radius: 50%;
+  font-size: 22px;
+  border: 0px;
+  background-repeat: no-repeat;
+  color: #0b52af;
+  font-weight: 500;
 }
 
-
-.buttonFormat:hover{
-    cursor: pointer;
-    /*animation: colorChange 0.4s forwards;*/
+.buttonFormat:hover {
+  cursor: pointer;
+  /*animation: colorChange 0.4s forwards;*/
 }
 
-.volunteer, .order{
-    background-image: url('../../imgs/hat.png');
+.volunteer,
+.order {
+  background-image: url("../../imgs/hat.png");
 }
 
-.announcement{
-    background-image: url('../../imgs/hat2.png');
+.announcement {
+  background-image: url("../../imgs/hat2.png");
 }
 
-.calendar{
-    background-image: url('../../imgs/hat3.png');
+.calendar {
+  background-image: url("../../imgs/hat3.png");
+}
+
+.page-content-container {
+  display: flex;
+  width: 66%;
+  justify-content: center;
+}
+
+.inner-page-content {
+  display: flex;
+  justify-content: space-between;
+  width: 60%;
+  height: 180px;
+  flex-direction: column;
+  margin-top: 80px;
+}
+
+.top-row-links {
+  display: inline-flex;
+  justify-content: space-between;
+  width: 100%;
 }

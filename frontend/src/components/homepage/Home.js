@@ -1,96 +1,100 @@
-import { Link } from "react-router-dom";
 import './Home.css';
-import { useState, useEffect } from 'react'
-import  { Redirect } from 'react-router-dom'
+import React from 'react'
+import  { Link, Redirect } from 'react-router-dom'
+import withUser from "../../store/user/WithUser";
 
-export default function Home(props){
-    const [pageContent, setPageContent] = useState()
-    const [layerContent, setLayerContent] = useState(
-        <></>
-    )
+function Home(props) {
+  const { role } = props.user;
 
-    useEffect(() => {
+  const isLoggedIn = () => {
+    return !!role;
+  }
 
-        // 1. Retrieve Google ID
-        var role = props.user.role
-        var loggedIn = false
+  const renderCustomTopRowLinks = () => {
+    if (!isLoggedIn()) {
+      return null;
+    }
 
-        if(role == null){
-            console.log(role)
-            setLayerContent(<Redirect to='/login' />)
+    switch (role) {
+      case "admin":
+        return (
+          <React.Fragment>
+            <Link to="/volunteers" className='link' >
+                <button className="buttonFormat volunteer">Manage Volunteers</button>
+            </Link>
 
-        }else{
-            setLayerContent(
-            <div className="Home" style={{paddingLeft: '8%', paddingTop: '90px'}}>
+            <Link to="/announcements" className='link' >
+                <button className="buttonFormat announcement">Make an Announcement</button>
+            </Link>
+          </React.Fragment>
+        );
+      case "hospital":
+        return (
+          <>
+            <Link to="/orders" className='link' >
+                <button className="buttonFormat order">Manage Cape Orders</button>
+            </Link>
 
-                <h1 className='welcomeMsg'>Welcome, {props.name}</h1>
+            <Link to="/announcements" className='link' >
+                <button className="buttonFormat announcement">View Announcements</button>
+            </Link>
+          </>
+        );
+      case "volunteer":
+        return (
+          <>
+            <Link to="/calendar" className='link' >
+                <button className="buttonFormat calendar">Manage Shifts</button>
+            </Link>
 
-                {pageContent}
+            <Link to="/announcements" className='link' >
+                <button className="buttonFormat announcement">View Announcements</button>
+            </Link>
+          </>
+        );
+      default:
+        return null;
+    }
+  }
 
-            </div>)
+  const renderCustomBottomRowLinks = () => {
+    if (!isLoggedIn()) {
+      return null;
+    }
 
-            loggedIn = true
-        }
-        
-        if(role === "admin" && loggedIn){
-            setPageContent(<div style={{display: 'flex', width: '66%', justifyContent: 'center'}}>
-                <div style={{display: 'flex', justifyContent: 'space-between', width: '60%', height: '180px', flexDirection: 'column', marginTop: '80px'}}>
-                    <div style={{display: 'inline-flex', justifyContent: 'space-between', width: '100%'}}>
-                        <Link to="/volunteers" className='link' >
-                            <button className="buttonFormat volunteer">Manage Volunteers</button>
-                        </Link>
+    switch (role) {
+      case "admin":
+        return (
+          <div style={{display: 'flex', justifyContent: 'space-around'}}>
+            <Link to="/calendar" className='link' >
+                <button className="buttonFormat calendar">Manage Calendar</button>
+            </Link>
+          </div>
+        );
+      default:
+        return null;
+    }
+  }
 
-                        <Link to="/announcements" className='link' >
-                            <button className="buttonFormat announcement">Make an Announcement</button>
-                        </Link>
-                    </div>
+  console.log(role);
 
-                    <div style={{display: 'flex', justifyContent: 'space-around'}}>
-                        <Link to="/calendar" className='link' >
-                            <button className="buttonFormat calendar">Manage Calendar</button>
-                        </Link>
-                    </div>
-
-                </div>
-            </div>)
-
-        }else if(role === "hospital" && loggedIn){
-            setPageContent(<div style={{display: 'flex', width: '66%', justifyContent: 'center'}}>
-                <div style={{display: 'flex', justifyContent: 'space-between', width: '60%', height: '180px', flexDirection: 'column', marginTop: '80px'}}>
-                    <div style={{display: 'inline-flex', justifyContent: 'space-between', width: '100%'}}>
-                        <Link to="/orders" className='link' >
-                            <button className="buttonFormat order">Manage Cape Orders</button>
-                        </Link>
-
-                        <Link to="/announcements" className='link' >
-                            <button className="buttonFormat announcement">View Announcements</button>
-                        </Link>
-                    </div>
-
-                </div>
-            </div>)
-
-        }else if(role === 'user' && loggedIn){
-            setPageContent(<div style={{display: 'flex', width: '66%', justifyContent: 'center'}}>
-                <div style={{display: 'flex', justifyContent: 'space-between', width: '60%', height: '180px', flexDirection: 'column', marginTop: '80px'}}>
-                    <div style={{display: 'inline-flex', justifyContent: 'space-between', width: '100%'}}>
-                        <Link to="/calendar" className='link' >
-                            <button className="buttonFormat calendar">Manage Shifts</button>
-                        </Link>
-
-                        <Link to="/announcements" className='link' >
-                            <button className="buttonFormat announcement">View Announcements</button>
-                        </Link>
-                    </div>
-
-                </div>
-            </div>)
-        }
-    }, [props.user.role])
-
-    return (
-        <>
-        {layerContent}
-        </>
-    )
+  return (
+    !role ?
+      (<Redirect to='/login' />) :
+      (
+        <div className="Home" style={{paddingLeft: '8%', paddingTop: '90px'}}>
+          <h1 className='welcomeMsg'>Welcome, {props.user.displayName}</h1>
+          <div className="page-content-container">
+            <div className="inner-page-content">
+              <div className="top-row-links">
+                {renderCustomTopRowLinks()}
+              </div>
+              {renderCustomBottomRowLinks()}
+            </div>
+          </div>
+        </div>
+      )
+  );
 }
+
+export default withUser(Home);

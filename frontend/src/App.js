@@ -18,12 +18,6 @@ import CreateAnnouncementBlock from "./components/announcements/CreateAnnounceme
 import Footer from "./components/Footer/Footer";
 
 function App() {
-  const [userObj, setUserObj] = useState({
-    username: null,
-    name: null,
-    role: null,
-  })
-
   return (
     <Store>
       <BrowserRouter>
@@ -32,7 +26,7 @@ function App() {
           <Switch>
             <Route path="/" exact></Route>
             <Route path="/login"><Login /></Route>
-            <Route path="/home"><Homepage user={userObj}/></Route>
+            <Route path="/home"><Homepage /></Route>
             <Route path="/announcements"> <AnnouncementPage> </AnnouncementPage></Route>
             <Route path="/create-announcements"> <CreateAnnouncementBlock> </CreateAnnouncementBlock></Route>
             <Route path="/volunteer"> <Volunteer> </Volunteer></Route>
