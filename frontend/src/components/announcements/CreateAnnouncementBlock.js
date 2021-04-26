@@ -66,7 +66,7 @@ function CreateAnnouncementBlock(props) {
     return(
         <div>
             <h1 className={styles.AnnouncementTitle} > Create Accouncements</h1>
-            <IconButton
+            <IconButton className={styles.returnIcon}
                 component={ Link } 
                 to ="/announcements" >
                 <KeyboardReturnIcon className={styles.return}/>

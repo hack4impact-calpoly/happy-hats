@@ -137,5 +137,8 @@
     color: #004AAC;
     background-color: #FFFCEF;
     margin-left: 300%;
-    text-shadow: none;
+}
+
+.returnIcon:hover {
+    background-color: inherit !important;
 }
