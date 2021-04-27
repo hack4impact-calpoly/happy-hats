@@ -142,3 +142,8 @@
 .returnIcon:hover {
     background-color: inherit !important;
 }
+
+.right {
+    display: flex;
+    flex-wrap: wrap;
+}

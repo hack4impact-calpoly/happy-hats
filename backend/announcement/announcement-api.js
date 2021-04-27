@@ -1,4 +1,5 @@
 /* API Endpoints for announcement */
+const { request } = require('express');
 const mongoose = require('mongoose');
 const MongooseConnector = require('../db-helper');
 
@@ -60,6 +61,18 @@ module.exports = (app) => {
           message: 'Did not supply all needed post attributes',
         });
       }
+   })
+
+   app.delete('/api/announcement', async (request, response) => {
+    console.log("in app.delete")
+    const toDelete = {
+      title: request.body.title,
+      content: request.body.content,
+      author: request.body.author,
+      date: request.body.date
+    }
+    const success = await MongooseConnector.deleteAnnouncement(toDelete);
+    checkSuccess(response, success)
    })
 
 }
