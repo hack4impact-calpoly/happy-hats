@@ -9,7 +9,9 @@ export const USER_TYPES = Object.freeze({
 
 export const initialUser = {
   userId: NO_USER,
-  userType: USER_TYPES.NONE,
+  role: USER_TYPES.NONE,
+  displayName: null,
+  loggedIn: false
 };
 
 function setUser(dispatch, user) {
@@ -18,8 +20,7 @@ function setUser(dispatch, user) {
 
 export function generateUser(dispatch, userOverrides) {
   setUser(dispatch, {
-    userId: NO_USER,
-    userType: USER_TYPES.NONE,
+    ...initialUser,
     ...userOverrides,
   });
 }

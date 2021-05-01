@@ -1,13 +1,21 @@
 import './Navbar.css';
 import { Navbar, Nav } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import logo from "../imgs/logo.png";
+import {AmplifySignOut} from '@aws-amplify/ui-react';
+import awsconfig from '../aws-exports';
+import Amplify, { Auth } from 'aws-amplify';
+import Login from "./Login/Login";
+Amplify.configure(awsconfig);
 
-function NavBar() {
+function NavBar(props) {
+  function handleSignOut(props){
+    return <Redirect to='/login' />;
+  }
   return (
     <Navbar expand="md">
       <Navbar.Brand>
-        <Link to="/"><img
+        <Link to="/home"><img
           src={logo}
           width="320"
           height="80"
@@ -19,7 +27,7 @@ function NavBar() {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto">
         <Link className="link-text" to ="/login">
-            Login
+          <AmplifySignOut onClick={handleSignOut()}/>
           </Link>
           <Link className="link-text" to ="/announcements">
             Announcements

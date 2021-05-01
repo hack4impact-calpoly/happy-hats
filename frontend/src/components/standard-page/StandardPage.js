@@ -5,9 +5,6 @@ import calendarBackground from '../../imgs/bg_calendar.png';
 import announcementBackground from '../../imgs/bg_announcement.png';
 import { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-
-/* Temporary */
-import { generateUser, USER_TYPES } from '../../store/user/User';
 import { storeContext } from '../../store/Store';
 
 function StandardPage(props) {
@@ -30,14 +27,6 @@ function StandardPage(props) {
         break;
     }
   };
-
-  /* Temporary */
-  useEffect(() => {
-    generateUser(dispatch, {
-      userId: 5,
-      userType: USER_TYPES.VOLUNTEER,
-    });
-  }, [dispatch]);
 
   useEffect(() => {
     setBackground(location.pathname);
