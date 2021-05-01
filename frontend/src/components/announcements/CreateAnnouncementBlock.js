@@ -1,5 +1,8 @@
 import React, {useState} from 'react';
 import styles from "./announcement.module.css"
+import { Link } from 'react-router-dom'
+import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
+import { IconButton } from '@material-ui/core';
 
 function CreateAnnouncementBlock(props) {
     const [annoucment, setAnnoucement] = useState(
@@ -63,6 +66,11 @@ function CreateAnnouncementBlock(props) {
     return(
         <div>
             <h1 className={styles.AnnouncementTitle} > Create Accouncements</h1>
+            <IconButton className={styles.returnIcon}
+                component={ Link } 
+                to ="/announcements" >
+                <KeyboardReturnIcon className={styles.return}/>
+            </IconButton>
             <div className={styles.MakeAnnouncementBlock} >
                 <h1 className={styles.MakeAnnouncementTitle} > Make an Accouncement</h1>
                 <div className={styles.create}>
@@ -100,4 +108,3 @@ function CreateAnnouncementBlock(props) {
 }
 
 export default CreateAnnouncementBlock;
-
