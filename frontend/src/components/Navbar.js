@@ -7,7 +7,7 @@ function NavBar() {
   return (
     <Navbar expand="md">
       <Navbar.Brand>
-        <Link to="/"><img
+        <Link to="/home"><img
           src={logo}
           width="320"
           height="80"

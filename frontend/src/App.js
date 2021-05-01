@@ -9,6 +9,8 @@ import Calendar from './components/calendar/Calendar';
 import Navbar from "./components/Navbar";
 import StandardPage from "./components/standard-page/StandardPage";
 import AnnouncementPage from "./components/announcements/AnnouncementPage";
+import Homepage from './components/homepage/Home.js'
+import { useState } from 'react'
 import Volunteer from "./components/volunteer/Volunteer";
 import GoogleSignIn from "./components/Login/GoogleSignIn";
 import Store from './store/Store';
@@ -24,6 +26,7 @@ function App() {
           <Switch>
             <Route path="/" exact></Route>
             <Route path="/login"><Login /></Route>
+            <Route path="/home"><Homepage /></Route>
             <Route path="/announcements"> <AnnouncementPage> </AnnouncementPage></Route>
             <Route path="/create-announcements"> <CreateAnnouncementBlock> </CreateAnnouncementBlock></Route>
             <Route path="/volunteer"> <Volunteer> </Volunteer></Route>
