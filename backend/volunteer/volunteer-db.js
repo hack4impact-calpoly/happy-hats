@@ -26,6 +26,9 @@ const volunteerFns = {
          .findByIdAndUpdate(volunteerId, { nonCompletedHours: hours })
          .exec();
    },
+   volunteerExists: async (volunteerId) => {
+      return Volunteer.exists({ _id: volunteerId });
+   },
 };
 
 module.exports = {

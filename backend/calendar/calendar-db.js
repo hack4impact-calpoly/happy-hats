@@ -32,6 +32,10 @@ const calendarEventFns = {
         const val = await CalendarEvent.findById(eventId, 'eventUser').exec();
         return val?.eventUser;
     },
+    findCalendarEventById: async (eventId) => {
+        const val = await CalendarEvent.findById(eventId).exec();
+        return val;
+    },
     updateCalendarEvent: async (eventId, calendarEvent) => {
         const oldDoc = await CalendarEvent.findOneAndReplace(
             {
@@ -40,6 +44,36 @@ const calendarEventFns = {
             calendarEvent
         );
         return eventId.equals(oldDoc?._id);
+    },
+    addVolunteerToEvent: async (eventId, volunteer) => {
+        const updateResult = await CalendarEvent.updateOne(
+            {
+                _id: eventId,
+            },
+            {
+                $push: {
+                    volunteers: volunteer,
+                }
+            },
+        );
+
+        return updateResult?.ok === 1 && updateResult?.n === 1;
+    },
+    approveCustomEventHours: async (eventId, volunteerId, approved) => {
+        const updateResult = await CalendarEvent.updateOne(
+            {
+                _id: eventId,
+                'volunteers.volunteer': volunteerId,
+            },
+            {
+                $set: {
+                    'volunteers.$.approved': approved,
+                    'volunteers.$.decisionMade': true,
+                }
+            },
+        );
+
+        return updateResult?.ok === 1 && updateResult?.n === 1;
     },
 };
 
