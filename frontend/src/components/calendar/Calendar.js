@@ -96,7 +96,7 @@ class Calendar extends React.Component {
     let componentModifications;
     let generalModifications;
 
-    switch (this.props.user.userType) {
+    switch (this.props.user.role) {
       case USER_TYPES.HOSPITAL: {
         componentModifications = {
           event: CapeOrderEvent,
@@ -270,7 +270,7 @@ class Calendar extends React.Component {
     const events = this.props.fetchedData;
     console.log(events); // Leaving in for now cuz convenient sometimes
 
-    if (this.props.user.userType === USER_TYPES.NONE) {
+    if (this.props.user.role === USER_TYPES.NONE) {
       return null;
     }
 

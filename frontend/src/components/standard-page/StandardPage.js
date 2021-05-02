@@ -35,7 +35,8 @@ function StandardPage(props) {
   useEffect(() => {
     generateUser(dispatch, {
       userId: 5,
-      userType: USER_TYPES.VOLUNTEER,
+      role: USER_TYPES.VOLUNTEER,
+      displayName: 'Jeff',
     });
   }, [dispatch]);
 
