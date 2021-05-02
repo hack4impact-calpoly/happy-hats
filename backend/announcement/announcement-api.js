@@ -46,6 +46,7 @@ module.exports = (app) => {
     })
 
     app.post('/api/announcement', async (request, response) => {  
+      console.log("in post");
       if (request.body.title && request.body.content && request.body.author) {
         const newAnnouncement = {
           title: request.body.title,
@@ -64,12 +65,13 @@ module.exports = (app) => {
    })
 
    app.delete('/api/announcement', async (request, response) => {
-    console.log("in app.delete")
+    response.send("in delete")
     const toDelete = {
       title: request.body.title,
       content: request.body.content,
       author: request.body.author,
-      date: request.body.date
+      date: request.body.date,
+      _id: request.body._id
     }
     const success = await MongooseConnector.deleteAnnouncement(toDelete);
     checkSuccess(response, success)

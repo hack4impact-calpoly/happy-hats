@@ -16,13 +16,16 @@ export default function AlertDialog(props) {
 
   const handleDelete = () => {
     setOpen(false);
+    console.log(props.post._id);
     const aData = {
 
         "title": props.post.title,
         "content": props.post.content,
         "author": props.post.author,
-        "date": props.post.date
+        "date": props.post.date,
+        "_id": props.post._id
     }
+
     try {
         fetch("http://localhost:3001/api/announcement", {
             method: 'DELETE',
@@ -31,7 +34,7 @@ export default function AlertDialog(props) {
             }, 
             body: JSON.stringify(aData) 
         });
-        alert("Announcement Successfully Deleted")
+        alert("Announcement Successfully Deleted. \nPlease refresh page to see change.")
     } catch (error) {
         console.error(error)
     }
