@@ -79,3 +79,4 @@ module.exports = (app) => {
       res.redirect('http://localhost:3000/');
    });
 };
+

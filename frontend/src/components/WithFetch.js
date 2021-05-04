@@ -13,7 +13,7 @@ function withFetch(WrappedComponent, reqUrl, formatter = null, useMock = false) 
       } else {
         setFetchData();
       }
-    }, props.user ? [props.user.userType] : []);
+    }, props.user ? [props.user.role] : []);
 
     const setFetchData = async () => {
       const jsonResponse = await GetRequestHelpers.makeRequestAndGetResponse(reqUrl);
@@ -21,7 +21,7 @@ function withFetch(WrappedComponent, reqUrl, formatter = null, useMock = false) 
     };
 
     const mockedData = () => {
-      switch (props.user.userType) {
+      switch (props.user.role) {
         case 'volunteer':
         case 'admin': {
           return {
