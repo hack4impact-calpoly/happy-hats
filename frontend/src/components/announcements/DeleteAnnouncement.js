@@ -18,7 +18,6 @@ export default function AlertDialog(props) {
     setOpen(false);
     console.log(props.post._id);
     const aData = {
-
         "title": props.post.title,
         "content": props.post.content,
         "author": props.post.author,

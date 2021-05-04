@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./announcement.module.css";
 import { getDayMonthDateStr, formatAMPM } from "../../utility/date-time.js";
 import withFetch from "../WithFetch";
-import AlertDialog from './confirmDelete'
+import AlertDialog from './DeleteAnnouncement'
 
 const url = "announcement";
 class AnouncementBlock extends React.Component {

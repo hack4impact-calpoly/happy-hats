@@ -112,8 +112,8 @@ const MongooseConnector = (() => {
                 "...convert(givenFNs)"
         */
         ...convertFns(calendarEventFns),
-        ...convertFns(announcementFns),
-        ...convertFns(volunteerFns)
+        ...convertFns(volunteerFns),
+        ...convertFns(announcementFns)
     };
 })();
 

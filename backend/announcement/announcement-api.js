@@ -65,7 +65,6 @@ module.exports = (app) => {
    })
 
    app.delete('/api/announcement', async (request, response) => {
-    response.send("in delete")
     const toDelete = {
       title: request.body.title,
       content: request.body.content,
