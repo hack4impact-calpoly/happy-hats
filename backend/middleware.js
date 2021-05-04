@@ -1,6 +1,13 @@
 const { Logger } = require('@hack4impact/logger');
-const passport = require('passport');
 const { User } = require('./user-auth/user-auth-db');
+const { verifierFactory } = require('@southlane/cognito-jwt-verifier');
+
+const verifier = verifierFactory({
+   region: process.env.AWS_REGION,
+   userPoolId: process.env.COGNITO_USER_POOL_ID,
+   appClientId: process.env.APP_CLIENT_ID,
+   tokenType: 'id', // either "access" or "id"
+});
 
 // Parse authHeader to retrieve token
 const getBearerToken = (authHeader) => {
@@ -9,16 +16,12 @@ const getBearerToken = (authHeader) => {
 };
 
 // Checks if the provided token is a valid token
-const verifyTokenAndGetUID = (token) => {
-  return new Promise((resolve, reject) => {
-    User.find({
-      googleId: token,
-      username: token
-    }, (err, user) => {
-      if(err) reject(err);
-      else resolve(user.googleId);
-    })
-  })
+const verifyTokenAndGetUser = async (token) => {
+   const tokenPayload = await verifier.verify(token);
+   return {
+      role: tokenPayload.role,
+      userId: tokenPayload["cognito:username"],
+   };
 };
 
 const isUserAuthenticated = (req, res, next) => {
