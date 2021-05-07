@@ -4,6 +4,7 @@ import styles from "./volunteer.module.css";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import withFetch from "../WithFetch";
+import AlertDialog from './DeleteVolunteer'
 
 const url = "volunteers";
 
@@ -27,7 +28,7 @@ class Volunteer extends React.Component {
             completedHours,
             scheduledHours,
             nonCompletedHours,
-          }) => {
+          }, index) => {
             console.log(vol);
 
             return (
@@ -55,6 +56,7 @@ class Volunteer extends React.Component {
                     </Col>
                   </Row>
                 </Container>
+                <AlertDialog post={vol[index]}/>
               </div>
             );
           })}

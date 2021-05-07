@@ -134,4 +134,21 @@ module.exports = (app) => {
          checkSuccess(res, success);
       }
    });
+
+   app.delete('/api/volunteer', async (request, response) => {
+      
+      const toDelete = {
+         _id: request.body._id,
+         firstName: request.body.firstName,
+         lastName: request.body.lastName,
+         email: request.body.email,
+         completedHours: request.body.completedHours,
+         scheduledHours: request.body.scheduledHours,
+         nonCompletedHours: request.body.nonCompletedHours
+      }
+      Logger.log("after assignment");
+      const success = await MongooseConnector.deleteVolunteer(toDelete);
+      checkSuccess(response, success)
+     })
+  
 };
