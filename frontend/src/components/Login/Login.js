@@ -16,6 +16,7 @@ const Login = (props) => {
       return onAuthUIStateChange((nextAuthState, authData) => {
           setAuthState(nextAuthState);
           props.modifyUser({...authData, role: 'volunteer', loggedIn: true});
+          console.log(authData)
       });
   }, []);
   // if(props.user && props.user.loggedIn){
