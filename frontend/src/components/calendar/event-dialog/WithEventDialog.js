@@ -27,6 +27,14 @@ function withEventDialog(WrappedComponent) {
       generateOptions({ open: false, });
     };
 
+    const handleEdit = () => {
+        /* edit an event */
+    };
+
+    const handleDelete = () => {
+        /* delete an event */
+    };
+
     const createEvent = (day) => {
       generateOptions({ open: true, newEvent: true, event: { start: day } });
     };
