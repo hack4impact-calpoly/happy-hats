@@ -13,5 +13,21 @@ amplify-authenticator {
   flex: 1;
   --container-height: 50vh;
   --border-radius: 5%;
-  margin: none;
+}
+
+.logo{
+  display: flex;
+  width: 40vh;
+  justify-content: center;
+  margin: 0 50% 0 50%;
+}
+
+.loginContainer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  margin-top: 15vh;
+  position: relative;
 }

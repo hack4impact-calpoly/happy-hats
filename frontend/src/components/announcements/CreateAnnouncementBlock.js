@@ -3,6 +3,7 @@ import styles from "./announcement.module.css"
 import { Link } from 'react-router-dom'
 import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
 import { IconButton } from '@material-ui/core';
+import Navbar from "../Navbar";
 
 function CreateAnnouncementBlock(props) {
     const [annoucment, setAnnoucement] = useState(
@@ -65,14 +66,15 @@ function CreateAnnouncementBlock(props) {
 
     return(
         <div>
-            <h1 className={styles.AnnouncementTitle} > Create Accouncements</h1>
+            <Navbar></Navbar>
+            <h1 className={styles.AnnouncementTitle} > Create Announcements</h1>
             <IconButton className={styles.returnIcon}
                 component={ Link } 
                 to ="/announcements" >
                 <KeyboardReturnIcon className={styles.return}/>
             </IconButton>
             <div className={styles.MakeAnnouncementBlock} >
-                <h1 className={styles.MakeAnnouncementTitle} > Make an Accouncement</h1>
+                <h1 className={styles.MakeAnnouncementTitle} > Make an Announcement</h1>
                 <div className={styles.create}>
                     <label className={styles.formLabel} htmlFor="title">Title: </label>
                     <textarea className={styles.contentBox} 

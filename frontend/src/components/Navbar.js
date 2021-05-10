@@ -1,18 +1,46 @@
+import React from 'react';
 import './Navbar.css';
 import { Navbar, Nav } from "react-bootstrap";
 import { Link, Redirect } from "react-router-dom";
 import logo from "../imgs/logo.png";
 import {AmplifySignOut} from '@aws-amplify/ui-react';
 import awsconfig from '../aws-exports';
-import Amplify, { Auth } from 'aws-amplify';
+import Amplify, { Auth, AmplifyAuthenticator } from 'aws-amplify';
 import Login from "./Login/Login";
+import withUser from '../store/user/WithUser';
+import { onAuthUIStateChange } from '@aws-amplify/ui-components';
+import Button from 'react-bootstrap/Button'
+
 Amplify.configure(awsconfig);
 
-function NavBar(props) {
-  function handleSignOut(props){
-    return <Redirect to='/login' />;
+async function signOut() {
+  try {
+      await Auth.signOut();
+  } catch (error) {
+      console.log('error signing out: ', error);
+  }
+}
+
+const NavBar = (props) =>{
+
+  const [loggedIn, updateLoggedIn] = React.useState(true);
+
+  const handleSignOut = () => {
+    console.log(props.user)
+
+    // if(props.user && props.user.loggedIn){
+
+    //   console.log(props.user.loggedIn);
+    //   props.user.loggedIn = false;
+    //   console.log(props.user.loggedIn);
+    //   signOut();
+    //   updateLoggedIn(false);
+    //   //return <Redirect to='/calendar' />;
+    // }
+    // props.modifyUser({userId: -1, role: 'volunteer', displayName: null, loggedIn: false});
   }
   return (
+    // loggedIn ? <Redirect to='/login' /> :
     <Navbar expand="md">
       <Navbar.Brand>
         <Link to="/home"><img
@@ -26,9 +54,9 @@ function NavBar(props) {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto">
-        <Link className="link-text" to ="/login">
-          <AmplifySignOut onClick={handleSignOut()}/>
-          </Link>
+          <Button onClick={() => handleSignOut()}>
+            Signout
+          </Button>
           <Link className="link-text" to ="/announcements">
             Announcements
           </Link>
@@ -44,4 +72,4 @@ function NavBar(props) {
   );
 }
 
-export default NavBar;
+export default withUser(NavBar);

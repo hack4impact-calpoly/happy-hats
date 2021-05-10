@@ -9,6 +9,10 @@ function withUser(WrappedComponent, onUserUpdated = null) {
 
     const updateUser = (overrides) => {
       generateUser(dispatch, overrides);
+      // console.log("Dispatch:");
+      // console.log(dispatch);
+      // console.log("\n\nOverrides:");
+      // console.log(overrides);
     };
 
     useEffect(() => {

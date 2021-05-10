@@ -4,6 +4,7 @@ import styles from "./volunteer.module.css";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import withFetch from "../WithFetch";
+import Navbar from "../Navbar";
 
 const url = "volunteers";
 
@@ -18,6 +19,7 @@ class Volunteer extends React.Component {
 
     return (
       <div>
+        <Navbar />
         <h1 className={styles.title}>Volunteers</h1>
         <div className={styles.scroll}>
           {vol.map(({

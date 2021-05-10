@@ -1,5 +1,5 @@
 import './Calendar.css';
-
+import Navbar from "../Navbar";
 import React from 'react';
 import { findDOMNode } from 'react-dom';
 import moment from 'moment';
@@ -275,34 +275,38 @@ class Calendar extends React.Component {
     }
 
     return (
-      <main>
-        <DayInformation
-          date={this.state.currentViewDate}
-          events={this.getEventsOnDate(this.state.currentViewDate, events)}
-        />
-        <BigCalendar
-          localizer={localizer}
-          defaultDate={new Date()}
-          ref={this.setCalendarRef}
-          timeslots={2}
-          step={20}
-          dayPropGetter={(d) => this.customDayPropGetter(d)}
-          showMultiDayTimes={true}
-          selectable={true}
-          popup={false}
-          onDrillDown={(d) => this.onDrillDown(d)}
-          onView={() => null}
-          onNavigate={(d) => this.onNavigate(d)}
-          onSelectEvent={(event) => this.onEventSelected(event)}
-          startAccessor="start"
-          endAccessor="end"
-          style={{ height: '80vh', width: '65vw', paddingLeft: '10%', margin: 0, }}
-          defaultView="month"
-          views={["month"]}
-          {...this.getCorrectCalendarByAccount()}
-          events={events || []}
-        />
-      </main>
+      <>
+        <Navbar />
+        <main>
+          
+          <DayInformation
+            date={this.state.currentViewDate}
+            events={this.getEventsOnDate(this.state.currentViewDate, events)}
+          />
+          <BigCalendar
+            localizer={localizer}
+            defaultDate={new Date()}
+            ref={this.setCalendarRef}
+            timeslots={2}
+            step={20}
+            dayPropGetter={(d) => this.customDayPropGetter(d)}
+            showMultiDayTimes={true}
+            selectable={true}
+            popup={false}
+            onDrillDown={(d) => this.onDrillDown(d)}
+            onView={() => null}
+            onNavigate={(d) => this.onNavigate(d)}
+            onSelectEvent={(event) => this.onEventSelected(event)}
+            startAccessor="start"
+            endAccessor="end"
+            style={{ height: '80vh', width: '65vw', paddingLeft: '10%', margin: 0, }}
+            defaultView="month"
+            views={["month"]}
+            {...this.getCorrectCalendarByAccount()}
+            events={events || []}
+          />
+        </main>
+      </>
     );
   }
 }
