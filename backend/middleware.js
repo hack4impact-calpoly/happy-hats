@@ -1,13 +1,6 @@
 const { Logger } = require('@hack4impact/logger');
 const { User } = require('./user-auth/user-auth-db');
-const { verifierFactory } = require('@southlane/cognito-jwt-verifier');
-
-const verifier = verifierFactory({
-   region: process.env.AWS_REGION,
-   userPoolId: process.env.COGNITO_USER_POOL_ID,
-   appClientId: process.env.APP_CLIENT_ID,
-   tokenType: 'id', // either "access" or "id"
-});
+const { idTokenVerifer } = require('./aws-exports-reader');
 
 // Parse authHeader to retrieve token
 const getBearerToken = (authHeader) => {
@@ -16,50 +9,76 @@ const getBearerToken = (authHeader) => {
 };
 
 // Checks if the provided token is a valid token
-const verifyTokenAndGetUser = async (token) => {
-   const tokenPayload = await verifier.verify(token);
-   return {
-      role: tokenPayload.role,
-      userId: tokenPayload["cognito:username"],
-   };
+const getUserFromTokenPayload = async (tokenPayload) => {
+   // console.log(tokenPayload);
+   if (!("sub" in tokenPayload)) {
+      throw new Error("No cognito user found from sub given");
+   }
+
+   const user = await User.findOne({
+      cognito_id: tokenPayload.sub,
+   });
+
+   if (!user) {
+      throw new Error("No cognito username found");
+   }
+
+   return user;
 };
 
-const isUserAuthenticated = (req, res, next) => {
+const getTokenPayloadFromRequest = async (req) => {
    const authHeader = req.headers.authorization;
 
    if (!authHeader) {
-      return res.status(403).json({
-         status: 403,
-         message: 'FORBIDDEN',
-      });
-   } else {
-      const token = getBearerToken(authHeader);
+      return false;
+   }
 
-      if (token) {
-         return verifyTokenAndGetUID(token)
-            .then((userId) => {
-               res.locals.auth = {
-                  userId,
-               };
-               next();
-            })
-            .catch((err) => {
-               Logger.error(err);
+   const token = getBearerToken(authHeader);
+   if (!token) {
+      return false;
+   }
 
-               return res.status(401).json({
-                  status: 401,
-                  message: 'UNAUTHORIZED',
-               });
-            });
-      } else {
+   const tokenPayload = await idTokenVerifer.verify(token);
+
+   return [tokenPayload, tokenPayload?.sub];
+};
+
+const isUserAuthenticated = async (req, res, next) => {
+   try {
+      const retrievedPayloadInfo = await getTokenPayloadFromRequest(req);
+
+      if (!retrievedPayloadInfo) {
          return res.status(403).json({
             status: 403,
             message: 'FORBIDDEN',
          });
       }
+
+      const userObj = await getUserFromTokenPayload(retrievedIdTokenPayload[0]);
+
+      if (!userObj || !userObj.role || userObj.role === "none") {
+         return res.status(401).json({
+            status: 401,
+            message: 'UNAUTHORIZED',
+         });
+      }
+
+      console.log(userObj);
+      req.locals = {
+         user: userObj,
+      };
+      next();
+   } catch (err) {
+      Logger.error(err);
+
+      return res.status(401).json({
+         status: 401,
+         message: 'UNAUTHORIZED',
+      });
    }
 };
 
 module.exports = {
    isUserAuthenticated,
+   getTokenPayloadFromRequest,
 };

@@ -15,6 +15,7 @@ const Login = (props) => {
   React.useEffect(() => {
       return onAuthUIStateChange((nextAuthState, authData) => {
           setAuthState(nextAuthState);
+          console.log(authData)
           props.modifyUser({...authData, role: 'volunteer', loggedIn: true});
       });
   }, []);
