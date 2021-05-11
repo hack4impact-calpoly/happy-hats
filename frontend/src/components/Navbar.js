@@ -1,16 +1,29 @@
+import React from 'react';
 import './Navbar.css';
 import { Navbar, Nav } from "react-bootstrap";
 import { Link, Redirect } from "react-router-dom";
 import logo from "../imgs/logo.png";
-import {AmplifySignOut} from '@aws-amplify/ui-react';
 import awsconfig from '../aws-exports';
 import Amplify, { Auth } from 'aws-amplify';
-import Login from "./Login/Login";
+import withUser from '../store/user/WithUser';
 Amplify.configure(awsconfig);
 
-function NavBar(props) {
-  function handleSignOut(props){
-    return <Redirect to='/login' />;
+async function signOut() {
+  try {
+      await Auth.signOut();
+  } catch (error) {
+      console.log('error signing out: ', error);
+  }
+}
+
+const NavBar = (props) =>{
+  const handleSignOut = () => {
+    if(props.user && props.user.loggedIn){
+      props.modifyUser({userId: -1, role: 'volunteer', displayName: null, loggedIn: false});
+      signOut();
+      return <Redirect to='/login' />;
+    }
+    
   }
   return (
     <Navbar expand="md">
@@ -26,8 +39,8 @@ function NavBar(props) {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto">
-        <Link className="link-text" to ="/login">
-          <AmplifySignOut onClick={handleSignOut()}/>
+          <Link className="link-text" onClick={() => handleSignOut()}>
+            Signout
           </Link>
           <Link className="link-text" to ="/announcements">
             Announcements
@@ -44,4 +57,4 @@ function NavBar(props) {
   );
 }
 
-export default NavBar;
+export default withUser(NavBar);

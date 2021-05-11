@@ -6,6 +6,7 @@ import './Login.css';
 import { AmplifySignOut, AmplifyAuthenticator, AmplifySignIn, AmplifySignUp} from '@aws-amplify/ui-react';
 import { onAuthUIStateChange } from '@aws-amplify/ui-components';
 import withUser from '../../store/user/WithUser';
+import logo from "../../imgs/logo.png";
 
 Amplify.configure(awsconfig);
 
@@ -19,16 +20,40 @@ const Login = (props) => {
           props.modifyUser({...authData, role: 'volunteer', loggedIn: true});
       });
   }, []);
-  // if(props.user && props.user.loggedIn){
-  //   return <Redirect to='/home' />;
-  // }
+  console.log(props.user);
+  if(props.user && props.user.loggedIn){
+    return <Redirect to='/home' />;
+  }
   return (
-    <AmplifyAuthenticator usernameAlias="email" >
-      <AmplifySignUp
-      className="background-customizable"
-        slot="sign-up"
-        usernameAlias="email"
-        headerText="Create Account"
+    <div className="loginContainer">
+      <img src={logo} alt="logo" className="logo"/>
+    
+      <AmplifyAuthenticator usernameAlias="email" >
+      
+        <AmplifySignUp
+        className="background-customizable"
+          slot="sign-up"
+          usernameAlias="email"
+          headerText="Create Account"
+          formFields={[
+            {
+              type: "email",
+              label: "Email *",
+              placeholder: "Enter Email",
+              required: true,
+            },
+            {
+              type: "password",
+              label: "Password *",
+              placeholder: "Enter Password",
+              required: true,
+            }
+          ]} 
+        />
+        <AmplifySignIn 
+        slot="sign-in"
+        usernameAlias="email" 
+        headerText=""
         formFields={[
           {
             type: "email",
@@ -42,27 +67,11 @@ const Login = (props) => {
             placeholder: "Enter Password",
             required: true,
           }
-        ]} 
-      />
-      <AmplifySignIn 
-      slot="sign-in" 
-      usernameAlias="email" 
-      headerText="Sign In"
-      formFields={[
-        {
-          type: "email",
-          label: "Email *",
-          placeholder: "Enter Email",
-          required: true,
-        },
-        {
-          type: "password",
-          label: "Password *",
-          placeholder: "Enter Password",
-          required: true,
-        }
-      ]} />
-    </AmplifyAuthenticator>
+        ]} />
+        <AmplifySignOut/>
+      </AmplifyAuthenticator>
+    </div>
+
   );
 }
 

@@ -3,6 +3,7 @@ import React from 'react'
 import  { Link, Redirect } from 'react-router-dom'
 import withUser from "../../store/user/WithUser";
 import Footer from "../Footer/Footer.js"
+import Navbar from '../Navbar.js';
 
 function Home(props) {
   const { role } = props.user;
@@ -83,6 +84,7 @@ function Home(props) {
   return (
       (
         <>
+        <Navbar />
         <div className="Home" style={{paddingLeft: '8%', paddingTop: '90px'}}>
           <h1 className='welcomeMsg'>Welcome, {props.user.email}</h1>
           <div className="page-content-container">
@@ -93,6 +95,7 @@ function Home(props) {
               {renderCustomBottomRowLinks()}
             </div>
           </div>
+          
         </div>
         <Footer></Footer>
         </>
