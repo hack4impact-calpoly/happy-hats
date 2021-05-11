@@ -4,8 +4,18 @@
   overflow-x: hidden;
 }
 
+#volunteer-delete {
+  float: right;
+  margin: 0px 10px;
+}
+
+#volunteer-edit {
+  float: right;
+}
+
 #volunteer-sign-up {
   float: right;
+  margin: 0px 10px;
 }
 
 #volunteer-sign-up button {
@@ -19,6 +29,10 @@
 
 #volunteer-sign-up button:disabled {
   background-color: rgba(0, 0, 0, 0.1);
+}
+
+#confirm-delete {
+  margin-right: 15px;
 }
 
 h6 {

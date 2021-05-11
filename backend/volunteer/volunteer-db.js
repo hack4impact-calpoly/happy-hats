@@ -26,9 +26,13 @@ const volunteerFns = {
          .findByIdAndUpdate(volunteerId, { nonCompletedHours: hours })
          .exec();
    },
+   deleteVolunteer: async(toDeleteVol) => {
+      const val = await Volunteer.remove({_id: toDeleteVol._id});
+      return val;
+    }
 };
 
 module.exports = {
-   Volunteer,
-   volunteerFns,
+   Volunteer: Volunteer,
+   volunteerFns: volunteerFns,
 };

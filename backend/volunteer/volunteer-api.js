@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const { Logger } = require("@hack4impact/logger");
 const MongooseConnector = require('../db-helper');
+const { isUserAuthenticated } = require("../middleware");
 
 const confirmValidObjectId = (objectId) => {
    return !!objectId && mongoose.isValidObjectId(objectId);
@@ -58,7 +59,7 @@ const getVolunteerObject = async (req, res) => {
 
 
 module.exports = (app) => {
-   app.get('/api/volunteers', async (req, res) => {
+   app.get('/api/volunteers', isUserAuthenticated, async (req, res) => {
       Logger.log("GET: All Volunteers...");
       const volunteers = await MongooseConnector.getAllVolunteers();
       res.status(200).json({
@@ -66,7 +67,7 @@ module.exports = (app) => {
       });
    });
 
-   app.get('/api/volunteer/:id', async (req, res) => {
+   app.get('/api/volunteer/:id', isUserAuthenticated, async (req, res) => {
       Logger.log("GET: Volunteer...");
       const volunteerObject = await getVolunteerObject(req, res);
       if (volunteerObject !== null) {
@@ -74,7 +75,7 @@ module.exports = (app) => {
       }
    });
 
-   app.get('/api/volunteer/:id/hours/scheduled', async (req, res) => {
+   app.get('/api/volunteer/:id/hours/scheduled', isUserAuthenticated, async (req, res) => {
       Logger.log("GET: Scheduled Hours...");
       const volunteerObject = await getVolunteerObject(req, res);
       if (volunteerObject !== null) {
@@ -82,7 +83,7 @@ module.exports = (app) => {
       }
    });
 
-   app.get('/api/volunteer/:id/hours/completed', async (req, res) => {
+   app.get('/api/volunteer/:id/hours/completed', isUserAuthenticated, async (req, res) => {
       Logger.log("GET: Completed Hours...");
       const volunteerObject = await getVolunteerObject(req, res);
       if (volunteerObject !== null) {
@@ -90,7 +91,7 @@ module.exports = (app) => {
       }
    });
 
-   app.get('/api/volunteer/:id/hours/not-completed', async (req, res) => {
+   app.get('/api/volunteer/:id/hours/not-completed', isUserAuthenticated, async (req, res) => {
       Logger.log("GET: Not Completed Hours...");
       const volunteerObject = await getVolunteerObject(req, res);
       if (volunteerObject !== null) {
@@ -98,7 +99,7 @@ module.exports = (app) => {
       }
    });
 
-   app.post('/api/volunteer/:id/hours/completed', async (req, res) => {
+   app.post('/api/volunteer/:id/hours/completed', isUserAuthenticated, async (req, res) => {
       Logger.log("POST: Completed Hours...");
       const volunteerObject = await getVolunteerObject(req, res);
       if (volunteerObject !== null) {
@@ -116,7 +117,7 @@ module.exports = (app) => {
       }
    });
 
-   app.post('/api/volunteer/:id/hours/not-completed', async (req, res) => {
+   app.post('/api/volunteer/:id/hours/not-completed', isUserAuthenticated, async (req, res) => {
       Logger.log("POST: Not Completed Hours...");
       const volunteerObject = await getVolunteerObject(req, res);
       if (volunteerObject !== null) {
@@ -133,4 +134,21 @@ module.exports = (app) => {
          checkSuccess(res, success);
       }
    });
+
+   app.delete('/api/volunteer', async (request, response) => {
+      
+      const toDelete = {
+         _id: request.body._id,
+         firstName: request.body.firstName,
+         lastName: request.body.lastName,
+         email: request.body.email,
+         completedHours: request.body.completedHours,
+         scheduledHours: request.body.scheduledHours,
+         nonCompletedHours: request.body.nonCompletedHours
+      }
+      Logger.log("after assignment");
+      const success = await MongooseConnector.deleteVolunteer(toDelete);
+      checkSuccess(response, success)
+     })
+  
 };
