@@ -39,7 +39,7 @@ const NavBar = (props) =>{
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto">
-          <Link className="navbar-button" onClick={() => handleSignOut()}>
+          <Link className="link-text" onClick={() => handleSignOut()}>
             Signout
           </Link>
           <Link className="link-text" to ="/announcements">

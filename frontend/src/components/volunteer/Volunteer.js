@@ -4,11 +4,8 @@ import styles from "./volunteer.module.css";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import withFetch from "../WithFetch";
-<<<<<<< HEAD
 import Navbar from "../Navbar";
-=======
 import AlertDialog from './DeleteVolunteer'
->>>>>>> 9f1cf269e77453eb904bcdacb4e8e792e20e7d6b
 
 const url = "volunteers";
 
