@@ -22,3 +22,27 @@
 .title{
     margin-left: 5%;
 }
+
+.ApprovalSection{
+    float: right;
+    padding: 7px;
+    margin: 5%;
+    border-style: solid;
+    border-radius: 5%;
+    border-color: #004AAC;
+    background-color: #FFFCEF;
+    width: 300px;
+}
+
+.personRow{
+    display:flex;
+    justify-content: space-between;
+}
+
+.ApprovalButton{
+    float: right;
+    background-color: #004AAC;
+    color: white;
+    height: 30px;
+
+}

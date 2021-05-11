@@ -12,7 +12,15 @@ class Volunteer extends React.Component {
 
   render() {
     if (!this.props.fetchedData) {
-      return null;
+      return <div>
+        <div className={styles.ApprovalSection}> 
+        <h4> Approve Volunteers </h4>
+        <div className={styles.personRow}>
+            <p> Name </p>
+            <button className={styles.ApprovalButton}> Approve </button>
+        </div>
+        </div>
+      </div>
     }
 
     const vol = this.props.fetchedData.volunteers || [];
