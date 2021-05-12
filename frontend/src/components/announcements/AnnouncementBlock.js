@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import styles from "./announcement.module.css"
 import {getDayMonthDateStr, formatAMPM} from "../../utility/date-time.js"
-const url = "http://localhost:3001/api/announcement"
+//const url = "http://localhost:3001/api/announcement"
+const url = "process.env.REACT_APP_SERVER_URL"
 
 
 class AnouncementBlock extends React.Component {

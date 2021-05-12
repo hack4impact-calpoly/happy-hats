@@ -39,9 +39,10 @@ function CreateAnnouncementBlock(props) {
             "date": new Date()
         }
            
-        if (aData.title != '' && aData.content != '' && aData.author != '') {
+        if (aData.title !== '' && aData.content !== '' && aData.author !== '') {
             try {
-                fetch("http://localhost:3001/api/announcement", {
+                //fetch("http://localhost:3001/api/announcement", {
+                fetch("process.env.REACT_APP_SERVER_URL", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
