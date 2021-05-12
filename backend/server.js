@@ -36,11 +36,11 @@ app.get('*', (req, res) => {
   res.send('404 Page not found')
 })
 
-const PORT = Number(process.env.PORT);
-if (!PORT) {
-  console.error('No PORT environment var found... add it to your .env file!');
-  process.exit(1);
-}
+const PORT = process.env.PORT || 3001;
+// if (!PORT) {
+//   console.error('No PORT environment var found... add it to your .env file!');
+//   process.exit(1);
+// }
 (async () => {
   await MongooseConnector.connect();
 
@@ -49,7 +49,7 @@ if (!PORT) {
   //     console.log(`Listening on port ${PORT}`);
   // });
   if (process.argv.includes('dev')) {
-    const PORT = process.env.PORT || 3001;
+    
     app.listen(PORT, () => console.log(`server running on port ${PORT}`));
   }
 })();
