@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-    - main
+    - test-deploy
 
 jobs:
   deploy:
