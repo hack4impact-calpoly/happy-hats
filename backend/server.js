@@ -17,6 +17,7 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
@@ -44,7 +45,13 @@ if (!PORT) {
   await MongooseConnector.connect();
 
   // Satisfy react default port
-  app.listen(PORT, 'localhost', () => {
-      console.log(`Listening on port ${PORT}`);
-  });
+  // app.listen(PORT, 'localhost', () => {
+  //     console.log(`Listening on port ${PORT}`);
+  // });
+  if (process.argv.includes('dev')) {
+    const PORT = process.env.PORT || 3001;
+    app.listen(PORT, () => console.log(`server running on port ${PORT}`));
+  }
 })();
+
+module.exports = app;

@@ -1,54 +1,50 @@
 import React, {useState} from 'react';
 import styles from "./announcement.module.css"
 import {getDayMonthDateStr, formatAMPM} from "../../utility/date-time.js"
-//const url = "http://localhost:3001/api/announcement"
-const url = "process.env.REACT_APP_SERVER_URL"
+//const url = "process.env.REACT_APP_SERVER_URL"
+import withFetch from "../WithFetch";
+import AlertDialog from './DeleteAnnouncement'
 
-
+const url = "announcement";
 class AnouncementBlock extends React.Component {
+  render() {
+    const announcementList = this.props.fetchedData;
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            announcementList: []
-        };
-    }
+    return (
+      <div>
+        {announcementList &&
+          announcementList.map(({
+            title,
+            author,
+            content,
+            date,
+          }, index) => {
+            const tempDate = new Date(date);
+            date = getDayMonthDateStr(tempDate) + " " + formatAMPM(tempDate);
 
-    componentDidMount(){
-        fetch(url)
-        .then(response => response.json())
-        .then(data => data.reverse())
-        .then(data => this.setState({ announcementList : data}));
-    }
+            return (
+              <div className={styles.Announcement} key={`announcement-${index}`}>
+                <div className={styles.top}>
+                  <div className={styles.right}>
+                    <AlertDialog post={announcementList[index]}/>
+                    <p>  </p>
+                    <h1 className={styles.Title}>{title}</h1>
+                  </div>
+                  <h3 className={styles.Author}>{author} </h3>
+                </div>
 
-    render(){
-        return(
-            <div>
-                {this.state.announcementList && this.state.announcementList.map(a => {
-                    const title = a.title;
-                    const author = a.author;
-                    const content = a.content;
-                    const tempDate = new Date(a.date);
-                    const date = getDayMonthDateStr(tempDate) + " " + formatAMPM(tempDate);
-                
-                    return (
-                        <div className={styles.Announcement}> 
-                            <div className={styles.top}>
-                                <h1 className={styles.Title} >{title}</h1>
-                                <h3 className={styles.Author} >{author} </h3>
-                            </div>
-
-                            <p className={styles.Content}>{content}</p>
-                            <p className={styles.Date}>{date}</p>
-                        </div>
-                    )
-                })}
-                
-            </div>
-        );
-     }
-    
+                <p className={styles.Content}>{content}</p>
+                <p className={styles.Date}>{date}</p>
+              </div>
+            );
+          })}
+      </div>
+    );
+  }
 }
 
-export default AnouncementBlock;
+const formatterFn = (data) => {
+  return data?.reverse();
+};
 
+export default withFetch(AnouncementBlock, url, formatterFn);

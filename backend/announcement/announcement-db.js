@@ -27,6 +27,10 @@ const announcementFns = {
     const savedDoc = await newPost.save();
     return savedDoc === newPost;
   },
+  deleteAnnouncement: async(toDelete) => {
+    const val = await Announcement.remove({_id: toDelete._id})
+    return val;
+  }
 };
 
 module.exports = {

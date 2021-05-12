@@ -96,7 +96,7 @@ class Calendar extends React.Component {
     let componentModifications;
     let generalModifications;
 
-    switch (this.props.user.userType) {
+    switch (this.props.user.role) {
       case USER_TYPES.HOSPITAL: {
         componentModifications = {
           event: CapeOrderEvent,
@@ -267,10 +267,10 @@ class Calendar extends React.Component {
   }
 
   render() {
-    const events = this.props.data;
+    const events = this.props.fetchedData;
     console.log(events); // Leaving in for now cuz convenient sometimes
 
-    if (this.props.user.userType === USER_TYPES.NONE) {
+    if (this.props.user.role === USER_TYPES.NONE) {
       return null;
     }
 
@@ -324,4 +324,4 @@ const calendarEventFormatter = ({events}) => {
   return events;
 };
 
-export default withUser(withEventDialog(withFetch(Calendar, 'http://localhost:3001/api/events?event_user=4edd40c86762e0fb12000003', calendarEventFormatter)));
+export default withUser(withEventDialog(withFetch(Calendar, 'events?event_user=4edd40c86762e0fb12000003', calendarEventFormatter, true)));

@@ -7,7 +7,7 @@ function NavBar() {
   return (
     <Navbar expand="md">
       <Navbar.Brand>
-        <Link to="/"><img
+        <Link to="/home"><img
           src={logo}
           width="320"
           height="80"
@@ -18,6 +18,9 @@ function NavBar() {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto">
+        <Link className="link-text" to ="/login">
+            Login
+          </Link>
           <Link className="link-text" to ="/announcements">
             Announcements
           </Link>
