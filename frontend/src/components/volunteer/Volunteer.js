@@ -11,23 +11,29 @@ const url = "volunteers";
 class Volunteer extends React.Component {
 
   render() {
-    if (!this.props.fetchedData) {
-      return <div>
-        <div className={styles.ApprovalSection}> 
-        <h4> Approve Volunteers </h4>
-        <div className={styles.personRow}>
-            <p> Name </p>
-            <button className={styles.ApprovalButton}> Approve </button>
-        </div>
-        </div>
-      </div>
-    }
 
     const vol = this.props.fetchedData.volunteers || [];
 
     return (
       <>
-        <h1 className={styles.title}>Volunteers</h1>
+        <Container>
+          <Row>
+            <Col>
+            <h1 className={styles.title}>Volunteers</h1>
+            </Col>
+            <Col>
+            <div className={styles.ApprovalSection}> 
+            
+            
+            <h4> Approve Volunteers </h4>
+              <div className={styles.personRow}>
+                  <p> Name </p>
+                  <button className={styles.ApprovalButton}> Approve </button>
+              </div>
+            </div>
+            </Col>
+          </Row>
+        </Container>
         <div className={styles.scroll}>
           {vol.map(({
             firstName,

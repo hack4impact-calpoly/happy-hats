@@ -26,12 +26,12 @@
 .ApprovalSection{
     float: right;
     padding: 1%;
-    margin: 5%;
+    margin-bottom: 1%;
     border-style: solid;
     border-radius: 5%;
     border-color: #004AAC;
     background-color: #FFFCEF;
-    width: 300px;
+    width: 70%;
 }
 
 .personRow{
