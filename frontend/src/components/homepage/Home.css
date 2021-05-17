@@ -61,7 +61,7 @@
 
 .page-content-container {
   display: flex;
-  width: 66%;
+  /* width: 66%; */
   justify-content: center;
 }
 
@@ -69,7 +69,7 @@
   display: flex;
   justify-content: space-between;
   width: 60%;
-  height: 180px;
+  /* height: 180px; */
   flex-direction: column;
   margin-top: 80px;
 }

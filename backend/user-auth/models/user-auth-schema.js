@@ -1,14 +1,13 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  username: String,
-  name: String,
   role: {
     type: String,
-    enum: ["Administrator", "Volunteer", "Hospital"],
+    enum: ["admin", "volunteer", "hospital", "none"],
+    required: true,
+    default: "none",
   },
-  googleId: String,
-  secret: String,
+  cognito_id: { type: String, required: true },
 });
 
 module.exports = userSchema;

@@ -1,82 +1,119 @@
-const mongoose = require('mongoose');
-const session = require('express-session');
-const passport = require('passport');
-const passportLocalMongoose = require('passport-local-mongoose');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const findOrCreate = require('mongoose-findorcreate');
-const userSchema = require('./models/user-auth-schema');
-const {User} = require('./user-auth-db');
-const {isUserAuthenticated} = require('../middleware');
+/* API Endpoints for user */
+const MongooseConnector = require('../db-helper');
+const { getTokenPayloadFromRequest, getUserFromTokenPayload } = require("../middleware");
+const { Logger } = require('@hack4impact/logger');
 
-require('dotenv').config();
-module.exports = (app) => {
-   app.use(
-      session({
-         secret: process.env.SESSION_SECRET,
-         resave: false,
-         saveUninitialized: false,
-      })
-   );
+const tryAddingUser = async (res, cognitoId) => {
+    Logger.log(`Registering user ${cognitoId}...`);
+    const success = await MongooseConnector.addUser({
+        cognito_id: cognitoId,
+        role: 'none',
+    });
 
-   app.use(passport.initialize());
-   app.use(passport.session());
-
-   passport.use(User.createStrategy());
-
-   passport.serializeUser(function (user, done) {
-      done(null, user.id);
-   });
-
-   passport.deserializeUser(function (id, done) {
-      User.findById(id, function (err, user) {
-         done(err, user);
-      });
-   });
-
-   passport.use(
-      new GoogleStrategy(
-         {
-            clientID: process.env.CLIENT_ID,
-            clientSecret: process.env.CLIENT_SECRET,
-            callbackURL:
-               'http://localhost:${process.env.PORT}/auth/google/callback',
-            userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo',
-         },
-         function (accessToken, refreshToken, profile, cb) {
-            // Use profile info to check if user is registered in DB
-            User.findOrCreate(
-               { googleId: profile.id, username: profile.id },
-               function (err, user) {
-                  return cb(err, user);
-               }
-            );
-         }
-      )
-   );
-
-   // PATHS
-   app.get('/', (req, res) => {
-      res.send('---');
-   });
-
-   app.get(
-      '/auth/google',
-      passport.authenticate('google', { scope: ['profile'] })
-   );
-
-   app.get(
-      '/auth/google/callback',
-      passport.authenticate('google', {
-         failureRedirect: 'http://localhost:3000/failedLogin',
-      }),
-      function (req, res) {
-         // Successful authentication, redirect secrets.
-         res.redirect('http://localhost:3000/home');
-      }
-   );
-
-   app.get('/logout', function (req, res) {
-      res.redirect('http://localhost:3000/');
-   });
+    if (success) {
+        Logger.log(`User ${cognitoId} registered.`);
+        return res.status(200).json({
+            message: 'success',
+        });
+    } else {
+        res.status(500).json({
+            message: 'Unable to register',
+        });
+        return false;
+    }
 };
 
+const attemptRegistration = async (res, cognitoId) => {
+    const existingUser = await MongooseConnector.getUserFromCognitoId(cognitoId);
+    if (existingUser) {
+        res.status(409).json({
+            message: "User already exists",
+        });
+        return false;
+    }
+
+    tryAddingUser(res, cognitoId);
+};
+
+const getTokenPayloadOrError = async (req, res) => {
+    let retrievedPayloadInfo;
+
+    try {
+        retrievedPayloadInfo = await getTokenPayloadFromRequest(req);
+    } catch (err) {
+        res.status(401).json({
+            status: 401,
+            message: 'UNAUTHORIZED',
+        });
+        return false;
+    }
+
+    if (!retrievedPayloadInfo) {
+        res.status(401).json({
+            status: 401,
+            message: 'UNAUTHORIZED',
+        });
+        return false;
+    }
+
+    return retrievedPayloadInfo;
+};
+
+module.exports = (app) => {
+    app.post('/api/register', async (req, res) => {
+        let cognitoId, retrievedPayloadInfo;
+
+        try {
+            retrievedPayloadInfo = await getTokenPayloadOrError(req, res);
+            if (!retrievedPayloadInfo || retrievedPayloadInfo?.length !== 2) {
+                return;
+            }
+
+            cognitoId = retrievedPayloadInfo[0];
+        } catch (err) {
+            return res.status(401).json({
+                status: 401,
+                message: 'UNAUTHORIZED',
+            });
+        }
+
+        attemptRegistration(res, cognitoId);
+    });
+
+    app.post('/api/login', async (req, res) => {
+        let tokenPayload, cognitoId, retrievedPayloadInfo;
+
+        try {
+            retrievedPayloadInfo = await getTokenPayloadOrError(req, res);
+            if (!retrievedPayloadInfo || retrievedPayloadInfo?.length !== 2) {
+                return;
+            }
+
+            [tokenPayload, cognitoId] = retrievedPayloadInfo;
+        } catch (err) {
+            return res.status(401).json({
+                status: 401,
+                message: 'UNAUTHORIZED',
+            });
+        }
+
+        try {
+            const user = await getUserFromTokenPayload(tokenPayload);
+
+            if (!user) {
+                return res.status(401).json({
+                    status: 401,
+                    message: 'UNAUTHORIZED',
+                });
+            }
+
+            Logger.log(`User ${cognitoId} logged in.`);
+            return res.status(200).json({
+                user,
+            });
+        } catch (err) {
+            // Don't need check user existence because we know it doesn't exist
+            attemptRegistration(res, cognitoId);
+        }
+    });
+};

@@ -1,5 +1,4 @@
 import './Calendar.css';
-
 import React from 'react';
 import { findDOMNode } from 'react-dom';
 import moment from 'moment';
@@ -15,7 +14,7 @@ import { IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { compareDatesWithoutTime, findNearestWeekday } from '../../utility/date-time';
 import withUser from '../../store/user/WithUser';
-import { USER_TYPES } from '../../store/user/User';
+import { USER_ROLES } from '../../store/user/User';
 
 const localizer = momentLocalizer(moment);
 
@@ -97,7 +96,7 @@ class Calendar extends React.Component {
     let generalModifications;
 
     switch (this.props.user.role) {
-      case USER_TYPES.HOSPITAL: {
+      case USER_ROLES.HOSPITAL: {
         componentModifications = {
           event: CapeOrderEvent,
           month: {
@@ -106,7 +105,7 @@ class Calendar extends React.Component {
         };
         break;
       }
-      case USER_TYPES.ADMIN: {
+      case USER_ROLES.ADMIN: {
         componentModifications = {
           event: EventComp,
           month: {
@@ -116,7 +115,7 @@ class Calendar extends React.Component {
         generalModifications = eventUser;
         break;
       }
-      case USER_TYPES.VOLUNTEER: {
+      case USER_ROLES.VOLUNTEER: {
         componentModifications = {
           event: EventComp,
         };
@@ -270,7 +269,7 @@ class Calendar extends React.Component {
     const events = this.props.fetchedData;
     console.log(events); // Leaving in for now cuz convenient sometimes
 
-    if (this.props.user.role === USER_TYPES.NONE) {
+    if (this.props.user.role === USER_ROLES.NONE) {
       return null;
     }
 
@@ -324,4 +323,8 @@ const calendarEventFormatter = ({events}) => {
   return events;
 };
 
-export default withUser(withEventDialog(withFetch(Calendar, 'events?event_user=4edd40c86762e0fb12000003', calendarEventFormatter, true)));
+export default withUser(withEventDialog(withFetch(Calendar, 'events?event_user=4edd40c86762e0fb12000003', {
+  formatter: calendarEventFormatter,
+  useMock: true,
+  withAuth: true,
+})));

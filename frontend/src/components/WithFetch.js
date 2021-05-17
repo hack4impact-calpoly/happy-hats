@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import moment from 'moment';
 import { findNearestWeekday } from "../utility/date-time";
-import { GetRequestHelpers } from "../utility/request-helpers";
+import { getAuthHeaderFromSession, GetRequestHelpers } from "../utility/request-helpers";
+import withUser from "../store/user/WithUser";
 
-function withFetch(WrappedComponent, reqUrl, formatter = null, useMock = false) {
+// overrides for this: formatter, useMock, withAuth
+function withFetch(WrappedComponent, reqUrl, overrides = {}) {
   function WithFetch(props) {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-      if (useMock) {
+      if (overrides.useMock) {
         setData(mockedData().events);
       } else {
         setFetchData();
@@ -16,8 +18,20 @@ function withFetch(WrappedComponent, reqUrl, formatter = null, useMock = false) 
     }, props.user ? [props.user.role] : []);
 
     const setFetchData = async () => {
-      const jsonResponse = await GetRequestHelpers.makeRequestAndGetResponse(reqUrl);
-      setData(!!formatter ? formatter(jsonResponse) : jsonResponse);
+      console.log('user props', props.user);
+      if (!props.user?.cognitoSession) {
+        alert("No cognito session for fetch");
+        return null;
+      }
+
+      let headers = {};
+
+      if (overrides.withAuth) {
+        headers = getAuthHeaderFromSession(props.user.cognitoSession);
+      }
+
+      const jsonResponse = await GetRequestHelpers.makeRequestAndGetResponse(reqUrl, headers);
+      setData(!!overrides.formatter ? overrides.formatter(jsonResponse) : jsonResponse);
     };
 
     const mockedData = () => {
@@ -109,6 +123,10 @@ function withFetch(WrappedComponent, reqUrl, formatter = null, useMock = false) 
     };
 
     return <WrappedComponent fetchedData={data} {...props} />;
+  }
+
+  if (overrides.withAuth) {
+    return withUser(WithFetch);
   }
 
   return WithFetch;

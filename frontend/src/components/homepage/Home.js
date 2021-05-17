@@ -1,21 +1,15 @@
 import './Home.css';
 import React from 'react'
-import  { Link, Redirect } from 'react-router-dom'
+import  { Link } from 'react-router-dom'
 import withUser from "../../store/user/WithUser";
 
 function Home(props) {
   const { role } = props.user;
+  console.log(props.user);
 
-  const isLoggedIn = () => {
-    return !!role;
-  }
-
+  
   const renderCustomTopRowLinks = () => {
-    if (!isLoggedIn()) {
-      return null;
-    }
-
-    switch (role) {
+switch (role) {
       case "admin":
         return (
           <React.Fragment>
@@ -58,10 +52,6 @@ function Home(props) {
   }
 
   const renderCustomBottomRowLinks = () => {
-    if (!isLoggedIn()) {
-      return null;
-    }
-
     switch (role) {
       case "admin":
         return (
@@ -79,21 +69,17 @@ function Home(props) {
   console.log(role);
 
   return (
-    !role ?
-      (<Redirect to='/login' />) :
-      (
-        <div className="Home" style={{paddingLeft: '8%', paddingTop: '90px'}}>
-          <h1 className='welcomeMsg'>Welcome, {props.user.displayName}</h1>
-          <div className="page-content-container">
-            <div className="inner-page-content">
-              <div className="top-row-links">
-                {renderCustomTopRowLinks()}
-              </div>
-              {renderCustomBottomRowLinks()}
-            </div>
+    <div className="Home" style={{paddingLeft: '8%', paddingTop: '90px'}}>
+      <h1 className='welcomeMsg'>Welcome, {props.user.email}</h1>
+      <div className="page-content-container">
+        <div className="inner-page-content">
+          <div className="top-row-links">
+            {renderCustomTopRowLinks()}
           </div>
+          {renderCustomBottomRowLinks()}
         </div>
-      )
+      </div>
+    </div>
   );
 }
 
