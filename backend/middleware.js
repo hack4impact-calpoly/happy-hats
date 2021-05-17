@@ -11,10 +11,6 @@ const getBearerToken = (authHeader) => {
 // Checks if the provided token is a valid token
 const getUserFromTokenPayload = async (tokenPayload) => {
    // console.log(tokenPayload);
-   if (!("sub" in tokenPayload)) {
-      throw new Error("No cognito user found from sub given");
-   }
-
    const user = await User.findOne({
       cognito_id: tokenPayload.sub,
    });
@@ -40,7 +36,11 @@ const getTokenPayloadFromRequest = async (req) => {
 
    const tokenPayload = await idTokenVerifer.verify(token);
 
-   return [tokenPayload, tokenPayload?.sub];
+   if (!("sub" in tokenPayload)) {
+      throw new Error("No cognito user found from sub given");
+   }
+
+   return [tokenPayload, tokenPayload.sub];
 };
 
 const isUserAuthenticated = async (req, res, next) => {
@@ -54,7 +54,7 @@ const isUserAuthenticated = async (req, res, next) => {
          });
       }
 
-      const userObj = await getUserFromTokenPayload(retrievedIdTokenPayload[0]);
+      const userObj = await getUserFromTokenPayload(retrievedPayloadInfo[0]);
 
       if (!userObj || !userObj.role || userObj.role === "none") {
          return res.status(401).json({
@@ -63,7 +63,6 @@ const isUserAuthenticated = async (req, res, next) => {
          });
       }
 
-      console.log(userObj);
       req.locals = {
          user: userObj,
       };
@@ -81,4 +80,5 @@ const isUserAuthenticated = async (req, res, next) => {
 module.exports = {
    isUserAuthenticated,
    getTokenPayloadFromRequest,
+   getUserFromTokenPayload,
 };

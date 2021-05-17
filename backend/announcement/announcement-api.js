@@ -2,6 +2,7 @@
 const { request } = require('express');
 const mongoose = require('mongoose');
 const MongooseConnector = require('../db-helper');
+const { isUserAuthenticated } = require('../middleware');
 
 const confirmValidDate = (date, compDate = Date.now()) => {
     date = +date;
@@ -22,7 +23,7 @@ const checkSuccess = (res, val) => {
 };
 
 module.exports = (app) => {
-    app.get('/api/announcement', async (req, res) => {
+    app.get('/api/announcement', isUserAuthenticated, async (req, res) => {
         const date = req.query.date
         const author = req.query.author
         const title = req.query.title
@@ -45,7 +46,7 @@ module.exports = (app) => {
       
     })
 
-    app.post('/api/announcement', async (request, response) => {  
+    app.post('/api/announcement', isUserAuthenticated, async (request, response) => {  
       console.log("in post");
       if (request.body.title && request.body.content && request.body.author) {
         const newAnnouncement = {
@@ -64,7 +65,7 @@ module.exports = (app) => {
       }
    })
 
-   app.delete('/api/announcement', async (request, response) => {
+   app.delete('/api/announcement', isUserAuthenticated, async (request, response) => {
     const toDelete = {
       title: request.body.title,
       content: request.body.content,

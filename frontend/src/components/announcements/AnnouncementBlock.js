@@ -46,4 +46,7 @@ const formatterFn = (data) => {
   return data?.reverse();
 };
 
-export default withFetch(AnouncementBlock, url, formatterFn);
+export default withFetch(AnouncementBlock, url, {
+  formatter: formatterFn,
+  withAuth: true,
+});
