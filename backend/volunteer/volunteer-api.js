@@ -8,6 +8,17 @@ const confirmValidObjectId = (objectId) => {
    return !!objectId && mongoose.isValidObjectId(objectId);
 };
 
+const checkAuth = async (res, userRole) => {
+   if (userRole !== 'admin') {
+     res.status(401).json({
+       message: 'Insufficient role for resource',
+     });
+     return false;
+   }
+ 
+   return true;
+ };
+
 const checkSuccess = (res, val) => {
    if (!val) {
       res.status(500).json({
@@ -136,7 +147,12 @@ module.exports = (app) => {
    });
 
    app.delete('/api/volunteer', async (request, response) => {
-      
+      const validated = await checkAuth(response, request.locals.user.role);
+
+      if (!validated) {
+         return;
+      }
+
       const toDelete = {
          _id: request.body._id,
          firstName: request.body.firstName,

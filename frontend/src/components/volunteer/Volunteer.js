@@ -26,7 +26,7 @@ class Volunteer extends React.Component {
     const vol = this.props.fetchedData.volunteers || [];
 
     return (
-      <div>
+      <>
         <h1 className={styles.title}>Volunteers</h1>
         <div className={styles.scroll}>
           {vol.map(({
@@ -64,14 +64,17 @@ class Volunteer extends React.Component {
                     </Col>
                   </Row>
                 </Container>
-                <AlertDialog post={vol[index]}/>
+                {this.props.user?.role === "admin" &&
+                  <AlertDialog post={vol[index]}/>}
               </div>
             );
           })}
         </div>
-      </div>
+      </>
     );
   }
 }
 
-export default withFetch(Volunteer, url);
+export default withFetch(Volunteer, url, {
+  withAuth: true,
+});

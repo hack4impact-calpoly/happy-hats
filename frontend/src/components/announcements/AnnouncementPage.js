@@ -5,10 +5,10 @@ import AnnouncementBlock from "./AnnouncementBlock";
 class AnnouncementPage extends React.Component {
   render() {
     return (
-      <div>
+      <>
         <Announcement />
         <AnnouncementBlock />
-      </div>
+      </>
     );
   }
 }

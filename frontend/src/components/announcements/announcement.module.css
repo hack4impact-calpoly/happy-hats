@@ -105,7 +105,7 @@
     flex-wrap: nowrap;
     justify-content: space-between;
     color:  #004AAC;
-
+    align-items: center;
 }
 
 .Title{
@@ -143,5 +143,9 @@
 
 .right {
     display: flex;
-    flex-wrap: wrap;
+    align-items: center;
+}
+
+h1 {
+  margin-bottom: 0;
 }

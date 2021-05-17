@@ -1,16 +1,24 @@
 export const NO_USER = -1;
 export const UPDATE = 'UPDATE_USER';
-export const USER_TYPES = Object.freeze({
+export const USER_ROLES = Object.freeze({
   VOLUNTEER: 'volunteer',
   ADMIN: 'admin',
   HOSPITAL: 'hospital',
-  NONE: undefined,
+  NONE: 'none',
+  UNSET: undefined,
 });
 
+const validRoleStrings = new Set(Object.values(USER_ROLES));
+
+export function acceptedUserRole(role) {
+  return validRoleStrings.has(role) && role !== USER_ROLES.UNSET && role !== USER_ROLES.NONE;
+}
+
 export const initialUser = {
-  userId: NO_USER,
-  role: USER_TYPES.NONE,
-  displayName: null,
+  role: USER_ROLES.UNSET,
+  loggedIn: false,
+  cognitoSession: null,
+  otherUserInfo: null, // Includes info from user object. Not sure if we'll use yet
 };
 
 function setUser(dispatch, user) {
@@ -19,9 +27,7 @@ function setUser(dispatch, user) {
 
 export function generateUser(dispatch, userOverrides) {
   setUser(dispatch, {
-    userId: NO_USER,
-    displayName: null,
-    role: USER_TYPES.NONE,
+    ...initialUser,
     ...userOverrides,
   });
 }
