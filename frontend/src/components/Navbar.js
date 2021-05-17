@@ -48,7 +48,7 @@ const NavBar = (props) =>{
               <Link className="link-text" to ="/announcements">
                 Announcements
               </Link>
-              <Link className="link-text" to="/volunteer">
+              <Link className="link-text" to="/volunteers">
                 Volunteers
               </Link>
               <Link className="link-text" to="/calendar">
