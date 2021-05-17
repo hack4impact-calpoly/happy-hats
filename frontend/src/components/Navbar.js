@@ -6,6 +6,7 @@ import logo from "../imgs/logo.png";
 import awsconfig from '../aws-exports';
 import Amplify, { Auth } from 'aws-amplify';
 import withUser from '../store/user/WithUser';
+import { acceptedUserRole, initialUser } from '../store/user/User';
 Amplify.configure(awsconfig);
 
 async function signOut() {
@@ -18,13 +19,13 @@ async function signOut() {
 
 const NavBar = (props) =>{
   const handleSignOut = () => {
-    if(props.user && props.user.loggedIn){
-      props.modifyUser({userId: -1, role: 'volunteer', displayName: null, loggedIn: false});
+    if(props.isUserAuthenticated()) {
+      props.modifyUser(initialUser);
       signOut();
       return <Redirect to='/login' />;
     }
-    
   }
+
   return (
     <Navbar expand="md">
       <Navbar.Brand>
@@ -39,18 +40,22 @@ const NavBar = (props) =>{
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ml-auto">
-          <Link className="link-text" onClick={() => handleSignOut()}>
+          <button className="link-text" onClick={() => handleSignOut()}>
             Signout
-          </Link>
-          <Link className="link-text" to ="/announcements">
-            Announcements
-          </Link>
-          <Link className="link-text" to="/volunteer">
-            Volunteers
-          </Link>
-          <Link className="link-text" to="/calendar">
-            Calendar
-          </Link>
+          </button>
+          {acceptedUserRole(props.user?.role) && (
+            <>
+              <Link className="link-text" to ="/announcements">
+                Announcements
+              </Link>
+              <Link className="link-text" to="/volunteer">
+                Volunteers
+              </Link>
+              <Link className="link-text" to="/calendar">
+                Calendar
+              </Link>
+            </>
+          )}
         </Nav>
       </Navbar.Collapse>
     </Navbar>
