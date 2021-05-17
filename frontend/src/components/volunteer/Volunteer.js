@@ -11,7 +11,10 @@ const url = "volunteers";
 class Volunteer extends React.Component {
 
   render() {
-
+    if (!this.props.fetchedData) {
+      return null;
+    }
+    
     const vol = this.props.fetchedData.volunteers || [];
 
     return (
