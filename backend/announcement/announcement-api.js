@@ -9,6 +9,17 @@ const confirmValidDate = (date, compDate = Date.now()) => {
     return !!date && (new Date(date) >= compDate);
 };
 
+const checkAuth = async (res, userRole) => {
+  if (userRole !== 'admin') {
+    res.status(401).json({
+      message: 'Insufficient role for resource',
+    });
+    return false;
+  }
+
+  return true;
+};
+
 const checkSuccess = (res, val) => {
     if (!val) {
       res.status(500).json({
@@ -47,7 +58,12 @@ module.exports = (app) => {
     })
 
     app.post('/api/announcement', isUserAuthenticated, async (request, response) => {  
-      console.log("in post");
+      const validated = await checkAuth(response, request.locals.user.role);
+
+      if (!validated) {
+        return;
+      }
+ 
       if (request.body.title && request.body.content && request.body.author) {
         const newAnnouncement = {
           title: request.body.title,
@@ -66,6 +82,11 @@ module.exports = (app) => {
    })
 
    app.delete('/api/announcement', isUserAuthenticated, async (request, response) => {
+    const validated = await checkAuth(response, request.locals.user.role);
+
+    if (!validated) {
+      return;
+    }
     const toDelete = {
       title: request.body.title,
       content: request.body.content,

@@ -3,6 +3,9 @@ import styles from "./announcement.module.css"
 import { Link } from 'react-router-dom'
 import KeyboardReturnIcon from '@material-ui/icons/KeyboardReturn';
 import { IconButton } from '@material-ui/core';
+import { generateAuthHeader, getAuthHeaderFromSession, RequestPayloadHelpers } from '../../utility/request-helpers';
+import withUser from '../../store/user/WithUser';
+
 
 function CreateAnnouncementBlock(props) {
     const [annoucment, setAnnoucement] = useState(
@@ -31,7 +34,7 @@ function CreateAnnouncementBlock(props) {
         }
     }
 
-    function submitForm() {
+    async function submitForm() {
         console.log("In SubmitForm")
         const aData = {
     
@@ -43,16 +46,14 @@ function CreateAnnouncementBlock(props) {
            
         if (aData.title !== '' && aData.content !== '' && aData.author !== '') {
             try {
-                fetch("process.env.REACT_APP_SERVER_URL/api/announcement", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }, 
-                    body: JSON.stringify(aData) 
-                });
+                const resp = await RequestPayloadHelpers.makeRequest('announcement', 'POST', aData, getAuthHeaderFromSession(props.user.cognitoSession));
+                if (!resp || !resp.ok) {
+                    throw new Error('Error occurred posting Announcement');
+                } else {
                 alert("Announcement Successfully Posted")
+                }
             } catch (error) {
-                console.error(error)
+                console.error(error);
             }
 
             //Left blank to create a hole to be updated later
@@ -107,4 +108,4 @@ function CreateAnnouncementBlock(props) {
     );
 }
 
-export default CreateAnnouncementBlock;
+export default withUser(CreateAnnouncementBlock);

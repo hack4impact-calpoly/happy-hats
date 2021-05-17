@@ -56,7 +56,8 @@ class Volunteer extends React.Component {
                     </Col>
                   </Row>
                 </Container>
-                <AlertDialog post={vol[index]}/>
+                {this.props.user?.role === "admin" &&
+                  <AlertDialog post={vol[index]}/>}
               </div>
             );
           })}
