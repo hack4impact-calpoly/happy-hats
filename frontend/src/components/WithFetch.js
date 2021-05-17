@@ -36,12 +36,23 @@ function withFetch(WrappedComponent, reqUrl, formatter = null, useMock = false) 
                   {
                     name: 'Freddie J',
                     start: moment().add(1, "days").add(30, "minutes").toDate(),
-                    end: moment().add(1, "days").add(1, "hours").toDate()
+                    end: moment().add(1, "days").add(1, "hours").toDate(),
+                    approved: false,
+                    decisionMade: true
                   },
                   {
                     name: 'Freddie J Numero dos',
                     start: moment().add(1, "days").add(12, "minutes").toDate(),
-                    end: moment().add(1, "days").add(72, "minutes").toDate()
+                    end: moment().add(1, "days").add(72, "minutes").toDate(),
+                    approved: true,
+                    decisionMade: true
+                  },
+                  {
+                    name: 'Freddie J Numero tres',
+                    start: moment().add(1, "days").add(12, "minutes").toDate(),
+                    end: moment().add(1, "days").add(72, "minutes").toDate(),
+                    approved: true,
+                    decisionMade: false
                   },
                 ],
                 resource: "test"

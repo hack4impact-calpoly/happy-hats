@@ -9,9 +9,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-import ThumpUpIcon from '@material-ui/icons/ThumbUp';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import { getAMPMTimeRange, getDayMonthDateStr,getMilitaryTimeFromDate } from '../../../utility/date-time';
 import { storeContext } from '../../../store/Store';
@@ -24,26 +22,90 @@ const useStyles = makeStyles({
   },
 });
 
-function VolunteerInfo(props) {
+function PendingVolunteerInfo(props) {
   const { volunteer } = props;
+  const { volunteers } = props;
+  const { setVolunteers } = props;
 
   return (
     <li>
       {volunteer.name}: <span className="volunteer-time">{getAMPMTimeRange(volunteer.start, volunteer.end)}</span>
+      <IconButton style={{ padding: 5 }} aria-label="approve" onClick={() =>
+          handleApprove(volunteer, volunteers, setVolunteers)}>
+        <ThumbUpIcon />
+      </IconButton>
+      <IconButton style={{ padding: 0 }} aria-label="reject" onClick={() =>
+          handleReject(volunteer, volunteers, setVolunteers)}>
+        <ThumbDownIcon />
+      </IconButton>
+    </li>
+  );
+}
+
+function ApprovedVolunteerInfo(props) {
+    const { volunteer } = props;
+    const { volunteers } = props;
+    const { setVolunteers } = props;
+
+  return (
+    <li>
+      {volunteer.name}: <span className="volunteer-time">{getAMPMTimeRange(volunteer.start, volunteer.end)}</span>
+      <IconButton style={{ padding: 5 }} aria-label="reject" onClick={() =>
+          handleReject(volunteer, volunteers, setVolunteers)}>
+        <ThumbDownIcon />
+      </IconButton>
+    </li>
+  );
+}
+
+function RejectedVolunteerInfo(props) {
+    const { volunteer } = props;
+    const { volunteers } = props;
+    const { setVolunteers } = props;
+
+  return (
+    <li>
+      {volunteer.name}: <span className="volunteer-time">{getAMPMTimeRange(volunteer.start, volunteer.end)}</span>
+      <IconButton style={{ padding: 5 }} aria-label="approve" onClick={() =>
+          handleApprove(volunteer, volunteers, setVolunteers)}>
+        <ThumbUpIcon />
+      </IconButton>
     </li>
   );
 }
 
 
+const handleApprove = (volunteer, volunteers, setVolunteers) => {
+    volunteer.decisionMade = true;
+    volunteer.approved = true;
+    let newVolunteers = [...volunteers];
+    setVolunteers(newVolunteers);
+};
+
+const handleReject = (volunteer, volunteers, setVolunteers) => {
+    volunteer.decisionMade = true;
+    volunteer.approved = false;
+    let newVolunteers = [...volunteers];
+    setVolunteers(newVolunteers);
+};
 
 function EventDialog(props) {
   const { event } = props;
-  const classes = useStyles();
-  const [{ user }, ] = useContext(storeContext);
+  const classes = useStyles
 
-  const [userSignedUp, setUserSignedUp] = useState(
-    event?.volunteers?.some(v => v.id && v.id === user?.userId) || false,
-  );
+  const [volunteers, setVolunteers] = useState(event?.volunteers);
+
+  const pending = event?.volunteers?.filter(function(volunteer) {
+      return !volunteer.decisionMade;
+  });
+
+  const approved = event?.volunteers?.filter(function(volunteer) {
+      return volunteer.decisionMade && volunteer.approved;
+  });
+
+  const rejected = event?.volunteers?.filter(function(volunteer) {
+      return volunteer.decisionMade && !volunteer.approved;
+  });
 
   if (!event) {
     return null;
@@ -57,10 +119,6 @@ function EventDialog(props) {
       }}
       open={props.open}
       onClose={props.handleClose}
-      onEdit={props.handleEdit}
-      onDelete={props.handleDelete}
-      onThumbUp={props.handleApprove}
-      onThumbDown={props.handleReject}
       aria-labelledby="event-dialog-title"
       aria-describedby="event-dialog-description"
     >
@@ -76,12 +134,6 @@ function EventDialog(props) {
           </React.Fragment>) :
           (<React.Fragment>
             {event.title}
-            <IconButton style={{ padding: 5 }} aria-label="edit" onClick={props.handleEdit}>
-              <EditIcon />
-            </IconButton>
-            <IconButton style={{ padding: 0 }} aria-label="delete" onClick={props.handleDelete}>
-              <DeleteIcon />
-            </IconButton>
           </React.Fragment>)
         }
       </DialogTitle>
@@ -96,25 +148,28 @@ function EventDialog(props) {
             <p>{event.description}</p>
 
             <section>
-              <h6>Pending ({event.volunteers?.length || 0})</h6>
-              {event.volunteers?.map((volunteer, index) => {
-                return <VolunteerInfo key={index} volunteer={volunteer} />;
+              <h6>Pending ({pending?.length || 0})</h6>
+              {pending?.map((volunteer, index) => {
+                return <PendingVolunteerInfo volunteers={event.volunteers}
+                    setVolunteers={setVolunteers} key={index} volunteer={volunteer}/>;
                 })}
                 <br />
             </section>
 
             <section>
-              <h6>Approved ({event.volunteers?.length || 0})</h6>
-              {event.volunteers?.map((volunteer, index) => {
-                return <VolunteerInfo key={index} volunteer={volunteer} />;
+              <h6>Approved ({approved?.length || 0})</h6>
+              {approved?.map((volunteer, index) => {
+                return <ApprovedVolunteerInfo volunteers={event.volunteers}
+                    setVolunteers={setVolunteers} key={index} volunteer={volunteer}/>;
               })}
               <br />
             </section>
 
             <section>
-              <h6>Rejected ({event.volunteers?.length || 0})</h6>
-              {event.volunteers?.map((volunteer, index) => {
-                return <VolunteerInfo key={index} volunteer={volunteer} />;
+              <h6>Rejected ({rejected?.length || 0})</h6>
+              {rejected?.map((volunteer, index) => {
+                return <RejectedVolunteerInfo volunteers={event.volunteers}
+                    setVolunteers={setVolunteers} key={index} volunteer={volunteer}/>;
               })}
               <br />
             </section>
