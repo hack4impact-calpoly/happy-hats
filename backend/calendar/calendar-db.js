@@ -28,10 +28,6 @@ const calendarEventFns = {
         });
         return resp?.deletedCount === 1;
     },
-    findCalendarEventUser: async (eventId) => {
-        const val = await CalendarEvent.findById(eventId, 'eventUser').exec();
-        return val?.eventUser;
-    },
     updateCalendarEvent: async (eventId, calendarEvent) => {
         const oldDoc = await CalendarEvent.findOneAndReplace(
             {

@@ -8,7 +8,12 @@ function withUser(WrappedComponent, onUserUpdated = null) {
     const [state, dispatch] = useContext(storeContext);
 
     const updateUser = (overrides) => {
+      console.log('changing to', overrides);
       generateUser(dispatch, overrides);
+    };
+
+    const isUserAuthenticated = () => {
+      return state.user?.loggedIn;
     };
 
     useEffect(() => {
@@ -21,6 +26,7 @@ function withUser(WrappedComponent, onUserUpdated = null) {
         <WrappedComponent
           user={state.user}
           modifyUser={updateUser}
+          isUserAuthenticated={isUserAuthenticated}
 
           {...props}
         />

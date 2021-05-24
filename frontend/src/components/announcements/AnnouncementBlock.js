@@ -4,6 +4,8 @@ import {getDayMonthDateStr, formatAMPM} from "../../utility/date-time.js"
 //const url = "process.env.REACT_APP_SERVER_URL"
 import withFetch from "../WithFetch";
 import AlertDialog from './DeleteAnnouncement'
+import { Link } from 'react-router-dom'
+
 
 const url = "announcement";
 class AnouncementBlock extends React.Component {
@@ -12,6 +14,9 @@ class AnouncementBlock extends React.Component {
 
     return (
       <div>
+        {console.log(this.props)}
+            {this.props.user?.role === "admin" && 
+                <Link to ="/create-announcements" className={styles.createButton}> Create an Announcement</Link>}
         {announcementList &&
           announcementList.map(({
             title,
@@ -26,7 +31,9 @@ class AnouncementBlock extends React.Component {
               <div className={styles.Announcement} key={`announcement-${index}`}>
                 <div className={styles.top}>
                   <div className={styles.right}>
-                    <AlertDialog post={announcementList[index]}/>
+                  {this.props.user?.role === "admin" && 
+                    <AlertDialog post={announcementList[index]}/>}
+                      
                     <p>  </p>
                     <h1 className={styles.Title}>{title}</h1>
                   </div>
@@ -47,4 +54,7 @@ const formatterFn = (data) => {
   return data?.reverse();
 };
 
-export default withFetch(AnouncementBlock, url, formatterFn);
+export default withFetch(AnouncementBlock, url, {
+  formatter: formatterFn,
+  withAuth: true,
+});

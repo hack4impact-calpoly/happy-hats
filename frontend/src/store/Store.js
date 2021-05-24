@@ -10,7 +10,7 @@ function reducer(state, action) {
     case UPDATE_USER:
       return {
         ...state,
-        user: action.user,
+        user: {...action.user},
       };
     default:
       return state;
