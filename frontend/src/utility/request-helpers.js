@@ -1,5 +1,5 @@
-const startUrl = 'http://localhost:3001/api/';
-
+//const startUrl = 'http://localhost:3001/api/';
+const startUrl = 'process.env.REACT_APP_SERVER_URL';
 class CustomWebError extends Error {
   static getAppropriateErrorMsg(statCode) {
     switch (statCode) {
@@ -38,28 +38,32 @@ const basicResponseCheck = (response) => {
   return response;
 }
 
-export class GetRequestHelpers {
-  static async makeRequestAndGetResponse(urlExtension) {
-    const response = await GetRequestHelpers.makeRequest(urlExtension);
-    
-    if (!response) {
-      console.log('Error occurred so response cannot be parsed');
-      return null;
-    }
+export function getAuthHeaderFromSession(cognitoSession) {
+  return generateAuthHeader(cognitoSession.signInUserSession.idToken.jwtToken);
+}
 
-    try {
-      const jsonResponse = await response.json();
-      return jsonResponse;
-    } catch (e) {
-      console.log('Error converting to JSON:', e);
-      return null;
-    }
+export function generateAuthHeader(token) {
+  return {
+    'Authorization': `Bearer ${token}`,
+  };
+}
+
+// Optionals can include auth token
+export class GetRequestHelpers {
+  static async makeRequestAndGetResponse(urlExtension, headers = {}) {
+    const response = await GetRequestHelpers.makeRequest(urlExtension, headers);
+    return getJsonResponse(response);
   }
 
   /* Expect given urlExtension to NOT begin with '/' */
-  static async makeRequest(urlExtension) {
+  static async makeRequest(urlExtension, headers = {}) {
     try {
-      const response = basicResponseCheck(await fetch(startUrl + urlExtension));
+      const response = basicResponseCheck(await fetch(startUrl + urlExtension, {
+        headers: {
+          ...headers,
+        },
+        redirect: 'follow',
+      }));
 
       return response;
     } catch (e) {
@@ -69,13 +73,29 @@ export class GetRequestHelpers {
   }
 }
 
+export async function getJsonResponse(response) {
+  if (!response) {
+    console.log('Error occurred so response cannot be parsed');
+    return null;
+  }
+
+  try {
+    const jsonResponse = await response.json();
+    return jsonResponse;
+  } catch (e) {
+    console.log('Error converting to JSON:', e);
+    return null;
+  }
+}
+
 export class RequestPayloadHelpers {
-  static async makeRequest(urlExtension, requestType, payload) {
+  static async makeRequest(urlExtension, requestType, payload, headers = {}) {
     try {
       const response = basicResponseCheck(await fetch(startUrl + urlExtension, {
         method: requestType,
         headers: {
           'Content-Type': 'application/json',
+          ...headers,
         },
         redirect: 'follow',
         body: JSON.stringify(payload),
@@ -83,7 +103,6 @@ export class RequestPayloadHelpers {
 
       return response;
     } catch (e) {
-      console.log(e);
       return false;
     }
   }

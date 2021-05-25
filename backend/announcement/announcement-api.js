@@ -1,10 +1,23 @@
 /* API Endpoints for announcement */
+const { request } = require('express');
 const mongoose = require('mongoose');
 const MongooseConnector = require('../db-helper');
+const { isUserAuthenticated } = require('../middleware');
 
 const confirmValidDate = (date, compDate = Date.now()) => {
     date = +date;
     return !!date && (new Date(date) >= compDate);
+};
+
+const checkAuth = async (res, userRole) => {
+  if (userRole !== 'admin') {
+    res.status(401).json({
+      message: 'Insufficient role for resource',
+    });
+    return false;
+  }
+
+  return true;
 };
 
 const checkSuccess = (res, val) => {
@@ -21,7 +34,7 @@ const checkSuccess = (res, val) => {
 };
 
 module.exports = (app) => {
-    app.get('/api/announcement', async (req, res) => {
+    app.get('/api/announcement', isUserAuthenticated, async (req, res) => {
         const date = req.query.date
         const author = req.query.author
         const title = req.query.title
@@ -44,7 +57,13 @@ module.exports = (app) => {
       
     })
 
-    app.post('/api/announcement', async (request, response) => {  
+    app.post('/api/announcement', isUserAuthenticated, async (request, response) => {  
+      const validated = await checkAuth(response, request.locals.user.role);
+
+      if (!validated) {
+        return;
+      }
+ 
       if (request.body.title && request.body.content && request.body.author) {
         const newAnnouncement = {
           title: request.body.title,
@@ -60,6 +79,23 @@ module.exports = (app) => {
           message: 'Did not supply all needed post attributes',
         });
       }
+   })
+
+   app.delete('/api/announcement', isUserAuthenticated, async (request, response) => {
+    const validated = await checkAuth(response, request.locals.user.role);
+
+    if (!validated) {
+      return;
+    }
+    const toDelete = {
+      title: request.body.title,
+      content: request.body.content,
+      author: request.body.author,
+      date: request.body.date,
+      _id: request.body._id
+    }
+    const success = await MongooseConnector.deleteAnnouncement(toDelete);
+    checkSuccess(response, success)
    })
 
 }

@@ -29,9 +29,13 @@ const volunteerFns = {
    volunteerExists: async (volunteerId) => {
       return Volunteer.exists({ _id: volunteerId });
    },
+   deleteVolunteer: async(toDeleteVol) => {
+      const val = await Volunteer.remove({_id: toDeleteVol._id});
+      return val;
+    }
 };
 
 module.exports = {
-   Volunteer,
-   volunteerFns,
+   Volunteer: Volunteer,
+   volunteerFns: volunteerFns,
 };

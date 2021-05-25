@@ -4,6 +4,7 @@ import styles from "./volunteer.module.css";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import withFetch from "../WithFetch";
+import AlertDialog from './DeleteVolunteer'
 
 const url = "volunteers";
 
@@ -13,12 +14,29 @@ class Volunteer extends React.Component {
     if (!this.props.fetchedData) {
       return null;
     }
-
+    
     const vol = this.props.fetchedData.volunteers || [];
 
     return (
-      <div>
-        <h1 className={styles.title}>Volunteers</h1>
+      <>
+        <Container>
+          <Row>
+            <Col>
+            <h1 className={styles.title}>Volunteers</h1>
+            </Col>
+            <Col>
+            <div className={styles.ApprovalSection}> 
+            
+            
+            <h4> Approve Volunteers </h4>
+              <div className={styles.personRow}>
+                  <p> Name </p>
+                  <button className={styles.ApprovalButton}> Approve </button>
+              </div>
+            </div>
+            </Col>
+          </Row>
+        </Container>
         <div className={styles.scroll}>
           {vol.map(({
             firstName,
@@ -27,7 +45,7 @@ class Volunteer extends React.Component {
             completedHours,
             scheduledHours,
             nonCompletedHours,
-          }) => {
+          }, index) => {
             console.log(vol);
 
             return (
@@ -55,13 +73,17 @@ class Volunteer extends React.Component {
                     </Col>
                   </Row>
                 </Container>
+                {this.props.user?.role === "admin" &&
+                  <AlertDialog post={vol[index]}/>}
               </div>
             );
           })}
         </div>
-      </div>
+      </>
     );
   }
 }
 
-export default withFetch(Volunteer, url);
+export default withFetch(Volunteer, url, {
+  withAuth: true,
+});

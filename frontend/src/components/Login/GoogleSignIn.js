@@ -7,7 +7,8 @@ function GoogleSignIn() {
     <div className="buttonStack">
       {" "}
       {/* Hide this until it gets fixed. Still renders in DOM at least */}
-      <form action="http://localhost:3001/auth/google">
+      {/*<form action="http://localhost:3001/auth/google"> */}
+      <form action="process.env.REACT_APP_SERVER_URL">
         <button type="submit" className="google-button">
           <span className="google-button__icon">
             <svg viewBox="0 0 366 372" xmlns="http://www.w3.org/2000/svg">
