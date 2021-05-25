@@ -1,7 +1,6 @@
-import React, {useState} from 'react';
-import styles from "./announcement.module.css"
-import {getDayMonthDateStr, formatAMPM} from "../../utility/date-time.js"
-//const url = "process.env.REACT_APP_SERVER_URL"
+import React from "react";
+import styles from "./announcement.module.css";
+import { getDayMonthDateStr, formatAMPM } from "../../utility/date-time.js";
 import withFetch from "../WithFetch";
 import AlertDialog from './DeleteAnnouncement'
 import { Link } from 'react-router-dom'
