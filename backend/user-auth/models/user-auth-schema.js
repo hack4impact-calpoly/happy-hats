@@ -8,7 +8,15 @@ const userSchema = new mongoose.Schema({
     default: "none",
   },
   cognito_id: { type: String, required: true },
-  email: { type: String, required: true }
+  firstName: { type: String, required: false},
+  lastName: { type: String, required: false},
+  email: { type: String, required: true },
+  completedHours: { type: Number, required: true, default: 0 },
+  scheduledHours: { type: Number, required: true, default: 0 },
+  nonCompletedHours: { type: Number, required: true, default: 0 },
+  approved: {type: Boolean, required: true, default: false},
+  decisionMade: {type: Boolean, required: true, default: false},
+  
 });
 
 module.exports = userSchema;

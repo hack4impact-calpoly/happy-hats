@@ -3,15 +3,28 @@ const MongooseConnector = require('../db-helper');
 const { getTokenPayloadFromRequest, getUserFromTokenPayload, isUserAuthenticated } = require("../middleware");
 const { Logger } = require('@hack4impact/logger');
 
-const tryAddingUser = async (res, cognitoId) => {
+const tryAddingUser = async (res, retrievedPayloadInfo) => {
+    cognitoId = retrievedPayloadInfo[0].sub;
+    // console.log("HERE ")
+    // console.log(cognitoId.sub);
+    // console.log(cognitoId.email);
+    email = retrievedPayloadInfo[0].email;
     Logger.log(`Registering user ${cognitoId}...`);
     const success = await MongooseConnector.addUser({
-        cognito_id: cognitoId,
         role: 'none',
+        cognito_id: cognitoId,
+        firstName: '',
+        lastName: '',
+        email: email,
+        completedHours: 0,
+        scheduledHours: 0,
+        nonCompletedHours: 0,
+        approved: false,
+        decisionMade: false
     });
 
     if (success) {
-        Logger.log(`User ${cognitoId} registered.`);
+        Logger.log(`User ${cognitoId} with email ${email} registered.`);
         return res.status(200).json({
             message: 'success',
         });
@@ -23,7 +36,8 @@ const tryAddingUser = async (res, cognitoId) => {
     }
 };
 
-const attemptRegistration = async (res, cognitoId) => {
+const attemptRegistration = async (res, retrievedPayloadInfo) => {
+    cognitoId = retrievedPayloadInfo[0];
     const existingUser = await MongooseConnector.getUserFromCognitoId(cognitoId);
     if (existingUser) {
         res.status(409).json({
@@ -32,7 +46,8 @@ const attemptRegistration = async (res, cognitoId) => {
         return false;
     }
 
-    tryAddingUser(res, cognitoId);
+    // tryAddingUser(res, cognitoId);
+    tryAddingUser(res, retrievedPayloadInfo);
 };
 
 const getTokenPayloadOrError = async (req, res) => {
@@ -77,8 +92,8 @@ module.exports = (app) => {
             if (!retrievedPayloadInfo || retrievedPayloadInfo?.length !== 2) {
                 return;
             }
-
-            cognitoId = retrievedPayloadInfo[0];
+           
+            //cognitoId = retrievedPayloadInfo[0];
         } catch (err) {
             return res.status(401).json({
                 status: 401,
@@ -86,7 +101,8 @@ module.exports = (app) => {
             });
         }
 
-        attemptRegistration(res, cognitoId);
+        // attemptRegistration(res, cognitoId);
+        attemptRegistration(res, retrievedPayloadInfo);
     });
 
     app.post('/api/login', async (req, res) => {
@@ -122,7 +138,7 @@ module.exports = (app) => {
             });
         } catch (err) {
             // Don't need check user existence because we know it doesn't exist
-            attemptRegistration(res, cognitoId);
+            attemptRegistration(res, retrievedPayloadInfo);
         }
     });
 };

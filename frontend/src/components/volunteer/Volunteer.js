@@ -53,11 +53,6 @@ class Volunteer extends React.Component {
             {/* look at the calender //backend issue 
             {/* rerender page  
             <h4> Approve Volunteers </h4>
-
-            
-            
-
-
                <h5> Pending: </h5>
                {/* pending: approved false, decison made false 
                <div className={styles.personRow}>

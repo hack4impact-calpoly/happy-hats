@@ -29,9 +29,10 @@ class VolunteerApproval extends React.Component {
       }
       console.log(vData.approved)
       console.log(vData.decisionMade)
+      ///call backednd
     }
 
-    const handleDisapprove = async () => {
+    const handleReject = async () => {
         console.log(this.props.user.cognitoSession.attributes.email);
         const vData = {
           "approved": this.props.approved,
@@ -39,26 +40,13 @@ class VolunteerApproval extends React.Component {
         }
         console.log(vData.approved)
         console.log(vData.decisionMade)
+        ///call backednd
     }
   
 
     return (
       <>
-          {us.map(({
-            role,
-            cognito_id,
-          }, index) => {
-
-            console.log(us)
-      
-            return (
-              <>
-              <div>{role}</div>
-              <div>{cognito_id}</div>
-              </>
-            );
-          })}
-
+          
         <Container>
           <Row>
             <Col>
@@ -78,21 +66,55 @@ class VolunteerApproval extends React.Component {
             <h4> Approve Volunteers </h4>
                <h5> Pending: </h5>
                {/* pending: approved false, decison made false */}
-               <div className={styles.personRow}>
-                  <p> Email </p>
-                  <div className={styles.approvalButtons}>
-                      <Button onClick={handleApprove} ><ThumbUpIcon ></ThumbUpIcon> </Button> 
-                      <Button onClick={handleApprove} ><ThumbDownIcon className={styles.thumbs}> </ThumbDownIcon> </Button> 
-                  </div>
-              </div>
-              {/* rejected = approved false, decison made false  */}
+               {us.map(({
+                email, 
+                role,
+                firstName, 
+                lastName, 
+                approved, 
+                decisionMade, 
+              }, index) => {
+
+                if(!approved && !decisionMade){
+                    return (
+                      <>
+                        <div className={styles.personRow}>
+                            <p> Email: {email} </p>
+                            <div className={styles.approvalButtons}>
+                                <Button onClick={handleApprove} ><ThumbUpIcon ></ThumbUpIcon> </Button> 
+                                <Button onClick={handleReject} ><ThumbDownIcon className={styles.thumbs}> </ThumbDownIcon> </Button> 
+                            </div>
+                            </div>
+                      </>
+                    );
+                }
+
+              })}
               <h5> Rejected: </h5>
-              <div className={styles.personRow}>
-                  <p> Email </p>
-                  <div className={styles.approvalButtons}>
-                    <Button onClick={handleApprove} ><ThumbUpIcon ></ThumbUpIcon> </Button> 
-                  </div>
-              </div>
+              {us.map(({
+                email, 
+                role,
+                firstName, 
+                lastName, 
+                approved, 
+                decisionMade, 
+              }, index) => {
+
+                if(!approved && decisionMade){
+                    return (
+                      <>
+                        <div className={styles.personRow}>
+                          <p> Email: {email} </p>
+                          <div className={styles.approvalButtons}>
+                            <Button onClick={handleApprove} ><ThumbUpIcon ></ThumbUpIcon> </Button> 
+                          </div>
+                        </div>
+                      </>
+                    );
+                }
+
+              })}
+              
             </div>
             </Col>
           </Row>
