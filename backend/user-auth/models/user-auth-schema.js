@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
     default: "none",
   },
   cognito_id: { type: String, required: true },
+  email: { type: String, required: true }
 });
 
 module.exports = userSchema;

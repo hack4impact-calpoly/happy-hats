@@ -15,6 +15,9 @@ const userFns = {
     const savedDoc = await newUser.save();
     return savedDoc === newUser;
   },
+  getAllUsers: async () => {
+    return await User.find({}).exec();
+ },
 };
 
 module.exports = {

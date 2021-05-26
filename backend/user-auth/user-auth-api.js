@@ -1,6 +1,6 @@
 /* API Endpoints for user */
 const MongooseConnector = require('../db-helper');
-const { getTokenPayloadFromRequest, getUserFromTokenPayload } = require("../middleware");
+const { getTokenPayloadFromRequest, getUserFromTokenPayload, isUserAuthenticated } = require("../middleware");
 const { Logger } = require('@hack4impact/logger');
 
 const tryAddingUser = async (res, cognitoId) => {
@@ -60,6 +60,15 @@ const getTokenPayloadOrError = async (req, res) => {
 };
 
 module.exports = (app) => {
+
+    app.get('/api/users', isUserAuthenticated, async (req, res) => {
+        Logger.log("GET: All Users...");
+        const volunteers = await MongooseConnector.getAllUsers();
+        res.status(200).json({
+            users: volunteers
+        });
+     });
+
     app.post('/api/register', async (req, res) => {
         let cognitoId, retrievedPayloadInfo;
 

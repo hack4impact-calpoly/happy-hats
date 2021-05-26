@@ -32,6 +32,9 @@
     border-color: #004AAC;
     background-color: #FFFCEF;
     width: 70%;
+    overflow-y: scroll;
+    height: 200px;
+
 }
 
 .personRow{
@@ -39,10 +42,12 @@
     justify-content: space-between;
 }
 
-.ApprovalButton{
-    float: right;
-    background-color: #004AAC;
-    color: white;
-    height: 30px;
+.thumbs{
+    margin-left: 20%;
+}
+
+.approvalButtons{
+    display: flex;
+    margin-right: 2%;
 
 }
