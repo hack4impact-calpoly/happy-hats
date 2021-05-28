@@ -6,6 +6,7 @@ import styles from "./volunteerForm.module.css"
 
 
 const VolunteerInfoForm = (props) => {
+    const [showForm, setFormstatus] = useState(true)
     const [volunteer, setVolunteer] = useState(
         {
             firstName: '',
@@ -49,6 +50,7 @@ const VolunteerInfoForm = (props) => {
                     throw new Error('Error occurred posting user info');
                 } else {
                 alert("Volunteer Data Successfully Posted")
+                setFormstatus(false);
                 }
             } catch (error) {
                 console.error(error);
@@ -60,6 +62,7 @@ const VolunteerInfoForm = (props) => {
         }
     }
 
+    if (showForm) {
     return(
     <div >
         <div className={styles.InfoFormContainer}>
@@ -91,6 +94,14 @@ const VolunteerInfoForm = (props) => {
     </div>
     </div>
     );
+    } else {
+        return (
+        <div className={styles.InfoFormContainer}>
+        <h1>Volunteer Information</h1>
+        <h3>Thank you for submiting your Volunteer Information Form. An admin will aprove your account shortly.</h3>
+        </div>
+        );
+    }
 }
 
 export default withUser(VolunteerInfoForm);
