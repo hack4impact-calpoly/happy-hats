@@ -166,5 +166,23 @@ module.exports = (app) => {
       const success = await MongooseConnector.deleteVolunteer(toDelete);
       checkSuccess(response, success)
      })
+
+     app.post('/api/volunteerData', isUserAuthenticated, async (request, response) => {
+      if (request.body.firstName && request.body.lastName) {
+        console.log('made it here');
+        const updateNames = {
+          firstName: request.body.firstName,
+          lastName: request.body.lastName,
+          id: request.body.id
+        }
+        const success = await MongooseConnector.updateVolunteer(updateNames);
+        checkSuccess(response, success)
+            
+      } else {
+        response.status(400).json({
+          message: 'Did not supply all needed post attributes',
+        });
+      }
+   })
   
 };

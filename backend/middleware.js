@@ -39,7 +39,6 @@ const getTokenPayloadFromRequest = async (req) => {
    if (!("sub" in tokenPayload)) {
       throw new Error("No cognito user found from sub given");
    }
-
    return [tokenPayload, tokenPayload.sub];
 };
 
@@ -53,10 +52,11 @@ const isUserAuthenticated = async (req, res, next) => {
             message: 'FORBIDDEN',
          });
       }
-
+      console.log(retrievedPayloadInfo);
       const userObj = await getUserFromTokenPayload(retrievedPayloadInfo[0]);
-
-      if (!userObj || !userObj.role || userObj.role === "none") {
+      console.log("in middleware")
+      console.log(userObj)
+      if (!userObj || !userObj.role) {
          return res.status(401).json({
             status: 401,
             message: 'UNAUTHORIZED',
