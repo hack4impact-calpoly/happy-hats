@@ -39,22 +39,16 @@ app.get('*', (req, res) => {
   res.status(400).send('Page not found');
 })
 
-const PORT = process.env.PORT || 3001;
-// if (!PORT) {
-//   console.error('No PORT environment var found... add it to your .env file!');
-//   process.exit(1);
-// }
+const PORT = Number(process.env.PORT);
+if (!PORT) {
+  console.error('No PORT environment var found... add it to your .env file!');
+  process.exit(1);
+}
 (async () => {
   await MongooseConnector.connect();
 
   // Satisfy react default port
-  // app.listen(PORT, 'localhost', () => {
-  //     console.log(`Listening on port ${PORT}`);
-  // });
-  if (process.argv.includes('dev')) {
-    
-    app.listen(PORT, () => console.log(`server running on port ${PORT}`));
-  }
+  app.listen(PORT, 'localhost', () => {
+      console.log(`Listening on port ${PORT}`);
+  });
 })();
-
-module.exports = app;
