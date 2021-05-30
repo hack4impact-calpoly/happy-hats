@@ -36,11 +36,7 @@ require('./announcement/announcement-api')(app);
 require('./volunteer/volunteer-api')(app);
 
 app.get('*', (req, res) => {
-  console.log(req.originalUrl);
-  console.log(req.protocol, req.get('host'));
-  var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-  console.log(fullUrl);
-  res.send('404 Page not found')
+  res.status(400).send('Page not found');
 })
 
 const PORT = process.env.PORT || 3001;
