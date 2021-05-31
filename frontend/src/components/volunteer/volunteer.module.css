@@ -31,23 +31,17 @@
     border-radius: 5%;
     border-color: #004AAC;
     background-color: #FFFCEF;
-    width: 70%;
+    width: 85%;
     overflow-y: scroll;
     height: 200px;
 
 }
 
 .personRow{
-    display:flex;
+    display: flex;
     justify-content: space-between;
 }
 
 .thumbs{
-    margin-left: 20%;
-}
-
-.approvalButtons{
-    display: flex;
-    margin-right: 2%;
-
+    margin-top: -12%;
 }

@@ -5,9 +5,6 @@ const { Logger } = require('@hack4impact/logger');
 
 const tryAddingUser = async (res, retrievedPayloadInfo) => {
     cognitoId = retrievedPayloadInfo[0].sub;
-    // console.log("HERE ")
-    // console.log(cognitoId.sub);
-    // console.log(cognitoId.email);
     email = retrievedPayloadInfo[0].email;
     Logger.log(`Registering user ${cognitoId}...`);
     const success = await MongooseConnector.addUser({
@@ -139,6 +136,22 @@ module.exports = (app) => {
         } catch (err) {
             // Don't need check user existence because we know it doesn't exist
             attemptRegistration(res, retrievedPayloadInfo);
+        }
+    });
+
+    app.post('/api/updateApproved', async (req, res) => {
+        const volunteerObject = await MongooseConnector.getUserFromEmail(req.body.email, res);
+        if (volunteerObject !== null) {
+           const success = await MongooseConnector.saveUserApproved(volunteerObject.id);
+           return res.status(200).json({});
+        }
+    });
+
+    app.post('/api/updateRejected', async (req, res) => {
+        const volunteerObject = await MongooseConnector.getUserFromEmail(req.body.email, res);
+        if (volunteerObject !== null) {
+           const success = await MongooseConnector.saveUserRejected(volunteerObject.id);
+           return res.status(200).json({});
         }
     });
 };

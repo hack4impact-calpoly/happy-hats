@@ -4,43 +4,51 @@ import styles from "./volunteer.module.css";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import withFetch from "../WithFetch";
-import AlertDialog from './DeleteVolunteer';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import Button from '@material-ui/core/Button';
-
-
+import { getAuthHeaderFromSession, RequestPayloadHelpers } from '../../utility/request-helpers';
 
 const url = "users";
 
 class VolunteerApproval extends React.Component {
-
+  
   render() {
     if (!this.props.fetchedData) {
       return null;
     }
     const us = this.props.fetchedData.users || [];
 
-    const handleApprove = async () => {
-      console.log(this.props.user.cognitoSession.attributes.email);
+    const handleApprove = async (email) => {
       const vData = {
-        "approved": this.props.approved,
-        "decisonMade": this.props.decisionMade
+        "email" : email,
       }
-      console.log(vData.approved)
-      console.log(vData.decisionMade)
-      ///call backednd
+      try {
+          const resp = await RequestPayloadHelpers.makeRequest('updateApproved', 'POST', vData, getAuthHeaderFromSession(this.props.user.cognitoSession));
+          if (!resp || !resp.ok) {
+              throw new Error('Error occurred updating User');
+          } else {
+            window.location.reload()
+          }
+      } catch (error) {
+          console.error(error);
+      }
     }
 
-    const handleReject = async () => {
-        console.log(this.props.user.cognitoSession.attributes.email);
+    const handleReject = async (email) => {
         const vData = {
-          "approved": this.props.approved,
-          "decisonMade": this.props.decisionMade
+          "email" : email,
         }
-        console.log(vData.approved)
-        console.log(vData.decisionMade)
-        ///call backednd
+        try {
+            const resp = await RequestPayloadHelpers.makeRequest('updateRejected', 'POST', vData, getAuthHeaderFromSession(this.props.user.cognitoSession));
+            if (!resp || !resp.ok) {
+                throw new Error('Error occurred posting rejected user');
+            } else {
+              window.location.reload()
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }
   
 
@@ -54,18 +62,8 @@ class VolunteerApproval extends React.Component {
             </Col>
             <Col>
             <div className={styles.ApprovalSection}> 
-            
-            {/* change user schema, make an approve attribute, decision made  */}
-            {/* display roles that are pending, if role is none */}
-            {/* thumsb up or thumbs down */}
-            {/* send request to backend */}
-            {/* pending (can approve or reject them), then approved (be able to later reject them), rejcted (be able to reapprove them) */}
-            {/* approved: decision made true, role volunteer, rejected: decision made true, role none, pending: role none */}
-            {/* look at the calender //backend issue  */}
-            {/* rerender page  */}
             <h4> Approve Volunteers </h4>
                <h5> Pending: </h5>
-               {/* pending: approved false, decison made false */}
                {us.map(({
                 email, 
                 role,
@@ -79,11 +77,11 @@ class VolunteerApproval extends React.Component {
                     return (
                       <>
                         <div className={styles.personRow}>
-                            <p> Email: {email} </p>
-                            <div className={styles.approvalButtons}>
-                                <Button onClick={handleApprove} ><ThumbUpIcon ></ThumbUpIcon> </Button> 
-                                <Button onClick={handleReject} ><ThumbDownIcon className={styles.thumbs}> </ThumbDownIcon> </Button> 
-                            </div>
+                            <p> {firstName} {lastName}, {email} </p>
+                              <div className={styles.approvalButtons}>
+                                  <Button onClick={() => handleApprove(email)} ><ThumbUpIcon className={styles.thumbs} color="primary"></ThumbUpIcon> </Button> 
+                                  <Button onClick={() => handleReject(email)} ><ThumbDownIcon className={styles.thumbs} color="primary"> </ThumbDownIcon> </Button> 
+                              </div>
                             </div>
                       </>
                     );
@@ -104,9 +102,9 @@ class VolunteerApproval extends React.Component {
                     return (
                       <>
                         <div className={styles.personRow}>
-                          <p> Email: {email} </p>
+                          <p> {firstName} {lastName}, {email} </p>
                           <div className={styles.approvalButtons}>
-                            <Button onClick={handleApprove} ><ThumbUpIcon ></ThumbUpIcon> </Button> 
+                            <Button onClick={() => handleApprove(email)} ><ThumbUpIcon className={styles.thumbs} color="primary"></ThumbUpIcon> </Button> 
                           </div>
                         </div>
                       </>

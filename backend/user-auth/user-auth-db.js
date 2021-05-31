@@ -10,6 +10,12 @@ const userFns = {
     });
     return val;
   },
+  getUserFromEmail: async (_email) => {
+    const val = await User.findOne({ 
+      email : _email 
+    });
+    return val;
+  },
   addUser: async (user) => {
     const newUser = new User(user);
     const savedDoc = await newUser.save();
@@ -18,6 +24,18 @@ const userFns = {
   getAllUsers: async () => {
     return await User.find({}).exec();
  },
+ saveUserApproved: async (_id) => {
+    await User.findByIdAndUpdate(_id, { 
+      approved: true, 
+      decisionMade: true })
+    .exec();
+  },
+  saveUserRejected: async (_id) => {
+    await User.findByIdAndUpdate(_id, { 
+      approved: false, 
+      decisionMade: true })
+    .exec();
+  }
 };
 
 module.exports = {
