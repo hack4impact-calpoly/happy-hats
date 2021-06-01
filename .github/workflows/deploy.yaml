@@ -2,6 +2,8 @@ on:
   push:
     branches:
     - main
+    - test-deploy
+    - aws-deploy
 
 jobs:
   deploy:
