@@ -1,7 +1,5 @@
-import 'process';
-
-const startUrl = `${process.env.REACT_APP_SERVER_URL}/api/`;
-
+//const startUrl = 'http://localhost:3001/api/';
+const startUrl = 'process.env.REACT_APP_SERVER_URL';
 class CustomWebError extends Error {
   static getAppropriateErrorMsg(statCode) {
     switch (statCode) {
