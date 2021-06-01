@@ -26,6 +26,7 @@ const userFns = {
  },
  saveUserApproved: async (_id) => {
     await User.findByIdAndUpdate(_id, { 
+      role: "volunteer",
       approved: true, 
       decisionMade: true })
     .exec();
