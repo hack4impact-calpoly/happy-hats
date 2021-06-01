@@ -6,7 +6,7 @@ import logo from "../imgs/logo.png";
 import awsconfig from '../aws-exports';
 import Amplify, { Auth } from 'aws-amplify';
 import withUser from '../store/user/WithUser';
-import { acceptedUserRole, initialUser } from '../store/user/User';
+import { isUserApproved, initialUser } from '../store/user/User';
 Amplify.configure(awsconfig);
 
 async function signOut() {
@@ -43,7 +43,7 @@ const NavBar = (props) =>{
           <button className="link-text" onClick={() => handleSignOut()}>
             Signout
           </button>
-          {acceptedUserRole(props.user?.role) && (
+          {isUserApproved(props.user) && (
             <>
               <Link className="link-text" to ="/announcements">
                 Announcements

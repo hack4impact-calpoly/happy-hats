@@ -2,7 +2,7 @@
 const { request } = require('express');
 const mongoose = require('mongoose');
 const MongooseConnector = require('../db-helper');
-const { isUserAuthenticated } = require('../middleware');
+const { isUserApproved } = require('../middleware');
 
 const confirmValidDate = (date, compDate = Date.now()) => {
     date = +date;
@@ -34,7 +34,7 @@ const checkSuccess = (res, val) => {
 };
 
 module.exports = (app) => {
-    app.get('/api/announcement', isUserAuthenticated, async (req, res) => {
+    app.get('/api/announcement', isUserApproved, async (req, res) => {
         const date = req.query.date
         const author = req.query.author
         const title = req.query.title
@@ -57,7 +57,7 @@ module.exports = (app) => {
       
     })
 
-    app.post('/api/announcement', isUserAuthenticated, async (request, response) => {  
+    app.post('/api/announcement', isUserApproved, async (request, response) => {  
       const validated = await checkAuth(response, request.locals.user.role);
 
       if (!validated) {
@@ -81,7 +81,7 @@ module.exports = (app) => {
       }
    })
 
-   app.delete('/api/announcement', isUserAuthenticated, async (request, response) => {
+   app.delete('/api/announcement', isUserApproved, async (request, response) => {
     const validated = await checkAuth(response, request.locals.user.role);
 
     if (!validated) {

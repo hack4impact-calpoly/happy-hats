@@ -14,9 +14,14 @@ export function acceptedUserRole(role) {
   return validRoleStrings.has(role) && role !== USER_ROLES.UNSET && role !== USER_ROLES.NONE;
 }
 
+export function isUserApproved(user) {
+  return acceptedUserRole(user.role) && user.approved;
+}
+
 export const initialUser = {
   role: USER_ROLES.UNSET,
   loggedIn: false,
+  approved: false,
   cognitoSession: null,
   otherUserInfo: null, // Includes info from user object. Not sure if we'll use yet
 };
