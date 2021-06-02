@@ -25,16 +25,22 @@ const userFns = {
     return await User.find({}).exec();
  },
  saveUserApproved: async (_id) => {
-    await User.findByIdAndUpdate(_id, { 
+    return await User.findByIdAndUpdate(_id, { 
       role: "volunteer",
       approved: true, 
-      decisionMade: true })
+      decisionMade: true
+    }, {
+      new: true,
+    })
     .exec();
   },
   saveUserRejected: async (_id) => {
-    await User.findByIdAndUpdate(_id, { 
+    return await User.findByIdAndUpdate(_id, {
       approved: false, 
-      decisionMade: true })
+      decisionMade: true
+    }, {
+      new: true,
+    })
     .exec();
   }
 };

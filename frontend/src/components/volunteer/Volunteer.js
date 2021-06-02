@@ -9,17 +9,52 @@ import VolunteerApproval from './VolunteerApproval.js';
 const url = "users";
 
 class Volunteer extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      users: this.props.fetchedData?.users,
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.fetchedData?.users !== prevProps.fetchedData?.users) {
+      this.setState({
+        users: this.props.fetchedData?.users,
+      });
+    }
+  }
+
+  updateUser(modifiedUser) {
+    if (!this.state.users) {
+      alert('User changed without users existing');
+      return;
+    }
+
+    const users = [...this.state.users];
+    const userIndex = users.findIndex((user) => user.email === modifiedUser.email);
+    if (userIndex === -1) {
+      alert('User changed email not found');
+      return;
+    }
+
+    users[userIndex] = modifiedUser;
+
+    this.setState({
+      users,
+    })
+  }
 
   render() {
     if (!this.props.fetchedData) {
       return null;
     }
     
-    const vol = this.props.fetchedData.users || [];
+    const vol = this.state.users || [];
 
     return (
       <>
-      <VolunteerApproval></VolunteerApproval>
+        <VolunteerApproval updateUser={(u) => this.updateUser(u)} users={this.state.users} />
         <div className={styles.scroll}>
           {vol.map(({
             firstName,
@@ -31,40 +66,39 @@ class Volunteer extends React.Component {
             approved,
             decisionMade
           }, index) => {
-            console.log(vol);
-            if(approved && decisionMade){
-              return (
-                <div className={styles.volunteerContainer}>
-                  <h2>
-                    Volunteer Name: {firstName} {lastName}
-                  </h2>
-                  <h3> Contact: {email} </h3>
-                  <Container>
-                    <Row>
-                      <Col>
-                        <div className={styles.hours}>
-                          Completed Hours: {completedHours}
-                        </div>
-                      </Col>
-                      <Col>
-                        <div className={styles.hours}>
-                          Scheduled Hours: {scheduledHours}
-                        </div>
-                      </Col>
-                      <Col>
-                        <div className={styles.hours}>
-                          Hours not Completed: {nonCompletedHours}
-                        </div>
-                      </Col>
-                    </Row>
-                  </Container>
-                  {this.props.user?.role === "admin" &&
-                    <AlertDialog post={vol[index]}/>}
-                </div>
-              );
-
+            if (!approved || !decisionMade) {
+              return null;
             }
 
+            return (
+              <div className={styles.volunteerContainer} key={`approved-volunteers-${index}`}>
+                <h2>
+                  Volunteer Name: {firstName} {lastName}
+                </h2>
+                <h3> Contact: {email} </h3>
+                <Container>
+                  <Row>
+                    <Col>
+                      <div className={styles.hours}>
+                        Completed Hours: {completedHours}
+                      </div>
+                    </Col>
+                    <Col>
+                      <div className={styles.hours}>
+                        Scheduled Hours: {scheduledHours}
+                      </div>
+                    </Col>
+                    <Col>
+                      <div className={styles.hours}>
+                        Hours not Completed: {nonCompletedHours}
+                      </div>
+                    </Col>
+                  </Row>
+                </Container>
+                {this.props.user?.role === "admin" &&
+                  <AlertDialog post={vol[index]}/>}
+              </div>
+            );
           })}
         </div>
       </>

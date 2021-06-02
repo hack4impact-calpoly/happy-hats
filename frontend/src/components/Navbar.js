@@ -6,7 +6,7 @@ import logo from "../imgs/logo.png";
 import awsconfig from '../aws-exports';
 import Amplify, { Auth } from 'aws-amplify';
 import withUser from '../store/user/WithUser';
-import { isUserApproved, initialUser } from '../store/user/User';
+import { isUserApproved, initialUser, isUserAdmin } from '../store/user/User';
 Amplify.configure(awsconfig);
 
 async function signOut() {
@@ -48,9 +48,11 @@ const NavBar = (props) =>{
               <Link className="link-text" to ="/announcements">
                 Announcements
               </Link>
-              <Link className="link-text" to="/volunteers">
-                Volunteers
-              </Link>
+              {isUserAdmin(props.user) && (
+                <Link className="link-text" to="/volunteers">
+                  Volunteers
+                </Link>
+              )}
               <Link className="link-text" to="/calendar">
                 Calendar
               </Link>

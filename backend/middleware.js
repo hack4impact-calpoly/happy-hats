@@ -58,7 +58,7 @@ const isUserAuthenticated = async (req, res, next) => {
 
       const userObj = await getUserFromTokenPayload(retrievedPayloadInfo[0]);
 
-      if (!userObj || !userObj.role || userObj.role === "none") {
+      if (!userObj || !userObj.role) {
          return res.status(401).json({
             status: 401,
             message: 'UNAUTHORIZED',
@@ -93,9 +93,23 @@ const isUserApproved = async (req, res, next) => {
    });
 };
 
+const adminRoles = new Set(['admin']);
+const isUserAdmin = async (req, res, next) => {
+   isUserApproved(req, res, () => {
+      if (!adminRoles.has(req.locals?.user?.role)) {
+         return res.status(403).json({
+            message: 'Forbidden user role provided',
+         });
+      }
+
+      next();
+   });
+};
+
 module.exports = {
    isUserAuthenticated,
    isUserApproved,
+   isUserAdmin,
    getTokenPayloadFromRequest,
    getUserFromTokenPayload,
 };

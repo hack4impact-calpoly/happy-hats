@@ -31,7 +31,6 @@ function withFetch(WrappedComponent, reqUrl, overrides = {}) {
       }
 
       const jsonResponse = await GetRequestHelpers.makeRequestAndGetResponse(reqUrl, headers);
-      console.log(jsonResponse)
       setData(!!overrides.formatter ? overrides.formatter(jsonResponse) : jsonResponse);
     };
 

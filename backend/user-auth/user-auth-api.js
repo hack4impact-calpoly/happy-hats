@@ -1,6 +1,6 @@
 /* API Endpoints for user */
 const MongooseConnector = require('../db-helper');
-const { getTokenPayloadFromRequest, getUserFromTokenPayload, isUserAuthenticated } = require("../middleware");
+const { getTokenPayloadFromRequest, getUserFromTokenPayload, isUserAdmin, isUserApproved } = require("../middleware");
 const { Logger } = require('@hack4impact/logger');
 
 const tryAddingUser = async (res, retrievedPayloadInfo) => {
@@ -43,7 +43,6 @@ const attemptRegistration = async (res, retrievedPayloadInfo) => {
         return false;
     }
 
-    // tryAddingUser(res, cognitoId);
     tryAddingUser(res, retrievedPayloadInfo);
 };
 
@@ -73,7 +72,7 @@ const getTokenPayloadOrError = async (req, res) => {
 
 module.exports = (app) => {
 
-    app.get('/api/users', isUserAuthenticated, async (req, res) => {
+    app.get('/api/users', isUserApproved, async (req, res) => {
         Logger.log("GET: All Users...");
         const volunteers = await MongooseConnector.getAllUsers();
         res.status(200).json({
@@ -89,8 +88,6 @@ module.exports = (app) => {
             if (!retrievedPayloadInfo || retrievedPayloadInfo?.length !== 2) {
                 return;
             }
-           
-            //cognitoId = retrievedPayloadInfo[0];
         } catch (err) {
             return res.status(401).json({
                 status: 401,
@@ -98,7 +95,6 @@ module.exports = (app) => {
             });
         }
 
-        // attemptRegistration(res, cognitoId);
         attemptRegistration(res, retrievedPayloadInfo);
     });
 
@@ -139,19 +135,46 @@ module.exports = (app) => {
         }
     });
 
-    app.post('/api/updateApproved', async (req, res) => {
-        const volunteerObject = await MongooseConnector.getUserFromEmail(req.body.email, res);
-        if (volunteerObject !== null) {
-           const success = await MongooseConnector.saveUserApproved(volunteerObject.id);
-           return res.status(200).json({});
+    app.post('/api/updateApproved', isUserAdmin, async (req, res) => {
+        if (!req.body.email) {
+            return res.status(400).json({
+                message: 'Bad request format. No email specified'
+            });
         }
+
+        const volunteerObject = await MongooseConnector.getUserFromEmail(req.body.email);
+        if (!volunteerObject) {
+            return res.status(404).json({
+                message: 'User email not found',
+            });
+        }
+
+        const user = await MongooseConnector.saveUserApproved(volunteerObject.id);
+        console.log(user);
+        return res.status(200).json({
+            user,
+        });
     });
 
-    app.post('/api/updateRejected', async (req, res) => {
-        const volunteerObject = await MongooseConnector.getUserFromEmail(req.body.email, res);
-        if (volunteerObject !== null) {
-           const success = await MongooseConnector.saveUserRejected(volunteerObject.id);
-           return res.status(200).json({});
+    app.post('/api/updateRejected', isUserAdmin, async (req, res) => {
+        if (!req.body.email) {
+            return res.status(400).json({
+                message: 'Bad request format. No email specified'
+            });
         }
+
+        const volunteerObject = await MongooseConnector.getUserFromEmail(req.body.email);
+        if (!volunteerObject) {
+            return res.status(404).json({
+                message: 'User email not found',
+            });
+        }
+
+
+        const user = await MongooseConnector.saveUserRejected(volunteerObject.id);
+        console.log(user);
+        return res.status(200).json({
+            user,
+        });
     });
 };
