@@ -22,7 +22,7 @@ function AuthRequiredLinks() {
         <PrivateRoute requireValidRole path="/create-announcements">
           <CreateAnnouncementBlock />
         </PrivateRoute>
-        <PrivateRoute path="/volunteers">
+        <PrivateRoute requireSuperUserRole path="/volunteers">
           <Volunteer />
         </PrivateRoute>
         <PrivateRoute requireValidRole path="/calendar">

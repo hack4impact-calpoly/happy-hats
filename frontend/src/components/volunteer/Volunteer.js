@@ -4,39 +4,57 @@ import styles from "./volunteer.module.css";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import withFetch from "../WithFetch";
-import AlertDialog from './DeleteVolunteer'
-
-const url = "volunteers";
+import AlertDialog from './DeleteVolunteer';
+import VolunteerApproval from './VolunteerApproval.js';
+const url = "users";
 
 class Volunteer extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      users: this.props.fetchedData?.users,
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.fetchedData?.users !== prevProps.fetchedData?.users) {
+      this.setState({
+        users: this.props.fetchedData?.users,
+      });
+    }
+  }
+
+  updateUser(modifiedUser) {
+    if (!this.state.users) {
+      alert('User changed without users existing');
+      return;
+    }
+
+    const users = [...this.state.users];
+    const userIndex = users.findIndex((user) => user.email === modifiedUser.email);
+    if (userIndex === -1) {
+      alert('User changed email not found');
+      return;
+    }
+
+    users[userIndex] = modifiedUser;
+
+    this.setState({
+      users,
+    })
+  }
 
   render() {
     if (!this.props.fetchedData) {
       return null;
     }
     
-    const vol = this.props.fetchedData.volunteers || [];
+    const vol = this.state.users || [];
 
     return (
       <>
-        <Container>
-          <Row>
-            <Col>
-            <h1 className={styles.title}>Volunteers</h1>
-            </Col>
-            <Col>
-            <div className={styles.ApprovalSection}> 
-            
-            
-            <h4> Approve Volunteers </h4>
-              <div className={styles.personRow}>
-                  <p> Name </p>
-                  <button className={styles.ApprovalButton}> Approve </button>
-              </div>
-            </div>
-            </Col>
-          </Row>
-        </Container>
+        <VolunteerApproval updateUser={(u) => this.updateUser(u)} users={this.state.users} />
         <div className={styles.scroll}>
           {vol.map(({
             firstName,
@@ -45,11 +63,15 @@ class Volunteer extends React.Component {
             completedHours,
             scheduledHours,
             nonCompletedHours,
+            approved,
+            decisionMade
           }, index) => {
-            console.log(vol);
+            if (!approved || !decisionMade) {
+              return null;
+            }
 
             return (
-              <div className={styles.volunteerContainer}>
+              <div className={styles.volunteerContainer} key={`approved-volunteers-${index}`}>
                 <h2>
                   Volunteer Name: {firstName} {lastName}
                 </h2>

@@ -9,6 +9,9 @@ const volunteerSchema = new mongoose.Schema(
       completedHours: { type: Number, required: true, default: 0 },
       scheduledHours: { type: Number, required: true, default: 0 },
       nonCompletedHours: { type: Number, required: true, default: 0 },
+      approved: {type: Boolean, required: true},
+      decisionMade: {type: Boolean, required: true},
+      userId: { type: mongoose.ObjectId, required: true },
    },
    {
       collection: COLLECTION_NAME,

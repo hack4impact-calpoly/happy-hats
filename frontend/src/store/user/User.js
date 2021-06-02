@@ -9,13 +9,22 @@ export const USER_ROLES = Object.freeze({
 });
 
 const validRoleStrings = new Set(Object.values(USER_ROLES));
+const superUserRoleStrings = new Set([USER_ROLES.ADMIN]);
 
 export function acceptedUserRole(role) {
   return validRoleStrings.has(role) && role !== USER_ROLES.UNSET && role !== USER_ROLES.NONE;
 }
 
 export function isUserApproved(user) {
+  if (!user) {
+    return false;
+  }
+
   return acceptedUserRole(user.role) && user.approved;
+}
+
+export function isUserAdmin(user) {
+  return isUserApproved(user) && superUserRoleStrings.has(user.role);
 }
 
 export const initialUser = {
