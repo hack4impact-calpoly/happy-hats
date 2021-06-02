@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const MongooseConnector = require('../db-helper');
 const { CalendarEventTypes } = require('./models/calendar-schema');
-const { isUserAuthenticated } = require("../middleware");
+const { isUserApproved } = require("../middleware");
 
 const confirmValidDate = (date, compDate = Date.now()) => {
   date = +date;
@@ -94,7 +94,7 @@ const checkCapeOrderEndpointBody = (req, res, onSuccess) => {
 };
 
 module.exports = (app) => {
-  app.get('/api/all-events', isUserAuthenticated, async (req, res) => {
+  app.get('/api/all-events', isUserApproved, async (req, res) => {
     const events = await MongooseConnector.getAllCalendarEvents();
     res.status(200).json({
       events: events
@@ -102,7 +102,7 @@ module.exports = (app) => {
   });
 
   /* Main endpoint for retrieving events to be displayed to user */
-  app.get('/api/events', isUserAuthenticated, async (req, res) => {
+  app.get('/api/events', isUserApproved, async (req, res) => {
     const eventUserType = req.locals.user.role;
     let events;
     switch (eventUserType) {
@@ -137,7 +137,7 @@ module.exports = (app) => {
     });
   });
 
-  app.get('/api/event', isUserAuthenticated, async (req, res) => {
+  app.get('/api/event', isUserApproved, async (req, res) => {
     // still need to figure this out
     res.status(200).json({
       event: {},
@@ -145,7 +145,7 @@ module.exports = (app) => {
   });
 
   // This will require authentication
-  app.post('/api/event/volunteer', isUserAuthenticated, async (req, res) => {
+  app.post('/api/event/volunteer', isUserApproved, async (req, res) => {
     checkVolunteerEndpointBody(req, res, async (startDate, endDate, eventUser) => {
       const calendarEvent = {
         start: startDate,
@@ -160,7 +160,7 @@ module.exports = (app) => {
   });
 
   // This will require authentication
-  app.put('/api/event/volunteer', isUserAuthenticated, async (req, res) => {
+  app.put('/api/event/volunteer', isUserApproved, async (req, res) => {
     checkVolunteerEndpointBody(req, res, async (startDate, endDate, eventUser) => {
       const { eventId } = req.body;
       const everythingValidated = await checkResourceAndAuth(res, eventId, req.locals.user.role);
@@ -182,7 +182,7 @@ module.exports = (app) => {
   });
 
   // This will require authentication
-  app.post('/api/event/capeorder', isUserAuthenticated, async (req, res) => {
+  app.post('/api/event/capeorder', isUserApproved, async (req, res) => {
     checkCapeOrderEndpointBody((req, res, async (startDate, endDate, eventUser) => {
       const calendarEvent = {
         start: startDate,
@@ -198,7 +198,7 @@ module.exports = (app) => {
   });
 
   // This will require authentication
-  app.put('/api/event/capeorder', isUserAuthenticated, async (req, res) => {
+  app.put('/api/event/capeorder', isUserApproved, async (req, res) => {
     checkCapeOrderEndpointBody(req, res, async (startDate, endDate, eventUser) => {
       const { eventId } = req.body;
       const everythingValidated = await checkResourceAndAuth(res, eventId, req.locals.user.role);
@@ -221,7 +221,7 @@ module.exports = (app) => {
   });
 
   // This will require authentication
-  app.delete('/api/event', isUserAuthenticated, async (req, res) => {
+  app.delete('/api/event', isUserApproved, async (req, res) => {
     const { eventId } = req.body;
 
     const everythingValidated = await checkResourceAndAuth(res, eventId, req.locals.user.role);

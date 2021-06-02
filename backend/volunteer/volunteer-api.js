@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const { Logger } = require("@hack4impact/logger");
 const MongooseConnector = require('../db-helper');
-const { isUserAuthenticated } = require("../middleware");
+const { isUserApproved } = require("../middleware");
 
 const confirmValidObjectId = (objectId) => {
    return !!objectId && mongoose.isValidObjectId(objectId);
@@ -70,7 +70,7 @@ const getVolunteerObject = async (req, res) => {
 
 
 module.exports = (app) => {
-   app.get('/api/volunteers', isUserAuthenticated, async (req, res) => {
+   app.get('/api/volunteers', isUserApproved, async (req, res) => {
       Logger.log("GET: All Volunteers...");
       const volunteers = await MongooseConnector.getAllVolunteers();
       res.status(200).json({
@@ -78,7 +78,7 @@ module.exports = (app) => {
       });
    });
 
-   app.get('/api/volunteer/:id', isUserAuthenticated, async (req, res) => {
+   app.get('/api/volunteer/:id', isUserApproved, async (req, res) => {
       Logger.log("GET: Volunteer...");
       const volunteerObject = await getVolunteerObject(req, res);
       if (volunteerObject !== null) {
@@ -86,7 +86,7 @@ module.exports = (app) => {
       }
    });
 
-   app.get('/api/volunteer/:id/hours/scheduled', isUserAuthenticated, async (req, res) => {
+   app.get('/api/volunteer/:id/hours/scheduled', isUserApproved, async (req, res) => {
       Logger.log("GET: Scheduled Hours...");
       const volunteerObject = await getVolunteerObject(req, res);
       if (volunteerObject !== null) {
@@ -94,7 +94,7 @@ module.exports = (app) => {
       }
    });
 
-   app.get('/api/volunteer/:id/hours/completed', isUserAuthenticated, async (req, res) => {
+   app.get('/api/volunteer/:id/hours/completed', isUserApproved, async (req, res) => {
       Logger.log("GET: Completed Hours...");
       const volunteerObject = await getVolunteerObject(req, res);
       if (volunteerObject !== null) {
@@ -102,7 +102,7 @@ module.exports = (app) => {
       }
    });
 
-   app.get('/api/volunteer/:id/hours/not-completed', isUserAuthenticated, async (req, res) => {
+   app.get('/api/volunteer/:id/hours/not-completed', isUserApproved, async (req, res) => {
       Logger.log("GET: Not Completed Hours...");
       const volunteerObject = await getVolunteerObject(req, res);
       if (volunteerObject !== null) {
@@ -110,7 +110,7 @@ module.exports = (app) => {
       }
    });
 
-   app.post('/api/volunteer/:id/hours/completed', isUserAuthenticated, async (req, res) => {
+   app.post('/api/volunteer/:id/hours/completed', isUserApproved, async (req, res) => {
       Logger.log("POST: Completed Hours...");
       const volunteerObject = await getVolunteerObject(req, res);
       if (volunteerObject !== null) {
@@ -128,7 +128,7 @@ module.exports = (app) => {
       }
    });
 
-   app.post('/api/volunteer/:id/hours/not-completed', isUserAuthenticated, async (req, res) => {
+   app.post('/api/volunteer/:id/hours/not-completed', isUserApproved, async (req, res) => {
       Logger.log("POST: Not Completed Hours...");
       const volunteerObject = await getVolunteerObject(req, res);
       if (volunteerObject !== null) {
