@@ -29,7 +29,7 @@ const PrivateRoute = ({ children, ...rest }) => {
     );
   }
 
-  if (rest.requireValidRole && !isUserApproved(rest.user?.role)) {
+  if (rest.requireValidRole && !isUserApproved(rest.user)) {
     alert("This account lacks credentials to view this page. Wait to be approved by an admin or login to an account that has been approved.")
     return (
       <Redirect
