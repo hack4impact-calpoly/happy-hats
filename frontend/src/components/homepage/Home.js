@@ -2,12 +2,11 @@ import './Home.css';
 import React from 'react'
 import  { Link } from 'react-router-dom'
 import withUser from "../../store/user/WithUser";
+import VolunteerInfoForm from "../InfoForm/VolunteerInfoForm"
 
 function Home(props) {
   const { role } = props.user;
-  console.log(props.user);
 
-  
   const renderCustomTopRowLinks = () => {
 switch (role) {
       case "admin":
@@ -46,8 +45,11 @@ switch (role) {
             </Link>
           </>
         );
+
       default:
-        return null;
+        return (
+          <VolunteerInfoForm/>
+        )
     }
   }
 
@@ -65,8 +67,6 @@ switch (role) {
         return null;
     }
   }
-
-  console.log(role);
 
   return (
     <div className="Home" style={{paddingLeft: '8%', paddingTop: '90px'}}>

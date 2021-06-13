@@ -29,6 +29,18 @@ const volunteerFns = {
    deleteVolunteer: async(toDeleteVol) => {
       const val = await Volunteer.remove({_id: toDeleteVol._id});
       return val;
+    },
+    postVolunteer: async (newVolunteer) => {
+      const newPost = new Volunteer(newVolunteer);
+      const savedDoc = await newPost.save();
+      return savedDoc === newPost;
+    },
+    updateVolunteer: async (aData) => {
+       console.log("in updateVolunteer");
+       console.log(Volunteer.find({cognito_id: aData.id}))
+       return Volunteer.updateOne({cognito_id: aData.id}, {$set: {firstName: aData.firstName}})
+            .updateOne({cognito_id: aData.id}, {$set: {lastName: aData.lastName}})
+            .exec();
     }
 };
 

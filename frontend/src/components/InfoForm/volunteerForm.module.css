@@ -1,0 +1,7 @@
+.InfoFormContainer{
+    padding: 4%;
+}
+
+.firstNameBox {
+    display: flexbox;
+}

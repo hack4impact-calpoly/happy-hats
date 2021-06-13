@@ -36,7 +36,6 @@ const basicResponseCheck = (response) => {
     console.log(response);
     throw new CustomWebError(response.status);
   }
-
   return response;
 }
 
@@ -66,7 +65,6 @@ export class GetRequestHelpers {
         },
         redirect: 'follow',
       }));
-
       return response;
     } catch (e) {
       console.log(e);
@@ -92,8 +90,9 @@ export async function getJsonResponse(response) {
 
 export class RequestPayloadHelpers {
   static async makeRequest(urlExtension, requestType, payload, headers = {}) {
+    console.log(payload)
     try {
-      const response = basicResponseCheck(await fetch(startUrl + urlExtension, {
+      const response = await fetch(startUrl + urlExtension, {
         method: requestType,
         headers: {
           'Content-Type': 'application/json',
@@ -101,8 +100,8 @@ export class RequestPayloadHelpers {
         },
         redirect: 'follow',
         body: JSON.stringify(payload),
-      }));
-
+      });
+      console.log(response)
       return response;
     } catch (e) {
       return false;
