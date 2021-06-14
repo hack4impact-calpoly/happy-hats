@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const { Logger } = require("@hack4impact/logger");
 const MongooseConnector = require('../db-helper');
-const { isUserApproved } = require("../middleware");
+const { isUserApproved, isUserAuthenticated  } = require("../middleware");
 
 const confirmValidObjectId = (objectId) => {
    return !!objectId && mongoose.isValidObjectId(objectId);
@@ -169,12 +169,13 @@ module.exports = (app) => {
 
      app.post('/api/volunteerData', isUserAuthenticated, async (request, response) => {
       if (request.body.firstName && request.body.lastName) {
-        console.log('made it here');
+        console.log('in volunteer api');
         const updateNames = {
           firstName: request.body.firstName,
           lastName: request.body.lastName,
           id: request.body.id
         }
+        console.log(updateNames);
         const success = await MongooseConnector.updateVolunteer(updateNames);
         checkSuccess(response, success)
             

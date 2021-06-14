@@ -56,7 +56,6 @@ const isUserAuthenticated = async (req, res, next) => {
       }
       console.log(retrievedPayloadInfo);
       const userObj = await getUserFromTokenPayload(retrievedPayloadInfo[0]);
-      console.log("in middleware")
       console.log(userObj)
       if (!userObj || !userObj.role) {
          return res.status(401).json({

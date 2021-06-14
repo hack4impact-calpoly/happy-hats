@@ -45,6 +45,7 @@ const VolunteerInfoForm = (props) => {
         if (aData.firstName !== '' && aData.lastName !== '' && aData.id !== '') {
             console.log(getAuthHeaderFromSession(props.user.cognitoSession))
             try {
+                console.log(aData.lastName)
                 const resp = await RequestPayloadHelpers.makeRequest('volunteerData', 'POST', aData, getAuthHeaderFromSession(props.user.cognitoSession));
                 if (!resp || !resp.ok) {
                     throw new Error('Error occurred posting user info');
