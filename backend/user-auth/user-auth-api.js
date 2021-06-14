@@ -1,7 +1,21 @@
 /* API Endpoints for user */
 const MongooseConnector = require('../db-helper');
-const { getTokenPayloadFromRequest, getUserFromTokenPayload, isUserAdmin, isUserApproved } = require("../middleware");
+const { getTokenPayloadFromRequest, getUserFromTokenPayload, isUserAdmin, isUserApproved, isUserAuthenticated } = require("../middleware");
 const { Logger } = require('@hack4impact/logger');
+
+const checkSuccess = (res, val) => {
+    if (!val) {
+       res.status(500).json({
+          message: 'Database error',
+       });
+       return;
+    }
+ 
+    res.status(200).json({
+       successful: val,
+    });
+ };
+ 
 
 const tryAddingUser = async (res, retrievedPayloadInfo) => {
     cognitoId = retrievedPayloadInfo[0].sub;
@@ -177,4 +191,21 @@ module.exports = (app) => {
             user,
         });
     });
+
+    app.post('/api/volunteerData', isUserAuthenticated, async (request, response) => {
+        if (request.body.firstName && request.body.lastName) {
+          const updateNames = {
+            firstName: request.body.firstName,
+            lastName: request.body.lastName,
+            id: request.body.id
+          }
+          const success = await MongooseConnector.updateVolunteer(updateNames);
+          checkSuccess(response, success)
+              
+        } else {
+          response.status(400).json({
+            message: 'Did not supply all needed post attributes',
+          });
+        }
+     });
 };

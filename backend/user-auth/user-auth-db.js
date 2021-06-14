@@ -42,7 +42,12 @@ const userFns = {
       new: true,
     })
     .exec();
-  }
+  },
+  updateVolunteer: async (aData) => {
+    return await User.updateOne({cognito_id: aData.id}, {$set: {firstName: aData.firstName}})
+         .updateOne({cognito_id: aData.id}, {$set: {lastName: aData.lastName}})
+         .exec();
+ }
 };
 
 module.exports = {
