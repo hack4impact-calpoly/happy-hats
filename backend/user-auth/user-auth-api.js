@@ -86,6 +86,15 @@ const getTokenPayloadOrError = async (req, res) => {
 
 module.exports = (app) => {
 
+    app.get('/api/email', async (req, res) => {
+        Logger.log("GET: User from email...");
+        const volunteer = await MongooseConnector.getUserFromEmail(req.query.email);
+        return res.status(200).json({
+            user: volunteer
+        });
+     });
+
+
     app.get('/api/users', isUserApproved, async (req, res) => {
         Logger.log("GET: All Users...");
         const volunteers = await MongooseConnector.getAllUsers();
@@ -93,6 +102,8 @@ module.exports = (app) => {
             users: volunteers
         });
      });
+
+
 
     app.post('/api/register', async (req, res) => {
         let cognitoId, retrievedPayloadInfo;

@@ -1,20 +1,14 @@
 import React, {useState} from 'react';
-import { getAuthHeaderFromSession, RequestPayloadHelpers } from '../../utility/request-helpers';
+import { getAuthHeaderFromSession, GetRequestHelpers, RequestPayloadHelpers } from '../../utility/request-helpers';
 import withUser from '../../store/user/WithUser';
 import styles from "./volunteerForm.module.css"
-
-
 
 const VolunteerInfoForm = (props) => {
     const [showForm, setFormstatus] = useState(true)
     const [volunteer, setVolunteer] = useState(
         {
             firstName: '',
-            lastName: '',
-            email: '',
-            completedHours: 0,
-            scheduledHours: 0,
-            nonCompletedHours: 0,
+            lastName: ''
         }
     );
 
@@ -23,23 +17,40 @@ const VolunteerInfoForm = (props) => {
         console.log(name);
         if (name === "firstName") {
             setVolunteer(
-                {firstName: value, lastName: volunteer['lastName'], email: "mckenna.a.reed@gmail.com", completedHours: 0, nonCompletedHours: 0, scheduledHours: 0}
+                {firstName: value, lastName: volunteer['lastName']}
             );
         } else {
             setVolunteer(
-                {firstName: volunteer['firstName'], lastName: value, email: "mckenna.a.reed@gmail.com", completedHours: 0, nonCompletedHours: 0, scheduledHours: 0}
+                {firstName: volunteer['firstName'], lastName: value}
             );
         }
     }
 
+    const checkSubmittedPrior = async () => {
+        try {
+            const GETString = 'email?email=' + props.user.cognitoSession.attributes.email
+            const resp = await GetRequestHelpers.makeRequestAndGetResponse(GETString, getAuthHeaderFromSession(props.user.cognitoSession));
+            if (!resp) {
+                throw new Error('Error occurred getting user info');
+            } else {
+                console.log("got here")
+                if(resp.user.firstName !== '' && resp.user.lastName !== ''){
+                    setFormstatus(false)
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+
+    }
+
     const submitForm = async () => {
-        
+
         const aData = {
             "firstName": document.getElementById('firstName').value,
             "lastName": document.getElementById('lastname').value,
-            "id": props.user.cognitoSession.attributes.sub
+            "id": props.user.cognitoSession.username
         }
-           
         if (aData.firstName !== '' && aData.lastName !== '' && aData.id !== '') {
             try {
                 const resp = await RequestPayloadHelpers.makeRequest('volunteerData', 'POST', aData, getAuthHeaderFromSession(props.user.cognitoSession));
@@ -52,13 +63,12 @@ const VolunteerInfoForm = (props) => {
             } catch (error) {
                 console.error(error);
             }
-    
             setVolunteer({firstName: '', lastName: ''});
         } else {
             alert("Please Fill All Fields before submitting.");
         }
     }
-
+    checkSubmittedPrior();
     if (showForm) {
     return(
     <div >

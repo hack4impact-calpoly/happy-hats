@@ -59,6 +59,7 @@ export class GetRequestHelpers {
   /* Expect given urlExtension to NOT begin with '/' */
   static async makeRequest(urlExtension, headers = {}) {
     try {
+      console.log(headers)
       const response = basicResponseCheck(await fetch(startUrl + urlExtension, {
         headers: {
           ...headers,
@@ -67,7 +68,6 @@ export class GetRequestHelpers {
       }));
       return response;
     } catch (e) {
-      console.log(e);
       return false;
     }
   }
