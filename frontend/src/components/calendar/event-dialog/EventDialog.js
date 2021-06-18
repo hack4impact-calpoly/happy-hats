@@ -1,4 +1,4 @@
-import "./EventDialog.css";
+import './EventDialog.css';
 
 import {
   Dialog,
@@ -7,10 +7,9 @@ import {
   DialogTitle,
   IconButton,
   Button,
-  Tooltip,
-  TextField,
-} from "@material-ui/core";
-import { darken, makeStyles, useTheme } from "@material-ui/core/styles";
+  Tooltip
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import { Button as BootstrapButton } from "react-bootstrap";
 import CloseIcon from '@material-ui/icons/Close';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
@@ -21,28 +20,13 @@ import React, { useContext, useState } from 'react';
 import CreateEvent, { CustomBasicFormControl } from './create-event/CreateEvent';
 import { Formik, Form as FormikForm } from 'formik';
 import * as Yup from 'yup';
-import { USER_TYPES } from '../../../store/user/User';
+import { USER_ROLES } from '../../../store/user/User';
 
 const useStyles = makeStyles({
   paper: {
-    width: "40%",
+    width: '40%',
   },
-  confirmPaper: {
-    width: "25%"
-  },
-  redButton: {
-    backgroundColor: theme.palette.error.main,
-    "&:hover": {
-      backgroundColor: darken(theme.palette.error.main, 0.1),
-    },
-  },
-  greenButton: {
-    backgroundColor: theme.palette.success.main,
-    "&:hover": {
-      backgroundColor: darken(theme.palette.success.main, 0.1),
-    },
-  },
-}));
+});
 
 function PendingVolunteerInfo(props) {
   const { volunteer } = props;
@@ -116,51 +100,32 @@ function VolunteerInfo(props) {
 
   return (
     <li>
-      {volunteer.name}:{" "}
-      <span className="volunteer-time">
-        {getAMPMTimeRange(volunteer.start, volunteer.end)}
-      </span>
+      {volunteer.name}: <span className="volunteer-time">{getAMPMTimeRange(volunteer.start, volunteer.end)}</span>
     </li>
   );
 }
 
 const SetCustomHoursSchema = Yup.object().shape({
   startTime: Yup.string()
-    .required("Required")
-    .test(
-      "start_time_after_end_time",
-      "Start time must be less than end time",
-      function (value) {
-        // Must NOT be arrow function
-        const { endTime } = this.parent;
+    .required('Required')
+    .test('start_time_after_end_time', 'Start time must be less than end time', function(value) { // Must NOT be arrow function
+      const { endTime } = this.parent;
 
-        if (!endTime) {
-          return true;
-        }
-        return (
-          new Date(`01/01/2000 ${value}`).getTime() <
-          new Date(`01/01/2000 ${endTime}`).getTime()
-        );
+      if (!endTime) {
+        return true;
       }
-    ),
+      return new Date(`01/01/2000 ${value}`).getTime() < new Date(`01/01/2000 ${endTime}`).getTime();
+    }),
   endTime: Yup.string()
-    .required("Required")
-    .test(
-      "end_time_after_start_time",
-      "End time must be after the start time",
-      function (value) {
-        // Must NOT be arrow function
-        const { startTime } = this.parent;
+    .required('Required')
+    .test('end_time_after_start_time', 'End time must be after the start time', function(value) { // Must NOT be arrow function
+      const { startTime } = this.parent;
 
-        if (!startTime) {
-          return true;
-        }
-        return (
-          new Date(`01/01/2000 ${value}`).getTime() >
-          new Date(`01/01/2000 ${startTime}`).getTime()
-        );
+      if (!startTime) {
+        return true;
       }
-    ),
+      return new Date(`01/01/2000 ${value}`).getTime() > new Date(`01/01/2000 ${startTime}`).getTime();
+    }),
 });
 
 function CustomHours(props) {
@@ -194,11 +159,7 @@ function CustomHours(props) {
         name="endTime"
         formikProps={formikProps}
       />
-      <BootstrapButton
-        type="submit"
-        style={{ margin: "5% 0" }}
-        onClick={(e) => formikProps.handleSubmit(e)}
-      >
+      <BootstrapButton type="submit" style={{ margin: '5% 0' }} onClick={(e) => formikProps.handleSubmit(e)}>
         {doingRequest ? "Request" : "Request Custom Hours"}
       </BootstrapButton>
     </FormikForm>
@@ -206,7 +167,7 @@ function CustomHours(props) {
 
   return (
     <div>
-      {doingRequest && (
+      {doingRequest &&
         <Formik
           enableReinitialize={true}
           initialValues={{
@@ -214,22 +175,16 @@ function CustomHours(props) {
             endTime: getMilitaryTimeFromDate(props.eventEnd),
           }}
           validationSchema={SetCustomHoursSchema}
-          onSubmit={(values) => makeCustomHourRequest(values)}
+          onSubmit={values => makeCustomHourRequest(values)}
           validateOnChange={true}
           validateOnBlur={true}
         >
           {(props) => renderForm(props)}
         </Formik>
-      )}
-      {!doingRequest && (
-        <BootstrapButton
-          type="submit"
-          style={{ margin: "5% 0" }}
-          onClick={() => requestBtnHit()}
-        >
-          {doingRequest ? "Request" : "Request Custom Hours"}
-        </BootstrapButton>
-      )}
+      }
+      {!doingRequest && <BootstrapButton type="submit" style={{ margin: '5% 0' }} onClick={() => requestBtnHit()}>
+        {doingRequest ? "Request" : "Request Custom Hours"}
+      </BootstrapButton>}
     </div>
   );
 }
@@ -237,9 +192,7 @@ function CustomHours(props) {
 function EventDialog(props) {
   const { event } = props;
   const classes = useStyles();
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [{ user }] = useContext(storeContext);
+  const [{ user }, ] = useContext(storeContext);
 
   const [volunteers, setVolunteers] = useState(event?.volunteers);
 
@@ -256,7 +209,7 @@ function EventDialog(props) {
   });
 
   const [userSignedUp, setUserSignedUp] = useState(
-    event?.volunteers?.some((v) => v.id && v.id === user?.userId) || false
+    event?.volunteers?.some(v => v.id && v.id === user?.userId) || false,
   );
 
   const signUpUser = () => {
@@ -270,121 +223,18 @@ function EventDialog(props) {
     return null;
   }
 
-  let tooltipTitle = "";
+  let tooltipTitle = '';
   if (userSignedUp) {
     tooltipTitle = "You are already signed up!";
   } else if (event.volunteers?.length >= 20) {
     tooltipTitle = "Sorry, 20 volunteers already signed up!";
   }
 
-  return (
-    <>
-      <ConfirmModal
-        open={isDeleting}
-        handleClose={() => setIsDeleting(false)}
-      />
-      <Dialog
-        classes={{
-          paper: classes.paper,
-        }}
-        open={props.open}
-        onClose={props.handleClose}
-        aria-labelledby="event-dialog-title"
-        aria-describedby="event-dialog-description"
-      >
-        <DialogActions>
-          <IconButton
-            style={{ padding: 0 }}
-            aria-label="close"
-            onClick={props.handleClose}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogActions>
-        <DialogTitle id="event-dialog-title">
-          {props.newEvent ? (
-            <React.Fragment>
-              New event for: {getDayMonthDateStr(event.start)}
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              {isEditing ? (
-                <TextField
-                  label="Title"
-                  defaultValue={event.title}
-                  variant="outlined"
-                />
-              ) : (
-                event.title
-              )}
-              <Button
-                onClick={() => setIsDeleting(true)}
-                variant="contained"
-                id="volunteer-delete"
-                className={classes.redButton}
-              >
-                Delete
-              </Button>
-              <Button
-                onClick={() => setIsEditing(!isEditing)}
-                variant="contained"
-                color="primary"
-                id="volunteer-edit"
-              >
-                {isEditing ? "Save" : "Edit"}
-              </Button>
-              <Tooltip title={tooltipTitle}>
-                <span id="volunteer-sign-up">
-                  {/* Hack to get tooltip to display when button is disabled */}
-                  <Button
-                    disabled={tooltipTitle.length > 0}
-                    onClick={signUpUser}
-                  >
-                    Sign Up
-                  </Button>
-                </span>
-              </Tooltip>
-            </React.Fragment>
-          )}
-        </DialogTitle>
-        <DialogContent>
-          {props.newEvent ? (
-            <React.Fragment>
-              <CreateEvent date={event.start} />
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              <p>
-                Default Time Slot: {getAMPMTimeRange(event.start, event.end)} on{" "}
-                {getDayMonthDateStr(event.start)}
-              </p>
-
-              <p>{event.description}</p>
-
-              <section>
-                <h6>Volunteers ({event.volunteers?.length || 0})</h6>
-                {userSignedUp && (
-                  <CustomHours eventStart={event.start} eventEnd={event.end} />
-                )}
-                {event.volunteers?.map((volunteer, index) => {
-                  return <VolunteerInfo key={index} volunteer={volunteer} />;
-                })}
-              </section>
-            </React.Fragment>
-          )}
-        </DialogContent>
-      </Dialog>
-    </>
-  );
-}
-
-function ConfirmModal(props) {
-  const classes = useStyles();
 
 
      switch (user.userType)
      {
-         case USER_TYPES.VOLUNTEER: {
+         case USER_ROLES.VOLUNTEER: {
              return (
              <Dialog
                classes={{
@@ -438,7 +288,7 @@ function ConfirmModal(props) {
              </Dialog>
              );
          }
-         case USER_TYPES.ADMIN: {
+         case USER_ROLES.ADMIN: {
              return (
                  <Dialog
                    classes={{
