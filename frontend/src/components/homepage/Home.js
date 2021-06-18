@@ -8,6 +8,7 @@ function Home(props) {
   const { role } = props.user;
 
   const renderCustomTopRowLinks = () => {
+    console.log(props)
 switch (role) {
       case "admin":
         return (
@@ -21,23 +22,11 @@ switch (role) {
             </Link>
           </React.Fragment>
         );
-      case "hospital":
-        return (
-          <>
-            <Link to="/orders" className='link' >
-                <button className="buttonFormat order">Manage Cape Orders</button>
-            </Link>
-
-            <Link to="/announcements" className='link' >
-                <button className="buttonFormat announcement">View Announcements</button>
-            </Link>
-          </>
-        );
       case "volunteer":
         return (
           <>
             <Link to="/calendar" className='link' >
-                <button className="buttonFormat calendar">Manage Shifts</button>
+                <button className="buttonFormat calendar">View and Manage Shifts</button>
             </Link>
 
             <Link to="/announcements" className='link' >
@@ -68,9 +57,21 @@ switch (role) {
     }
   }
 
+  const renderWelcomeMessage = () => {
+    if(props.user.otherUserInfo === undefined){
+      return <h1 className='welcomeMsg'>Welcome to Happy Hats!</h1>
+    }
+    else if(props.user.otherUserInfo.firstName === ""){
+      return <h1 className='welcomeMsg'>Welcome to Happy Hats!</h1>
+    }
+    else{
+      return <h1 className='welcomeMsg'>Welcome, {props.user.otherUserInfo.firstName}!</h1>;
+    }
+  }
+
   return (
     <div className="Home" style={{paddingLeft: '8%', paddingTop: '90px'}}>
-      <h1 className='welcomeMsg'>Welcome, {props.user.email}</h1>
+      {renderWelcomeMessage()}
       <div className="page-content-container">
         <div className="inner-page-content">
           <div className="top-row-links">
