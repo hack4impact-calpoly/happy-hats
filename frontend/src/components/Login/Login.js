@@ -40,6 +40,7 @@ const Login = (props) => {
       loggedIn: true,
       cognitoSession: authData,
       role: user?.role,
+      approved: user?.approved,
       otherUserInfo: user,
     });
   };

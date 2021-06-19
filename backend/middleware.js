@@ -19,7 +19,9 @@ const getUserFromTokenPayload = async (tokenPayload) => {
       throw new Error("No cognito username found");
    }
 
-   return user;
+
+   // toObject is very important... converts document to Plain JS object (POJO)
+   return user.toObject();
 };
 
 const getTokenPayloadFromRequest = async (req) => {
@@ -56,7 +58,7 @@ const isUserAuthenticated = async (req, res, next) => {
 
       const userObj = await getUserFromTokenPayload(retrievedPayloadInfo[0]);
 
-      if (!userObj || !userObj.role || userObj.role === "none") {
+      if (!userObj || !userObj.role) {
          return res.status(401).json({
             status: 401,
             message: 'UNAUTHORIZED',
@@ -77,8 +79,37 @@ const isUserAuthenticated = async (req, res, next) => {
    }
 };
 
+const approvedRoles = new Set(['volunteer', 'admin', 'hospital']);
+
+const isUserApproved = async (req, res, next) => {
+   isUserAuthenticated(req, res, () => {
+      if ((!approvedRoles.has(req.locals?.user?.role)) || !req.locals?.user?.approved || !req.locals?.user?.decisionMade) {
+         return res.status(403).json({
+            message: 'Forbidden user role provided',
+         });
+      }
+
+      next();
+   });
+};
+
+const adminRoles = new Set(['admin']);
+const isUserAdmin = async (req, res, next) => {
+   isUserApproved(req, res, () => {
+      if (!adminRoles.has(req.locals?.user?.role)) {
+         return res.status(403).json({
+            message: 'Forbidden user role provided',
+         });
+      }
+
+      next();
+   });
+};
+
 module.exports = {
    isUserAuthenticated,
+   isUserApproved,
+   isUserAdmin,
    getTokenPayloadFromRequest,
    getUserFromTokenPayload,
 };

@@ -4,7 +4,7 @@ const MongooseConnector = require('../db-helper');
 const { Logger } = require("@hack4impact/logger");
 const { CalendarEventTypes } = require('./models/calendar-schema');
 const eventVolunteerApi = require('./event-volunteers/event-volunteer-api');
-const { isUserAuthenticated } = require("../middleware");
+const { isUserAuthenticated, isUserApproved } = require("../middleware");
 
 const confirmValidDate = (date, compDate = Date.now()) => {
   date = +date;
@@ -96,7 +96,7 @@ const checkCapeOrderEndpointBody = (req, res, onSuccess) => {
 };
 
 module.exports = (app) => {
-  app.get('/api/all-events', isUserAuthenticated, async (req, res) => {
+  app.get('/api/all-events', isUserApproved, async (req, res) => {
     const events = await MongooseConnector.getAllCalendarEvents();
     res.status(200).json({
       events: events
@@ -104,7 +104,7 @@ module.exports = (app) => {
   });
 
   /* Main endpoint for retrieving events to be displayed to user */
-  app.get('/api/events', isUserAuthenticated, async (req, res) => {
+  app.get('/api/events', isUserApproved, async (req, res) => {
     const eventUserType = req.locals.user.role;
     let events;
     switch (eventUserType) {
@@ -175,7 +175,10 @@ module.exports = (app) => {
       onInvalidEventId(res);
       return;
     }
+  });
 
+  app.get('/api/event', isUserApproved, async (req, res) => {
+    // still need to figure this out
     res.status(200).json({
       event,
     });
@@ -190,6 +193,31 @@ module.exports = (app) => {
 
       if (!title || !description) {
         onInvalidUserInput(res);
+      }
+    });
+  });
+
+  app.post('/api/event/volunteer', isUserApproved, async (req, res) => {
+    checkVolunteerEndpointBody(req, res, async (startDate, endDate, eventUser) => {
+      const calendarEvent = {
+        start: startDate,
+        end: endDate,
+        eventUser,
+        eventType: CalendarEventTypes.VOLUNTEER,
+      };
+      const success = await MongooseConnector.saveCalendarEvent(calendarEvent);
+      
+      checkSuccess(res, success);
+    });
+  });
+
+  // This will require authentication
+  app.put('/api/event/volunteer', isUserApproved, async (req, res) => {
+    checkVolunteerEndpointBody(req, res, async (startDate, endDate, eventUser) => {
+      const { eventId } = req.body;
+      const everythingValidated = await checkResourceAndAuth(res, eventId, req.locals.user.role);
+      // We already sent a response
+      if (!everythingValidated) {
         return;
       }
 
@@ -211,6 +239,33 @@ module.exports = (app) => {
 
       if (conflictingEvents && conflictingEvents.length > 0) {
         onInvalidUserInput(res, 'Start date and end date overlap with another event');
+
+      }
+    });
+  });
+  // This will require authentication
+  app.post('/api/event/capeorder', isUserApproved, async (req, res) => {
+    checkCapeOrderEndpointBody((req, res, async (startDate, endDate, eventUser) => {
+      const calendarEvent = {
+        start: startDate,
+        end: endDate,
+        eventUser,
+        eventType: CalendarEventTypes.CAPE_ORDER,
+        allDay: true,
+      };
+      const success = await MongooseConnector.saveCalendarEvent(calendarEvent);
+      
+      checkSuccess(res, success);
+    }));
+  });
+
+  // This will require authentication
+  app.put('/api/event/capeorder', isUserApproved, async (req, res) => {
+    checkCapeOrderEndpointBody(req, res, async (startDate, endDate, eventUser) => {
+      const { eventId } = req.body;
+      const everythingValidated = await checkResourceAndAuth(res, eventId, req.locals.user.role);
+      // We already sent a response
+      if (!everythingValidated) {
         return;
       }
 
@@ -229,7 +284,7 @@ module.exports = (app) => {
   });
 
   // This will require authentication
-  app.delete('/api/event', isUserAuthenticated, async (req, res) => {
+  app.delete('/api/event', isUserApproved, async (req, res) => {
     const { eventId } = req.body;
 
     const everythingValidated = await checkResourceAndAuth(res, eventId, req.locals.user.role);
@@ -244,4 +299,5 @@ module.exports = (app) => {
   });
 
   eventVolunteerApi(app);
+
 };
