@@ -22,7 +22,7 @@
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-happyhats-dev-190308-deployment/amplify-cfn-templates/auth/happyhats0c067f87-cloudformation-template.yml",
         "logicalId": "authhappyhats0c067f87"
       },
-      "lastPushTimeStamp": "2021-04-26T20:45:50.221Z",
+      "lastPushTimeStamp": "2021-06-19T13:45:37.749Z",
       "output": {
         "UserPoolId": "us-west-2_ECbLLfaNe",
         "AppClientIDWeb": "4jgebb3fvavga4qet84k9i2omu",

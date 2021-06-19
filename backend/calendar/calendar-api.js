@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const MongooseConnector = require('../db-helper');
 const { Logger } = require("@hack4impact/logger");
 const { CalendarEventTypes } = require('./models/calendar-schema');
+const eventVolunteerApi = require('./event-volunteers/event-volunteer-api');
 const { isUserAuthenticated } = require("../middleware");
 
 const confirmValidDate = (date, compDate = Date.now()) => {
@@ -113,7 +114,7 @@ module.exports = (app) => {
           eventType: CalendarEventTypes.VOLUNTEER,
         });
         break;
-      }
+      
       case 'hospital': {
         // TODO
         break;
@@ -122,7 +123,7 @@ module.exports = (app) => {
         events = await MongooseConnector.getEventsWithFilter({
           eventType: CalendarEventTypes.VOLUNTEER,
         });
-        break;
+        break;}
       default:
         // In this case something bad happened. The user's account type
         // would be something other than the 3 things above
@@ -243,5 +244,4 @@ module.exports = (app) => {
   });
 
   eventVolunteerApi(app);
-  capeOrdersApi(app);
 };
