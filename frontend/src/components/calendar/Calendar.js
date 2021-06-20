@@ -109,7 +109,9 @@ class Calendar extends React.Component {
         componentModifications = {
           event: EventComp,
           month: {
-            dateHeader: CapeHeaderComponent
+            dateHeader: (props) => (
+              <AddEvent createNewEvent={() => this.createNewEvent(props.date)} {...props} />
+            ),
           }
         };
         generalModifications = eventUser;
@@ -131,11 +133,6 @@ class Calendar extends React.Component {
     return {
       components: {
         // onMonthChange: () => console.log('temp2'),
-        month: {
-          dateHeader: (props) => (
-            <AddEvent createNewEvent={() => this.createNewEvent(props.date)} {...props} />
-          ),
-        },
         ...componentModifications,
       },
       ...generalModifications,
