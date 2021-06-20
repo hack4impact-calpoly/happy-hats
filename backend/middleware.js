@@ -54,9 +54,7 @@ const isUserAuthenticated = async (req, res, next) => {
             message: 'FORBIDDEN',
          });
       }
-      console.log(retrievedPayloadInfo);
       const userObj = await getUserFromTokenPayload(retrievedPayloadInfo[0]);
-      console.log(userObj)
       if (!userObj || !userObj.role) {
          return res.status(401).json({
             status: 401,

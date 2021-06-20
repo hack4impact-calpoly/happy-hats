@@ -1,7 +1,9 @@
 .InfoFormContainer{
-    padding: 4%;
+  padding: 4%;
+  background-color: floralwhite;
+  z-index: 2;
 }
 
 .firstNameBox {
-    display: flexbox;
+  display: flexbox;
 }

@@ -8,7 +8,6 @@ function withUser(WrappedComponent, onUserUpdated = null) {
     const [state, dispatch] = useContext(storeContext);
 
     const updateUser = (overrides) => {
-      console.log('changing to', overrides);
       generateUser(dispatch, overrides);
     };
 
@@ -27,7 +26,6 @@ function withUser(WrappedComponent, onUserUpdated = null) {
           user={state.user}
           modifyUser={updateUser}
           isUserAuthenticated={isUserAuthenticated}
-
           {...props}
         />
       </React.Fragment>

@@ -4,15 +4,6 @@ const MongooseConnector = require('./db-helper');
 const app = express()
 // Load .env into environment
 dotenv.config();
-// app.use((req, res, next) => {
-//   bodyParser.json()(req, res, err => {
-//       if (err) {
-//           console.log('Bad JSON formatting for body');
-//           return res.sendStatus(400); // Bad request
-//       }
-//       next();
-//   });
-// });
 
 app.use(express.json());
 app.use(express.urlencoded({

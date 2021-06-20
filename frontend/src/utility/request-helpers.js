@@ -33,7 +33,6 @@ class CustomWebError extends Error {
 
 const basicResponseCheck = (response) => {
   if (!response || !response.ok) {
-    console.log(response);
     throw new CustomWebError(response.status);
   }
   return response;
@@ -59,7 +58,6 @@ export class GetRequestHelpers {
   /* Expect given urlExtension to NOT begin with '/' */
   static async makeRequest(urlExtension, headers = {}) {
     try {
-      console.log(headers)
       const response = basicResponseCheck(await fetch(startUrl + urlExtension, {
         headers: {
           ...headers,
@@ -90,9 +88,8 @@ export async function getJsonResponse(response) {
 
 export class RequestPayloadHelpers {
   static async makeRequest(urlExtension, requestType, payload, headers = {}) {
-    console.log(payload)
     try {
-      const response = await fetch(startUrl + urlExtension, {
+      const response = await basicResponseCheck(await fetch(startUrl + urlExtension, {
         method: requestType,
         headers: {
           'Content-Type': 'application/json',
@@ -100,8 +97,7 @@ export class RequestPayloadHelpers {
         },
         redirect: 'follow',
         body: JSON.stringify(payload),
-      });
-      console.log(response)
+      }));
       return response;
     } catch (e) {
       return false;

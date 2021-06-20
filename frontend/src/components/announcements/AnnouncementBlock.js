@@ -13,7 +13,6 @@ class AnouncementBlock extends React.Component {
 
     return (
       <div>
-        {console.log(this.props)}
             {this.props.user?.role === "admin" && 
                 <Link to ="/create-announcements" className={styles.createButton}> Create an Announcement</Link>}
         {announcementList &&

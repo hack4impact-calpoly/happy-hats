@@ -169,18 +169,11 @@ module.exports = (app) => {
 
      app.post('/api/volunteerData', isUserAuthenticated, async (request, response) => {
       if (request.body.firstName && request.body.lastName) {
-        console.log('in volunteer api');
-        const updateNames = {
-          firstName: request.body.firstName,
-          lastName: request.body.lastName,
-          id: request.body.id
-        }
-        console.log(updateNames);
-        const success = await MongooseConnector.updateVolunteer(updateNames);
+        Logger.log('POST: Volunteer Info...');
+        const success = await MongooseConnector.updateVolunteer(request.locals.user.cognito_id, request.body.firstName, request.body.lastName);
         checkSuccess(response, success)
-            
       } else {
-        response.status(400).json({
+        return response.status(400).json({
           message: 'Did not supply all needed post attributes',
         });
       }
