@@ -18,7 +18,6 @@ function AlertDialog(props) {
 
   const handleDelete = async () => {
     setOpen(false);
-    console.log(props.post._id);
     const aData = {
       "_id": props.post._id,
       "firstName": props.post.firstName,

@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const { Logger } = require("@hack4impact/logger");
 const MongooseConnector = require('../db-helper');
-const { isUserApproved } = require("../middleware");
+const { isUserApproved, isUserAuthenticated  } = require("../middleware");
 
 const confirmValidObjectId = (objectId) => {
    return !!objectId && mongoose.isValidObjectId(objectId);
@@ -166,5 +166,17 @@ module.exports = (app) => {
       const success = await MongooseConnector.deleteVolunteer(toDelete);
       checkSuccess(response, success)
      })
+
+     app.post('/api/volunteerData', isUserAuthenticated, async (request, response) => {
+      if (request.body.firstName && request.body.lastName) {
+        Logger.log('POST: Volunteer Info...');
+        const success = await MongooseConnector.updateVolunteer(request.locals.user.cognito_id, request.body.firstName, request.body.lastName);
+        checkSuccess(response, success)
+      } else {
+        return response.status(400).json({
+          message: 'Did not supply all needed post attributes',
+        });
+      }
+   })
   
 };

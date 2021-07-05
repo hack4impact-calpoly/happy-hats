@@ -42,10 +42,10 @@ const userFns = {
       new: true,
     })
     .exec();
-  }
+  },
 };
 
 module.exports = {
-  User: User,
+  User,
   userFns,
 };

@@ -27,6 +27,10 @@ export function isUserAdmin(user) {
   return isUserApproved(user) && superUserRoleStrings.has(user.role);
 }
 
+export function isUserFullySignedUp(user) {
+  return user.otherUserInfo?.firstName && user.otherUserInfo?.lastName;
+}
+
 export const initialUser = {
   role: USER_ROLES.UNSET,
   loggedIn: false,

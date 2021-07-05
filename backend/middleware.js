@@ -41,7 +41,6 @@ const getTokenPayloadFromRequest = async (req) => {
    if (!("sub" in tokenPayload)) {
       throw new Error("No cognito user found from sub given");
    }
-
    return [tokenPayload, tokenPayload.sub];
 };
 
@@ -55,9 +54,7 @@ const isUserAuthenticated = async (req, res, next) => {
             message: 'FORBIDDEN',
          });
       }
-
       const userObj = await getUserFromTokenPayload(retrievedPayloadInfo[0]);
-
       if (!userObj || !userObj.role) {
          return res.status(401).json({
             status: 401,

@@ -22,7 +22,6 @@ const Login = (props) => {
       return;
     }
 
-    console.log('signing in user');
     const response = await getJsonResponse(
       await RequestPayloadHelpers.makeRequest('login', 'POST', {}, getAuthHeaderFromSession(authData))
     );
@@ -40,7 +39,7 @@ const Login = (props) => {
       loggedIn: true,
       cognitoSession: authData,
       role: user?.role,
-      approved: user?.approved,
+      approved: user?.approved && user?.decisionMade,
       otherUserInfo: user,
     });
   };
