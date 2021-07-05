@@ -1,5 +1,5 @@
 import { Redirect, useLocation, Route } from "react-router";
-import { isUserAdmin, isUserApproved, isUserFullySignedUp } from "../store/user/User";
+import { isUserFullySignedUp, isUserAdmin, isUserApproved } from "../store/user/User";
 import withUser from "../store/user/WithUser";
 import withNavbarAndFooter from "./WithNavbarAndFooter";
 

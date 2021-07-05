@@ -10,7 +10,7 @@ import {
   Tooltip,
   TextField,
 } from "@material-ui/core";
-import { darken, makeStyles, useTheme } from "@material-ui/core/styles";
+import { darken, makeStyles } from "@material-ui/core/styles";
 import { Button as BootstrapButton } from "react-bootstrap";
 import CloseIcon from "@material-ui/icons/Close";
 import {
