@@ -33,10 +33,8 @@ class CustomWebError extends Error {
 
 const basicResponseCheck = (response) => {
   if (!response || !response.ok) {
-    console.log(response);
     throw new CustomWebError(response.status);
   }
-
   return response;
 }
 
@@ -66,10 +64,8 @@ export class GetRequestHelpers {
         },
         redirect: 'follow',
       }));
-
       return response;
     } catch (e) {
-      console.log(e);
       return false;
     }
   }
@@ -93,7 +89,7 @@ export async function getJsonResponse(response) {
 export class RequestPayloadHelpers {
   static async makeRequest(urlExtension, requestType, payload, headers = {}) {
     try {
-      const response = basicResponseCheck(await fetch(startUrl + urlExtension, {
+      const response = await basicResponseCheck(await fetch(startUrl + urlExtension, {
         method: requestType,
         headers: {
           'Content-Type': 'application/json',
@@ -102,7 +98,6 @@ export class RequestPayloadHelpers {
         redirect: 'follow',
         body: JSON.stringify(payload),
       }));
-
       return response;
     } catch (e) {
       return false;

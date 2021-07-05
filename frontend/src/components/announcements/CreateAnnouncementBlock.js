@@ -35,7 +35,6 @@ function CreateAnnouncementBlock(props) {
     }
 
     async function submitForm() {
-        console.log("In SubmitForm")
         const aData = {
     
             "title": document.getElementById('title').value,

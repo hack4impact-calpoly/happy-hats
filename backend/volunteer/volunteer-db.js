@@ -1,11 +1,6 @@
-const mongoose = require('mongoose');
-const {
-   COLLECTION_NAME,
-   volunteerSchema
-} = require('./models/volunteer-schema');
+const { User } = require('../user-auth/user-auth-db');
 
-/* Create calendar model */
-const Volunteer = mongoose.model('Volunteer', volunteerSchema, COLLECTION_NAME);
+const Volunteer = User;
 
 /* Object containing functions we will use to interact with the DB */
 const volunteerFns = {
@@ -29,7 +24,16 @@ const volunteerFns = {
    deleteVolunteer: async(toDeleteVol) => {
       const val = await Volunteer.remove({_id: toDeleteVol._id});
       return val;
-    }
+    },
+    postVolunteer: async (newVolunteer) => {
+      const newPost = new Volunteer(newVolunteer);
+      const savedDoc = await newPost.save();
+      return savedDoc === newPost;
+    },
+    updateVolunteer: async (cognitoId, firstname, lastname) => {
+      return await Volunteer.updateOne({cognito_id: cognitoId}, {$set: {firstName: firstname, lastName: lastname}})
+          .exec();
+    },
 };
 
 module.exports = {

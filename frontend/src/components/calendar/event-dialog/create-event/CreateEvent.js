@@ -57,17 +57,17 @@ function RequiredIcon() {
 
 function CustomFormControl(props) {
   return (
-    <React.Fragment>
+    <div className={props.outerStyle}>
       <FormLabel>{props.title} {props.required ? <RequiredIcon /> : null}</FormLabel>
       {props.inner}
       <ErrorMessage className="form-error-msg" component="p" name={props.name} />
       {props.children}
-    </React.Fragment>
+    </div>
   );
 }
 
 export function CustomBasicFormControl(props) {
-  const { formikProps, formControlChildren, children, ...others} = props;
+  const { formikProps, formControlChildren, children, outerStyle, ...others} = props;
 
   return (
     <CustomFormControl
@@ -83,6 +83,7 @@ export function CustomBasicFormControl(props) {
         </FormControl>
       }
       {...others}
+      outerStyle={outerStyle}
     >
       {children}
     </CustomFormControl>

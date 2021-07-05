@@ -54,7 +54,6 @@ class VolunteerApproval extends React.Component {
 
     return (
       <>
-          
         <Container>
           <Row>
             <Col>
@@ -63,9 +62,9 @@ class VolunteerApproval extends React.Component {
             <Col>
             <div className={styles.ApprovalSection}> 
             <h4> Approve Volunteers </h4>
-               <h5> Pending: </h5>
-               {us.map(({
-                email, 
+              <h5> Pending: </h5>
+              {us.map(({
+                email,
                 role,
                 firstName, 
                 lastName, 

@@ -18,7 +18,6 @@ function withFetch(WrappedComponent, reqUrl, overrides = {}) {
     }, props.user ? [props.user.role] : []);
 
     const setFetchData = async () => {
-      console.log('user props', props.user);
       if (!props.user?.cognitoSession) {
         alert("No cognito session for fetch");
         return null;
