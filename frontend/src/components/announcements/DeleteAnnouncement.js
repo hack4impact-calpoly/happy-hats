@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -11,7 +11,7 @@ import { getAuthHeaderFromSession, RequestPayloadHelpers } from '../../utility/r
 import withUser from '../../store/user/WithUser';
 
 function AlertDialog(props) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -21,11 +21,11 @@ function AlertDialog(props) {
     setOpen(false);
     console.log(props.post._id);
     const aData = {
-        "title": props.post.title,
-        "content": props.post.content,
-        "author": props.post.author,
-        "date": props.post.date,
-        "_id": props.post._id
+      "title": props.post.title,
+      "content": props.post.content,
+      "author": props.post.author,
+      "date": props.post.date,
+      "_id": props.post._id
     }
 
     try {
@@ -33,10 +33,10 @@ function AlertDialog(props) {
       if (!resp || !resp.ok) {
         throw new Error('Error occurred deleting user');
       } else {
-        alert("Announcement Successfully Deleted. \nPlease refresh page to see change.");
+        alert("Success")
       }
     } catch (error) {
-        console.error(error)
+      console.error(error)
     }
   };
 
@@ -53,6 +53,8 @@ function AlertDialog(props) {
         open={open}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        maxWidth="xs"
+        
       >
         <DialogTitle id="alert-dialog-title">{"Are you sure you want to delete this announcement?"}</DialogTitle>
         <DialogContent>

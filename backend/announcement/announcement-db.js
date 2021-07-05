@@ -28,7 +28,7 @@ const announcementFns = {
     return savedDoc === newPost;
   },
   deleteAnnouncement: async(toDelete) => {
-    const val = await Announcement.remove({_id: toDelete._id})
+    const val = await Announcement.deleteOne({_id: toDelete._id})
     return val;
   }
 };

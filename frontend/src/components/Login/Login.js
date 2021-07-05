@@ -3,7 +3,7 @@ import Amplify, { Auth } from 'aws-amplify';
 import awsconfig from '../../aws-exports';
 import { Redirect, useLocation } from "react-router-dom";
 import './Login.css';
-import { AmplifySignOut, AmplifyAuthenticator, AmplifySignIn, AmplifySignUp } from '@aws-amplify/ui-react';
+import { AmplifyAuthenticator, AmplifySignIn, AmplifySignUp } from '@aws-amplify/ui-react';
 import { onAuthUIStateChange, AuthState } from '@aws-amplify/ui-components';
 import withUser from '../../store/user/WithUser';
 import logo from "../../imgs/logo.png";

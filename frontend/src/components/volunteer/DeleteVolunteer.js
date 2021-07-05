@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { generateAuthHeader, getAuthHeaderFromSession, RequestPayloadHelpers } from '../../utility/request-helpers';
+import { getAuthHeaderFromSession, RequestPayloadHelpers } from '../../utility/request-helpers';
 import withUser from '../../store/user/WithUser';
 
 function AlertDialog(props) {
