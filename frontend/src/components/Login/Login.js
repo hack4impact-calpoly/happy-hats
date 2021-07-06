@@ -45,7 +45,6 @@ const Login = (props) => {
   };
 
   React.useEffect(() => {
-    console.log('testing use effect');
     if (authState === undefined) {
       Auth.currentAuthenticatedUser().then(authData => {
         setAuthState(AuthState.SignedIn);

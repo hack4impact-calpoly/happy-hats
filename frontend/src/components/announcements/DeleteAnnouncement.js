@@ -52,20 +52,31 @@ function AlertDialog(props) {
         open={open}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-        maxWidth="xs"
-        
+        PaperProps={{
+          style: {
+            margin: "3%",
+            borderStyle: "solid",
+            borderRadius: "46px",
+            borderColor: "#004AAC",
+            backgroundColor: "#FFFCEF",
+            padding: "30px",
+            boxShadow: "-10px 10px 5px #F3D352",
+          },
+        }}
       >
-        <DialogTitle id="alert-dialog-title">{"Are you sure you want to delete this announcement?"}</DialogTitle>
+        <DialogTitle  disableTypography="true" id="alert-dialog-title"  style={{fontFamily: 'Raleway', fontSize:"20px", color: "#004AAC"}}>
+          {"Are you sure you want to delete this announcement?"}
+          </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText id="alert-dialog-description" style={{fontFamily: 'Raleway', fontSize:"15px", color: "#004AAC"}}>
             This action can't be undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancel} color="primary">
+          <Button onClick={handleCancel} color="primary" style={{fontFamily: 'Raleway'}}>
             Cancel
           </Button>
-          <Button onClick={handleDelete} color="primary" autoFocus>
+          <Button onClick={handleDelete} color="primary" style={{fontFamily: 'Raleway'}}>
             Delete Announcement
           </Button>
         </DialogActions>
