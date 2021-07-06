@@ -22,6 +22,8 @@ const MongooseConnector = (() => {
         connected: false,
     };
 
+    // TODO: Add way to send back 500 here
+
     /**
      * May be changed in future to allow optional callback. Any errors that are not
      * handled in code will be caught and dealt with here

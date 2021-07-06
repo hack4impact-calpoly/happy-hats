@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { eventVolunteerSchema } = require('../event-volunteers/event-volunteer-schema');
 const COLLECTION_NAME = 'calendar-events';
 
 // Enum for calendar event types
@@ -14,13 +15,16 @@ const calendarEventSchema = new mongoose.Schema({
     allDay: { type: Boolean, required: false, default: false },
     eventType: { type: Number, required: true, min: 0, max: NUM_CALENDAR_EVENT_TYPES },
     eventUser: { type: mongoose.ObjectId, required: true },
+    volunteers: { type: [eventVolunteerSchema], required: false, default: [] },
+    title: { type: String, required: true },
+    description: { type: String, required: false },
 },
 {
     collection: COLLECTION_NAME,
 });
 
 module.exports = {
-    CalendarEventTypes: CalendarEventTypes,
-    calendarEventSchema: calendarEventSchema,
-    COLLECTION_NAME: COLLECTION_NAME,
+    CalendarEventTypes,
+    calendarEventSchema,
+    COLLECTION_NAME,
 };

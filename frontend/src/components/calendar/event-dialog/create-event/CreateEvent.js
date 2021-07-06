@@ -6,6 +6,7 @@ import FormLabel from "react-bootstrap/FormLabel";
 import FormControl from "react-bootstrap/FormControl";
 import { Formik, Form as FormikForm, ErrorMessage } from "formik";
 import * as Yup from 'yup';
+import { RequestPayloadHelpers } from '../../../../utility/request-helpers';
 
 const timeSlotOptions = [
   '10AM - 12PM',
@@ -93,7 +94,11 @@ export function CustomBasicFormControl(props) {
 function CreateEvent(props) {
 
   const createEvent = (values) => {
-    // submitForm();
+    try {
+      RequestPayloadHelpers.makeRequest('')
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const renderForm = (formikProps) => {
