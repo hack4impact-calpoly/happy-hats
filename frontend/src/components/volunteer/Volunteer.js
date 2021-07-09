@@ -15,6 +15,7 @@ class Volunteer extends React.Component {
     this.state = {
       users: this.props.fetchedData?.users,
     };
+    this.updateUserList = this.updateUserList.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -42,6 +43,22 @@ class Volunteer extends React.Component {
 
     this.setState({
       users,
+    })
+  }
+
+  updateUserList = (updatedList) => {
+    console.log(updatedList)
+    if (!this.state.users) {
+      alert('User deleted without existing');
+      return;
+    }
+    const updated = updatedList.volunteers
+    console.log(this.state.users)
+    console.log(typeof updated)
+    console.log(JSON.stringify(updated))
+    // console.log(JSON.stringify(updated))
+    this.setState({
+      users: updatedList.volunteers,
     })
   }
 
@@ -96,7 +113,8 @@ class Volunteer extends React.Component {
                   </Row>
                 </Container>
                 {this.props.user?.role === "admin" &&
-                  <AlertDialog post={vol[index]}/>}
+                  <AlertDialog post={vol[index]}
+                  update={this.updateUserList}/>}
               </div>
             );
           })}

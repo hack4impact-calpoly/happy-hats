@@ -73,7 +73,7 @@ module.exports = (app) => {
    app.get('/api/volunteers', isUserApproved, async (req, res) => {
       Logger.log("GET: All Volunteers...");
       const volunteers = await MongooseConnector.getAllVolunteers();
-      res.status(200).json({
+      return res.status(200).json({
          volunteers,
       });
    });

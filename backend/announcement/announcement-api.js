@@ -52,7 +52,7 @@ module.exports = (app) => {
         }
         else{
           announcements = await MongooseConnector.getAllAnnouncements();
-          res.status(200).json(announcements)
+          return res.status(200).json(announcements)
         }
       
     })

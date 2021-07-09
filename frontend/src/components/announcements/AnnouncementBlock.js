@@ -7,13 +7,39 @@ import { Link } from 'react-router-dom'
 
 const url = "announcement";
 class AnouncementBlock extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { announcements: this.props.fetchedData };
+    this.updateAnnouncementList = this.updateAnnouncementList.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.fetchedData !== prevProps.fetchedData) {
+      this.setState({
+        announcements: this.props.fetchedData,
+      });
+    }
+  }
+  
+  updateAnnouncementList = (updatedList) => {
+    if (!this.state.announcements) {
+      alert('Announcement deleted without existing');
+      return;
+    }
+    this.setState({
+      announcements: updatedList,
+    })
+  }
 
   render() {
-    const announcementList = this.props.fetchedData;
+    if (!this.props.fetchedData) {
+      return null;
+    }
+    
+    const announcementList = this.state.announcements || [];
 
     return (
       <div>
-        {console.log(this.props)}
         {this.props.user?.role === "admin" &&
           <Link to="/create-announcements" className={styles.createButton}>Create Announcement</Link>}
         {announcementList &&
@@ -31,7 +57,9 @@ class AnouncementBlock extends React.Component {
                 <div className={styles.top}>
                   <div className={styles.right}>
                     {this.props.user?.role === "admin" &&
-                      <AlertDialog post={announcementList[index]} />}
+                      <AlertDialog post={announcementList[index]} 
+                        update={this.updateAnnouncementList} 
+                        />}
 
                     <p>  </p>
                     <h1 className={styles.Title}>{title}</h1>

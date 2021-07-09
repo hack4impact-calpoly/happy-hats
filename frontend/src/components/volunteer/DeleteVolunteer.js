@@ -7,11 +7,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { getAuthHeaderFromSession, RequestPayloadHelpers } from '../../utility/request-helpers';
+import { getAuthHeaderFromSession, GetRequestHelpers, RequestPayloadHelpers } from '../../utility/request-helpers';
 import withUser from '../../store/user/WithUser';
 
-function AlertDialog(props) {
-  const [open, setOpen] = React.useState(false);
+const AlertDialog = (props) => {
+  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -36,11 +36,19 @@ function AlertDialog(props) {
     try {
       const resp = await RequestPayloadHelpers.makeRequest('volunteer', 'DELETE', aData, getAuthHeaderFromSession(props.user.cognitoSession));
       if (!resp || !resp.ok) {
-        alert("This failed!!!")
         throw new Error('Error occurred deleting user');
-        
       } else {
-        alert("Volunteer Successfully Deleted. \nPlease refresh page to see change.");
+          try {
+            const updatedUsers = await GetRequestHelpers.makeRequest('volunteers', getAuthHeaderFromSession(props.user.cognitoSession))
+              .then(response => response.json());
+            if (!updatedUsers) {
+              throw new Error('Error occurred deleting user!!!!');
+            } else {
+              props.update(updatedUsers)
+            }
+          } catch (error) {
+            console.error(error)
+          }
       }
     } catch (error) {
       console.error(error)
