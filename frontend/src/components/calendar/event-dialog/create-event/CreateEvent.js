@@ -59,9 +59,9 @@ function RequiredIcon() {
 function CustomFormControl(props) {
   return (
     <div className={props.outerStyle}>
-      <FormLabel>{props.title} {props.required ? <RequiredIcon /> : null}</FormLabel>
+      <FormLabel style={{fontFamily: 'Raleway', fontSize:"20px", color: "#004AAC"}}>{props.title} {props.required ? <RequiredIcon /> : null}</FormLabel>
       {props.inner}
-      <ErrorMessage className="form-error-msg" component="p" name={props.name} />
+      <ErrorMessage style={{fontFamily: 'Raleway', fontSize:"20px", color: "#004AAC"}} className="form-error-msg" component="p" name={props.name} />
       {props.children}
     </div>
   );

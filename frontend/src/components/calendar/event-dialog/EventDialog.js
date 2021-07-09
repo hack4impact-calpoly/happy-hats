@@ -422,7 +422,7 @@ function EventDialog(props) {
         <span id="volunteer-sign-up">
           {" "}
           {/* Hack to get tooltip to display when button is disabled */}
-          <Button disabled={tooltipError} onClick={signUpUser}>
+          <Button disabled={tooltipError} variant="outline-primary" onClick={signUpUser}>
             Sign Up
           </Button>
         </span>
@@ -439,6 +439,17 @@ function EventDialog(props) {
       onClose={props.handleClose}
       aria-labelledby="event-dialog-title"
       aria-describedby="event-dialog-description"
+      PaperProps={{
+        style: {
+          margin: "3%",
+          borderStyle: "solid",
+          borderRadius: "46px",
+          borderColor: "#004AAC",
+          backgroundColor: "#FFFCEF",
+          padding: "30px",
+          boxShadow: "-10px 10px 5px #F3D352",
+        },
+      }}
     >
       <DialogActions>
         <IconButton
@@ -449,8 +460,8 @@ function EventDialog(props) {
           <CloseIcon />
         </IconButton>
       </DialogActions>
-      <DialogTitle id="event-dialog-title">{eventTitle}</DialogTitle>
-      <DialogContent>
+      <DialogTitle disableTypography={true} style={{fontFamily: 'Raleway', fontSize:"25px", color: "#004AAC"}} id="event-dialog-title">{eventTitle}</DialogTitle>
+      <DialogContent style={{fontFamily: 'Raleway', fontSize:"17px", color: "#004AAC"}}>
         <EventDialogContent
           event={event}
           user={user}
