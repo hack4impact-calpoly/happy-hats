@@ -8,6 +8,10 @@ const volunteerFns = {
       const volunteer = await Volunteer.findById(volunteerId, 'volunteer').exec();
       return volunteer?.volunteer;
    },
+   getUser: async (volunteerId) => {
+      const volunteer = await Volunteer.findById(volunteerId).exec();
+      return volunteer;
+   },
    getAllVolunteers: async () => {
       return await Volunteer.find({}).exec();
    },
@@ -20,6 +24,9 @@ const volunteerFns = {
       return Volunteer
          .findByIdAndUpdate(volunteerId, { nonCompletedHours: hours })
          .exec();
+   },
+   volunteerExists: async (volunteerId) => {
+      return Volunteer.exists({ _id: volunteerId });
    },
    deleteVolunteer: async(toDeleteVol) => {
       const val = await Volunteer.remove({_id: toDeleteVol._id});

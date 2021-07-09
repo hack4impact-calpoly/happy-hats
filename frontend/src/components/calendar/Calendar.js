@@ -1,19 +1,17 @@
 import './Calendar.css';
 import React from 'react';
-import { findDOMNode } from 'react-dom';
 import moment from 'moment';
 import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import capeImg from '../../imgs/cape.png';
 import withFetch from '../WithFetch';
-import { EventComp } from './event/Event';
+import { EventComp, eventTransformer } from './event/Event';
 import DayInformation from './day-info/DayInformation';
 import withEventDialog from './event-dialog/WithEventDialog';
 import { IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { compareDatesWithoutTime, findNearestWeekday } from '../../utility/date-time';
-import withUser from '../../store/user/WithUser';
 import { USER_ROLES } from '../../store/user/User';
 
 const localizer = momentLocalizer(moment);
@@ -63,16 +61,41 @@ class Calendar extends React.Component {
   constructor(props) {
     super(props);
 
-    this.calendarRef = null;
-
     this.state = {
       currentViewDate: findNearestWeekday(new Date()),
       currentCalendarMonth: new Date().getMonth(),
+      events: this.props?.fetchedData || [],
+      eventEditor: null,
     };
+  }
 
-    this.setCalendarRef = el => {
-      this.calendarRef = el ? findDOMNode(el) : el;
+  setStateEasy(newState) {
+    this.setState({
+      ...this.state,
+      ...newState,
+    });
+  }
+
+  eventUpdaterChecker(oldProps, oldState) {
+    if (oldProps.fetchedData !== this.props.fetchedData) {
+
+      const eventEditorFn = getRemoveAndAddEventFn(this.props.fetchedData);
+
+      const newFn = (ev) => {
+        this.setStateEasy({
+          events: eventEditorFn(ev) || [],
+        });
+      };
+
+      this.setStateEasy({
+        events: this.props?.fetchedData,
+        eventEditor: newFn,
+      });
     }
+  }
+
+  componentDidUpdate(oldProps, oldState) {
+    this.eventUpdaterChecker(oldProps, oldState);
   }
 
   customDayPropGetter(date) {
@@ -109,7 +132,9 @@ class Calendar extends React.Component {
         componentModifications = {
           event: EventComp,
           month: {
-            dateHeader: CapeHeaderComponent
+            dateHeader: (props) => (
+              <AddEvent createNewEvent={() => this.createNewEvent(props.date)} {...props} />
+            ),
           }
         };
         generalModifications = eventUser;
@@ -130,97 +155,10 @@ class Calendar extends React.Component {
 
     return {
       components: {
-        month: {
-          dateHeader: (props) => (
-            <AddEvent createNewEvent={() => this.createNewEvent(props.date)} {...props} />
-          ),
-        },
         ...componentModifications,
       },
       ...generalModifications,
     };
-  }
-
-  componentDidMount() {
-    this.modifyCalendar();
-  }
-
-  componentDidUpdate() {
-    this.modifyCalendar();
-  }
-
-  modifyCalendar() {
-    const calendar = this.calendarRef;
-    
-    if (!calendar) {
-      return;
-    }
-
-    // Max 5 days and each event happens on only 1 day
-    const afterPercents = 20;
-    const baseWidth = 100.0 / 7;
-
-    // Correspond to sunday/saturday 
-    const removals = [0, 5];
-
-    // Modify header
-    const header = calendar.querySelector('.rbc-month-header');
-
-    if (header.children.length === 7) {
-      for (const toRemove of removals) {
-        if (header.children.length > toRemove) {
-          header.children[toRemove].remove();
-        }
-      }
-    }
-
-    // Need findDOMNode in BigCalendar to run first
-    setTimeout(() => {
-      const calendarValues = calendar.querySelectorAll('.rbc-month-row');
-      for (const row of calendarValues) {
-        const dayBgs = row.querySelector('.rbc-row-bg');
-        const dateCells = row.querySelectorAll('.rbc-row-content .rbc-row');
-        
-        // datecells[0] is day number so should be 7
-        if (dayBgs.children.length < 7 || dateCells[0].children.length < 7) {
-          return;
-        }
-
-        for (const toRemove of removals) {
-          if (dateCells) {
-            if (dateCells[0].children.length > toRemove) {
-              dateCells[0].children[toRemove].remove();
-            }
-          }
-          
-          if (dayBgs && dayBgs.children.length > toRemove) {
-            dayBgs.children[toRemove].remove();
-          }
-        }
-        
-        // Restyle some stuff
-        for (let k = 1; k < dateCells.length; k++) {
-          const dateCellRow = dateCells[k];
-
-          for (let j = 0; j < dateCellRow.children.length; j++) {
-            const rowSegmentClassEle = dateCellRow.children[j];
-            /* Need to decrease this or remove it */
-            let newSize;
-            if (j % 7 === 0) {
-              // Lol fixing style is fun. Removing stuff above causes fun stuff to fix
-              newSize = Math.round(((Number(rowSegmentClassEle.style.maxWidth?.slice(0, -1)) || 0) / baseWidth) - 1) * afterPercents;
-            } else {
-              newSize = afterPercents;
-            }
-
-            const strPercent = `${newSize}%`;
-
-            rowSegmentClassEle.style.maxWidth = strPercent;
-            rowSegmentClassEle.style.flexBasis = strPercent;
-          }
-        }
-      }
-    }, 0);
   }
 
   // Assumes start and end date in same day
@@ -237,16 +175,16 @@ class Calendar extends React.Component {
   }
 
   onEventSelected(event) {
-    this.props.dialogOptions.handleEventDialogOpen(event);
+    this.props.dialogOptions.handleEventDialogOpen(event, this.state.eventEditor);
   }
 
   createNewEvent(day) {
-    this.props.dialogOptions.createEvent(day);
+    this.props.dialogOptions.createEvent(day, this.state.eventEditor);
   }
 
   onDrillDown(date) {
     if (date !== this.state.currentViewDate) {
-      this.setState({
+      this.setStateEasy({
         currentCalendarMonth: date.getMonth(),
         currentViewDate: date,
       });
@@ -256,16 +194,15 @@ class Calendar extends React.Component {
   onNavigate(newDate) {
     if (newDate.getMonth() !== this.state.currentCalendarMonth) {
       setTimeout(() => {
-        this.setState({
+        this.setStateEasy({
           currentCalendarMonth: newDate.getMonth(),
-          currentViewDate: this.state.currentViewDate,
         });
       }, 0);
     }
   }
 
   render() {
-    const events = this.props.fetchedData;
+    const events = this.state.events;
     console.log(events); // Leaving in for now cuz convenient sometimes
 
     if (this.props.user.role === USER_ROLES.NONE) {
@@ -277,11 +214,11 @@ class Calendar extends React.Component {
         <DayInformation
           date={this.state.currentViewDate}
           events={this.getEventsOnDate(this.state.currentViewDate, events)}
+          onEventSelected={(event) => this.onEventSelected(event)}
         />
         <BigCalendar
           localizer={localizer}
           defaultDate={new Date()}
-          ref={this.setCalendarRef}
           timeslots={2}
           step={20}
           dayPropGetter={(d) => this.customDayPropGetter(d)}
@@ -311,19 +248,40 @@ const calendarEventFormatter = ({events}) => {
   }
 
   for (const ev of events) {
-    ev.start = new Date(ev.start);
-    ev.end = new Date(ev.end);
+    eventTransformer(ev);
   }
 
   events.sort((a, b) => {
-    return a.start < b.start;
+    return a.start?.getTime() < b.start?.getTime();
   });
 
   return events;
 };
 
-export default withUser(withEventDialog(withFetch(Calendar, 'events?event_user=4edd40c86762e0fb12000003', {
+const getRemoveAndAddEventFn = (events) => {
+  if (!events) {
+    return () => null;
+  }
+
+  const eventMap = new Map();
+  for (const ev of events) {
+    eventMap.set(ev._id, ev);
+  }
+
+  return (newEvent) => {
+    if (!newEvent || !newEvent._id) {
+      return [];
+    }
+
+    // const prevEvent = eventMap.get(newEvent._id);
+    eventMap.set(newEvent._id, newEvent);
+
+    return [...eventMap.values()];
+  };
+};
+
+export default withFetch(withEventDialog(Calendar), 'events', {
   formatter: calendarEventFormatter,
-  useMock: true,
+  useMock: false,
   withAuth: true,
-})));
+});
