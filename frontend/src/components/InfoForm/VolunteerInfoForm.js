@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   getAuthHeaderFromSession,
-  GetRequestHelpers,
   RequestPayloadHelpers,
 } from "../../utility/request-helpers";
 import withUser from "../../store/user/WithUser";

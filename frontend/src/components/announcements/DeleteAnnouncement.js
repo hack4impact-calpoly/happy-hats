@@ -7,10 +7,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { IconButton } from '@material-ui/core';
-import { getAuthHeaderFromSession, RequestPayloadHelpers } from '../../utility/request-helpers';
+import { getAuthHeaderFromSession, GetRequestHelpers, RequestPayloadHelpers } from '../../utility/request-helpers';
 import withUser from '../../store/user/WithUser';
 
-function AlertDialog(props) {
+const AlertDialog = (props) => {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -30,9 +30,19 @@ function AlertDialog(props) {
     try {
       const resp = await RequestPayloadHelpers.makeRequest('announcement', 'DELETE', aData, getAuthHeaderFromSession(props.user.cognitoSession));
       if (!resp || !resp.ok) {
-        throw new Error('Error occurred deleting user');
+        throw new Error('Error occurred deleting announcement');
       } else {
-        alert("Success")
+        try {
+          const updatedAnnouncements = await GetRequestHelpers.makeRequest('announcement', getAuthHeaderFromSession(props.user.cognitoSession))
+            .then(response => response.json());
+          if (!updatedAnnouncements) {
+            throw new Error('Error occurred updating announcement list');
+          } else {
+            props.update(updatedAnnouncements)
+          }
+        } catch (error) {
+          console.error(error)
+        }
       }
     } catch (error) {
       console.error(error)
@@ -52,20 +62,31 @@ function AlertDialog(props) {
         open={open}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-        maxWidth="xs"
-        
+        PaperProps={{
+          style: {
+            margin: "3%",
+            borderStyle: "solid",
+            borderRadius: "46px",
+            borderColor: "#004AAC",
+            backgroundColor: "#FFFCEF",
+            padding: "30px",
+            boxShadow: "-10px 10px 5px #F3D352",
+          },
+        }}
       >
-        <DialogTitle id="alert-dialog-title">{"Are you sure you want to delete this announcement?"}</DialogTitle>
+        <DialogTitle disableTypography={true} id="alert-dialog-title" style={{ fontFamily: 'Raleway', fontSize: "20px", color: "#004AAC" }}>
+          {"Are you sure you want to delete this announcement?"}
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText id="alert-dialog-description" style={{ fontFamily: 'Raleway', fontSize: "15px", color: "#004AAC" }}>
             This action can't be undone.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancel} color="primary">
+          <Button onClick={handleCancel} color="primary" style={{ fontFamily: 'Raleway' }}>
             Cancel
           </Button>
-          <Button onClick={handleDelete} color="primary" autoFocus>
+          <Button onClick={handleDelete} color="primary" style={{ fontFamily: 'Raleway' }}>
             Delete Announcement
           </Button>
         </DialogActions>

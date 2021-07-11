@@ -73,7 +73,7 @@ module.exports = (app) => {
    app.get('/api/volunteers', isUserApproved, async (req, res) => {
       Logger.log("GET: All Volunteers...");
       const volunteers = await MongooseConnector.getAllVolunteers();
-      res.status(200).json({
+      return res.status(200).json({
          volunteers,
       });
    });
@@ -146,12 +146,14 @@ module.exports = (app) => {
       }
    });
 
-   app.delete('/api/volunteer', async (request, response) => {
-      const validated = await checkAuth(response, request.locals.user.role);
-
-      if (!validated) {
-         return;
-      }
+   app.delete('/api/volunteer', isUserApproved, async (request, response) => {
+      Logger.log('DELETE: Volunteer...');
+      // console.log(request.body)
+      // const validated = await checkAuth(response, request.body.role);
+      // console.log(validated)
+      // if (!validated) {
+      //    return;
+      // }
 
       const toDelete = {
          _id: request.body._id,
@@ -160,7 +162,10 @@ module.exports = (app) => {
          email: request.body.email,
          completedHours: request.body.completedHours,
          scheduledHours: request.body.scheduledHours,
-         nonCompletedHours: request.body.nonCompletedHours
+         nonCompletedHours: request.body.nonCompletedHours,
+         approved:request.body.approved,
+         decisionMade:request.body.decisionMade,
+         role:request.body.role,
       }
       Logger.log("after assignment");
       const success = await MongooseConnector.deleteVolunteer(toDelete);

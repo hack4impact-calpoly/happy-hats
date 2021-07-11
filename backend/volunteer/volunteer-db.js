@@ -25,11 +25,8 @@ const volunteerFns = {
          .findByIdAndUpdate(volunteerId, { nonCompletedHours: hours })
          .exec();
    },
-   volunteerExists: async (volunteerId) => {
-      return Volunteer.exists({ _id: volunteerId });
-   },
-   deleteVolunteer: async(toDeleteVol) => {
-      const val = await Volunteer.remove({_id: toDeleteVol._id});
+   deleteVolunteer: async (toDeleteVol) => {
+      const val = await Volunteer.deleteOne({_id: toDeleteVol._id});
       return val;
     },
     postVolunteer: async (newVolunteer) => {
