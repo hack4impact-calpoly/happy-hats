@@ -28,6 +28,14 @@ const calendarEventFns = {
         });
         return resp?.deletedCount === 1;
     },
+    findCalendarEventUser: async (eventId) => {
+        const val = await CalendarEvent.findById(eventId, 'eventUser').exec();
+        return val?.eventUser;
+    },
+    findCalendarEventById: async (eventId) => {
+        const val = await CalendarEvent.findById(eventId).exec();
+        return val;
+    },
     updateCalendarEvent: async (eventId, calendarEvent) => {
         const oldDoc = await CalendarEvent.findOneAndReplace(
             {
@@ -36,6 +44,42 @@ const calendarEventFns = {
             calendarEvent
         );
         return eventId.equals(oldDoc?._id);
+    },
+    addVolunteerToEvent: async (eventId, volunteer) => {
+        const updateResult = await CalendarEvent.findByIdAndUpdate(
+            eventId,
+            {
+                $push: {
+                    volunteers: volunteer,
+                }
+            },
+            {
+                new: true,
+                lean: true,
+            }
+        );
+        
+        return updateResult;
+    },
+    approveCustomEventHours: async (eventId, volunteerId, approved) => {
+        const updateResult = await CalendarEvent.findOneAndUpdate(
+            {
+                _id: eventId,
+                'volunteers.volunteer.id': volunteerId,
+            },
+            {
+                $set: {
+                    'volunteers.$.approved': approved,
+                    'volunteers.$.decisionMade': true,
+                }
+            },
+            {
+                new: true,
+                lean: true,
+            }
+        );
+
+        return updateResult;
     },
 };
 

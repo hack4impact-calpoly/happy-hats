@@ -1,4 +1,4 @@
-const MongooseConnector = require('./db-helper');
+const MongooseConnector = require('../db-helper');
 
 (async () => {
     await MongooseConnector.connect();

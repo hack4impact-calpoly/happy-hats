@@ -1,7 +1,5 @@
-import 'process';
-
-const startUrl = `${process.env.REACT_APP_SERVER_URL}/api/`;
-
+const startUrl = 'http://localhost:3001/api/';
+// const startUrl = `${process.env.REACT_APP_SERVER_URL}/api/`;
 class CustomWebError extends Error {
   static getAppropriateErrorMsg(statCode) {
     switch (statCode) {
@@ -87,7 +85,7 @@ export async function getJsonResponse(response) {
 }
 
 export class RequestPayloadHelpers {
-  static async makeRequest(urlExtension, requestType, payload, headers = {}) {
+  static async makeRequest(urlExtension, requestType, payload, headers = {}, asJSON = false) {
     try {
       const response = await basicResponseCheck(await fetch(startUrl + urlExtension, {
         method: requestType,
@@ -98,6 +96,10 @@ export class RequestPayloadHelpers {
         redirect: 'follow',
         body: JSON.stringify(payload),
       }));
+
+      if (asJSON) {
+        return await getJsonResponse(response);
+      }
       return response;
     } catch (e) {
       return false;

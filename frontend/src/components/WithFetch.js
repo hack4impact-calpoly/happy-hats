@@ -40,6 +40,7 @@ function withFetch(WrappedComponent, reqUrl, overrides = {}) {
           return {
             events: [
               {
+                _id: '1',
                 start: findNearestWeekday(moment().add(1, "days").toDate()),
                 allDay: false,
                 end: findNearestWeekday(moment().add(1, "days").add(1, "hours").toDate()),
@@ -49,17 +50,29 @@ function withFetch(WrappedComponent, reqUrl, overrides = {}) {
                   {
                     name: 'Freddie J',
                     start: moment().add(1, "days").add(30, "minutes").toDate(),
-                    end: moment().add(1, "days").add(1, "hours").toDate()
+                    end: moment().add(1, "days").add(1, "hours").toDate(),
+                    approved: false,
+                    decisionMade: true
                   },
                   {
                     name: 'Freddie J Numero dos',
                     start: moment().add(1, "days").add(12, "minutes").toDate(),
-                    end: moment().add(1, "days").add(72, "minutes").toDate()
+                    end: moment().add(1, "days").add(72, "minutes").toDate(),
+                    approved: true,
+                    decisionMade: true
+                  },
+                  {
+                    name: 'Freddie J Numero tres',
+                    start: moment().add(1, "days").add(12, "minutes").toDate(),
+                    end: moment().add(1, "days").add(72, "minutes").toDate(),
+                    approved: true,
+                    decisionMade: false
                   },
                 ],
                 resource: "test"
               },
               {
+                _id: '2',
                 start: moment().toDate(),
                 allDay: false,
                 end: moment().add(1, "hours").toDate(),
@@ -67,6 +80,7 @@ function withFetch(WrappedComponent, reqUrl, overrides = {}) {
                 resource: "test"
               },
               {
+                _id: '3',
                 start: moment().add(2, "hours").toDate(),
                 allDay: false,
                 end: moment().add(1, "hours").toDate(),
@@ -74,6 +88,7 @@ function withFetch(WrappedComponent, reqUrl, overrides = {}) {
                 resource: "test"
               },
               {
+                _id: '4',
                 start: moment().add(-5, "days").toDate(),
                 allDay: false,
                 end: moment().add(-5, "days").add(1, "hours").toDate(),

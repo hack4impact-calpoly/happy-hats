@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
+import withUser from '../../../store/user/WithUser';
 import EventDialog from './EventDialog';
 
 function withEventDialog(WrappedComponent) {
@@ -15,20 +16,32 @@ function withEventDialog(WrappedComponent) {
         event: null,
         open: false,
         newEvent: false,
+        eventEditor: null,
         ...overrides,
       });
     };
 
-    const handleClickOpen = (event) => {
-      generateOptions({ event, open: true, });
+    const overrideOptions = (overrides) => {
+      setDialogOptions({
+        ...dialogOptions,
+        ...overrides,
+      });
+    };
+
+    const handleClickOpen = (event, eventEditor) => {
+      generateOptions({ event, open: true, eventEditor });
     };
 
     const handleClose = () => {
       generateOptions({ open: false, });
     };
 
-    const createEvent = (day) => {
-      generateOptions({ open: true, newEvent: true, event: { start: day } });
+    const createEvent = (day, eventEditor) => {
+      generateOptions({ open: true, newEvent: true, event: { start: day }, eventEditor });
+    };
+
+    const updateEvent = (newEvent) => {
+      overrideOptions({ event: newEvent });
     };
 
     return (
@@ -38,17 +51,17 @@ function withEventDialog(WrappedComponent) {
             handleEventDialogOpen: handleClickOpen,
             handleEventDialogClose: handleClose,
             createEvent,
+            updateEvent,
             ...dialogOptions,
           }}
-
           {...props}
         />
-        <EventDialog {...dialogOptions} handleClose={handleClose} />
+        <EventDialog user={props.user} updateEvent={updateEvent} {...dialogOptions} handleClose={handleClose} />
       </React.Fragment>
     );
   }
 
-  return WithEventDialog;
+  return withUser(WithEventDialog);
 }
 
 export default withEventDialog;
