@@ -179,7 +179,7 @@ class Calendar extends React.Component {
   }
 
   createNewEvent(day) {
-    this.props.dialogOptions.createEvent(day, this.state.eventEditor);
+    this.props.dialogOptions.createEvent(day, this.state.eventEditor, this.getEventsOnDate(day));
   }
 
   onDrillDown(date) {

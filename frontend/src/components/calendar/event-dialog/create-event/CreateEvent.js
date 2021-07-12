@@ -1,12 +1,14 @@
 import './CreateEvent.css';
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import FormLabel from "react-bootstrap/FormLabel";
 import FormControl from "react-bootstrap/FormControl";
 import { Formik, Form as FormikForm, ErrorMessage } from "formik";
 import * as Yup from 'yup';
-import { RequestPayloadHelpers } from '../../../../utility/request-helpers';
+import { getAuthHeaderFromSession, RequestPayloadHelpers } from '../../../../utility/request-helpers';
+import { getTopOfDay } from '../../../../utility/date-time';
+import { eventTransformer } from '../../event/Event';
 
 const timeSlotOptions = [
   '10AM - 12PM',
@@ -14,41 +16,63 @@ const timeSlotOptions = [
   'Custom',
 ];
 
+const timeSlotToStartEndMap = new Map([
+  ['10AM - 12PM', {
+    start: (date) => getAdjustedTimeFromDate(date, 10),
+    end: (date) => getAdjustedTimeFromDate(date, 12),
+  }],
+  ['1PM - 3PM', {
+    start: (date) => getAdjustedTimeFromDate(date, 13),
+    end: (date) => getAdjustedTimeFromDate(date, 15),
+  }],
+  ['Custom', {
+    start: (date, dateStr) => getAdjustedTimeFromDate(date, ...dateStr.split(':')),
+    end: (date, dateStr) => getAdjustedTimeFromDate(date, ...dateStr.split(':')),
+  }],
+]);
 
-const CreateEventSchema = Yup.object().shape({
-  timeSlot: Yup.string()
-    .required('Required'),
-  title: Yup.string()
-    .max(75, 'Title too long!')
-    .required('Required'),
-  description: Yup.string()
-    .max(200, 'Description too long!')
-    .optional(),
-  startTime: Yup.string().when('timeSlot', {
-    is: 'Custom',
-    then: Yup.string().required('Required')
-      .test('start_time_valid', 'Start time must be less than end time', function(value) { // Must NOT be arrow function
-        const { endTime } = this.parent;
+const getAdjustedTimeFromDate = (topOfDay, hours, minutes = 0) => {
+  return topOfDay.getTime() + (hours * 1000 * 60 * 60) + (minutes * 1000 * 60);
+};
 
-        if (!endTime) {
-          return true;
-        }
-        return new Date(`01/01/2000 ${value}`).getTime() < new Date(`01/01/2000 ${endTime}`).getTime();
-      })
-  }),
-  endTime: Yup.string().when('timeSlot', {
-    is: 'Custom',
-    then: Yup.string().required('Required')
-      .test('end_time_valid', 'End time must be after the start time', function(value) { // Must NOT be arrow function
-        const { startTime } = this.parent;
+const getCreateEventSchema = () => {
+  const CreateEventSchema = Yup.object().shape({
+    timeSlot: Yup.string()
+      .required('Required'),
+    title: Yup.string()
+      .max(75, 'Title too long!')
+      .required('Required'),
+    description: Yup.string()
+      .max(200, 'Description too long!')
+      .optional(),
+    startTime: Yup.string().when('timeSlot', {
+      is: 'Custom',
+      then: Yup.string().required('Required')
+        .test('start_time_valid', 'Start time must be less than end time', function(value) { // Must NOT be arrow function
+          const { endTime } = this.parent;
 
-        if (!startTime) {
-          return true;
-        }
-        return new Date(`01/01/2000 ${value}`).getTime() > new Date(`01/01/2000 ${startTime}`).getTime();
-      })
-  }),
-});
+          if (!endTime) {
+            return true;
+          }
+          return new Date(`01/01/2000 ${value}`).getTime() < new Date(`01/01/2000 ${endTime}`).getTime();
+        })
+    }),
+    endTime: Yup.string().when('timeSlot', {
+      is: 'Custom',
+      then: Yup.string().required('Required')
+        .test('end_time_valid', 'End time must be after the start time', function(value) { // Must NOT be arrow function
+          const { startTime } = this.parent;
+
+          if (!startTime) {
+            return true;
+          }
+          return new Date(`01/01/2000 ${value}`).getTime() > new Date(`01/01/2000 ${startTime}`).getTime();
+        })
+    }),
+  });
+
+  return CreateEventSchema;
+};
 
 function RequiredIcon() {
   return (
@@ -92,10 +116,41 @@ export function CustomBasicFormControl(props) {
 }
 
 function CreateEvent(props) {
+  const { date, dailyEvents } = props;
+  const startOfDayDate = getTopOfDay(date);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState(timeSlotOptions);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [eventFormSchema, setEventFormSchema] = useState(getCreateEventSchema());
 
-  const createEvent = (values) => {
+  const createEvent = async (values) => {
     try {
-      RequestPayloadHelpers.makeRequest('')
+      let start, end;
+      if (values.timeSlot !== 'Custom') {
+        start = timeSlotToStartEndMap.get(values.timeSlot).start(startOfDayDate);
+        end = timeSlotToStartEndMap.get(values.timeSlot).end(startOfDayDate);
+      } else {
+        start = timeSlotToStartEndMap.get(values.timeSlot).start(startOfDayDate, values.startTime);
+        end = timeSlotToStartEndMap.get(values.timeSlot).end(startOfDayDate, values.endTime);
+      }
+
+      const event = {
+        start,
+        end,
+        title: values.title,
+        description: values.description,
+      };
+
+      const resp = await RequestPayloadHelpers.makeRequest('event', 'POST', event,
+        getAuthHeaderFromSession(props.user.cognitoSession), true);
+      
+      if (!resp || !resp.newEvent) {
+        alert('Create event failed. Please try again later!');
+        return;
+      }
+
+      eventTransformer(resp.newEvent);
+      props.eventEditor(resp.newEvent);
+      props.handleClose();
     } catch (err) {
       console.log(err);
     }
@@ -137,7 +192,7 @@ function CreateEvent(props) {
         </CustomBasicFormControl>
         <CustomBasicFormControl formikProps={formikProps} name="title" required type="text" title="Event Title" placeholder="Enter title" />
         <CustomBasicFormControl formikProps={formikProps} name="description" title="Event Description" placeholder="Enter description" />
-        <Button className="float-right" variant="primary" type="submit">
+        <Button disabled={isSubmitting} className="float-right" variant="primary" type="submit">
           Create Event
         </Button>
       </FormikForm>
@@ -154,8 +209,12 @@ function CreateEvent(props) {
         title: '',
         description: '',
       }}
-      validationSchema={CreateEventSchema}
-      onSubmit={values => createEvent(values)}
+      validationSchema={eventFormSchema}
+      onSubmit={async (values) => {
+        setIsSubmitting(true);
+        await createEvent(values);
+        setIsSubmitting(false);
+      }}
       validateOnChange={true}
       validateOnBlur={true}
     >

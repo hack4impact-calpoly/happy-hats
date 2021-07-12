@@ -20,7 +20,10 @@ const calendarEventFns = {
     saveCalendarEvent: async (calendarEvent) => {
         const newEvent = new CalendarEvent(calendarEvent);
         const savedDoc = await newEvent.save();
-        return savedDoc === newEvent;
+        if (savedDoc !== newEvent) {
+            return false;
+        }
+        return savedDoc;
     },
     deleteCalendarEvent: async (eventId) => {
         const resp = await CalendarEvent.deleteOne({

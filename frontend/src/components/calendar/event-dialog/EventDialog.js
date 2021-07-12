@@ -259,13 +259,16 @@ function EventDialogContent(props) {
     approved,
     rejected,
     setVolunteers,
+    user,
+    eventEditor,
+    handleClose,
   } = props;
 
-  switch (props.user.role) {
+  switch (user.role) {
     case USER_ROLES.ADMIN:
       // Only admins can make events
       if (props.newEvent) {
-        return <CreateEvent date={event.start} />;
+        return <CreateEvent eventEditor={eventEditor} user={user} date={event.start} handleClose={handleClose} />;
       }
 
       return (
@@ -328,24 +331,26 @@ function EventDialogContent(props) {
         </React.Fragment>
       );
     case USER_ROLES.VOLUNTEER:
-      <React.Fragment>
-        <p>
-          Default Time Slot: {getAMPMTimeRange(event.start, event.end)} on{" "}
-          {getDayMonthDateStr(event.start)}
-        </p>
+      return (
+        <React.Fragment>
+          <p>
+            Default Time Slot: {getAMPMTimeRange(event.start, event.end)} on{" "}
+            {getDayMonthDateStr(event.start)}
+          </p>
 
-        <p>{event.description}</p>
+          <p>{event.description}</p>
 
-        <section>
-          <h6>Volunteers ({event.volunteers?.length || 0})</h6>
-          {userSignedUp && (
-            <CustomHours eventStart={event.start} eventEnd={event.end} />
-          )}
-          {event.volunteers?.map((volunteer, index) => {
-            return <VolunteerInfo key={index} volunteer={volunteer} />;
-          })}
-        </section>
-      </React.Fragment>;
+          <section>
+            <h6>Volunteers ({event.volunteers?.length || 0})</h6>
+            {userSignedUp && (
+              <CustomHours eventStart={event.start} eventEnd={event.end} />
+            )}
+            {event.volunteers?.map((volunteer, index) => {
+              return <VolunteerInfo key={index} volunteer={volunteer} />;
+            })}
+          </section>
+        </React.Fragment>
+      );
     default:
       return null;
   }
@@ -374,7 +379,6 @@ function EventDialog(props) {
   );
 
   const signUpUser = async () => {
-
     if (!userSignedUp) {
       const resp = await RequestPayloadHelpers.makeRequest('event/self-volunteer', 'POST', {
         start: event.start,
@@ -388,7 +392,6 @@ function EventDialog(props) {
       }
 
       eventTransformer(resp.newEvent);
-      // let resp = { newEvent: { _id: event._id, title: 'hello', volunteers: [], start: new Date(), end: new Date() } };
 
       props.eventEditor(resp.newEvent);
       setUserSignedUp(true);
@@ -457,9 +460,12 @@ function EventDialog(props) {
           userSignedUp={userSignedUp}
           rejected={rejected}
           approved={approved}
+          handleClose={props.handleClose}
           pending={pending}
           newEvent={props.newEvent}
           volunteers={volunteers}
+          eventEditor={props.eventEditor}
+          updateEvent={props.updateEvent}
           setVolunteers={setVolunteers}
         />
       </DialogContent>

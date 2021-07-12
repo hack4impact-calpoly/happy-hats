@@ -140,7 +140,6 @@ module.exports = (app) => {
 
     // This will require authentication
     app.put('/api/event/volunteer/approve', isUserAdmin, async (req, res) => {
-        console.log('into endpoint');
         withEventChangeAndEventId(req, res, false, async (startDate, endDate, eventUser, eventId) => {
             let volunteerId = req.body.volunteer;
             const approved = req.body.approved;
@@ -186,8 +185,6 @@ module.exports = (app) => {
             }
 
             const newEvent = await MongooseConnector.approveCustomEventHours(eventId, volunteerId, approved);
-
-            console.log('end of endpoint', newEvent);
             
             checkSuccessFull(res, newEvent, {
                 newEvent
