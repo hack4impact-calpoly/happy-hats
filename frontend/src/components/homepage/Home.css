@@ -79,3 +79,11 @@
   justify-content: space-between;
   width: 100%;
 }
+
+.waitContainer {
+  padding: 3%;
+  background-color: #FFFCEF;
+  border: 3px solid #004AAC;
+  border-radius: 10px;
+  box-shadow: -10px 10px 5px #F3D352;
+}

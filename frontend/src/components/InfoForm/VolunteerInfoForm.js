@@ -24,11 +24,9 @@ const VolunteerInfoForm = (props) => {
         values,
         getAuthHeaderFromSession(props.user.cognitoSession)
       );
-
       if (!worked) {
-        alert('Request failed');
+        alert('Update failed. Please contact an administrator for assistance.');
       } else {
-        alert("Volunteer Data Successfully Posted");
         props.modifyUser({
           otherUserInfo: {
             ...props.user?.otherUserInfo,
@@ -46,8 +44,8 @@ const VolunteerInfoForm = (props) => {
       <div className={styles.InfoFormContainer}>
         <h1>Volunteer Information</h1>
         <p>
-          Once you supply this information, an admin will approve your account.
-          Then you can start signing up for volunteer shifts!
+          Once you supply this information, an administrator will approve your account.
+          You can then start signing up for volunteer shifts!
         </p>
         <Formik
           enableReinitialize={true}
@@ -68,19 +66,19 @@ const VolunteerInfoForm = (props) => {
                 name="firstName"
                 required
                 type="text"
-                title="Firstname"
-                placeholder="Enter firstname"
+                title="First Name"
+                placeholder="Enter First Name"
               />
               <CustomBasicFormControl
                 formikProps={formikProps}
                 name="lastName"
                 required
                 type="text"
-                title="Lastname"
-                placeholder="Enter lastname"
+                title="Last Name"
+                placeholder="Enter Last Name"
               />
               <div className="pt-2 d-flex justify-content-end">
-                <Button className="" variant="primary" type="submit">
+                <Button className={styles.buttonSubmit} variant="primary" type="submit">
                   Submit
                 </Button>
               </div>
