@@ -38,6 +38,15 @@ const volunteerFns = {
       return await Volunteer.updateOne({cognito_id: cognitoId}, {$set: {firstName: firstname, lastName: lastname}})
           .exec();
     },
+    saveVolunteerDisabled: async (_id) => {
+      return await User.findByIdAndUpdate(_id, {
+        approved: false, 
+        decisionMade: true
+      }, {
+        new: true,
+      })
+      .exec();
+    },
 };
 
 module.exports = {
