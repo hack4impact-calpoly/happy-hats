@@ -19,6 +19,7 @@ const AlertDialog = (props) => {
 
   const handleDelete = async () => {
     setOpen(false);
+    console.log("here")
     const aData = {
       "_id": props.post._id,
       "firstName": props.post.firstName,
@@ -31,10 +32,9 @@ const AlertDialog = (props) => {
       "decisionMade":props.post.decisionMade,
       "role":props.post.role,
     }
-    console.log(aData)
-    console.log(props.user.cognitoSession)
     try {
-      const resp = await RequestPayloadHelpers.makeRequest('volunteer', 'DELETE', aData, getAuthHeaderFromSession(props.user.cognitoSession));
+      // const resp = await RequestPayloadHelpers.makeRequest('updateRejected', 'POST', vData, getAuthHeaderFromSession(this.props.user.cognitoSession));
+      const resp = await RequestPayloadHelpers.makeRequest('updateDisabled', 'POST', aData, getAuthHeaderFromSession(props.user.cognitoSession));
       if (!resp || !resp.ok) {
         throw new Error('Error occurred deleting user');
       } else {
@@ -42,7 +42,7 @@ const AlertDialog = (props) => {
             const updatedUsers = await GetRequestHelpers.makeRequest('volunteers', getAuthHeaderFromSession(props.user.cognitoSession))
               .then(response => response.json());
             if (!updatedUsers) {
-              throw new Error('Error occurred deleting user!!!!');
+              throw new Error('Error occurred deleting user.');
             } else {
               props.update(updatedUsers)
             }
@@ -60,7 +60,7 @@ const AlertDialog = (props) => {
   };
 
   return (
-    <div>
+    <>
       <IconButton style={{ color: "#004AAC" }} onClick={handleClickOpen}>
         <DeleteIcon />
       </IconButton>
@@ -82,11 +82,11 @@ const AlertDialog = (props) => {
       >
 
         <DialogTitle disableTypography="true" id="alert-dialog-title" style={{fontFamily: 'Raleway', fontSize:"20px", color: "#004AAC"}}>
-          {"Are you sure you want to delete this volunteer?"}
+          {"Are you sure you want to disable this volunteer?"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description" style={{fontFamily: 'Raleway', fontSize:"15px", color: "#004AAC"}}>
-            This action can't be undone.
+            This action will move the user into the 'rejected' field.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -94,11 +94,11 @@ const AlertDialog = (props) => {
             Cancel
           </Button>
           <Button onClick={handleDelete} color="primary" style={{fontFamily: 'Raleway'}}>
-            Delete Volunteer
+            Disable Volunteer
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </>
   );
 }
 

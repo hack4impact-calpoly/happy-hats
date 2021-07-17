@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const { Logger } = require("@hack4impact/logger");
 const MongooseConnector = require('../db-helper');
-const { isUserApproved, isUserAuthenticated  } = require("../middleware");
+const { isUserApproved, isUserAuthenticated, isUserAdmin  } = require("../middleware");
 
 const confirmValidObjectId = (objectId) => {
    return !!objectId && mongoose.isValidObjectId(objectId);
@@ -146,15 +146,30 @@ module.exports = (app) => {
       }
    });
 
+   app.post("/api/updateDisabled", isUserAdmin, async (req, res) => {
+      console.log("POST: Disable Volunteer....")
+      if (!req.body.email) {
+        return res.status(400).json({
+          message: "Bad request format."
+        });
+      }
+      const volunteerObject = await MongooseConnector.getUserFromEmail(
+         req.body.email
+       );
+       if (!volunteerObject) {
+         return res.status(404).json({
+           message: "User email not found",
+         });
+       }
+   
+       const user = await MongooseConnector.saveUserRejected(volunteerObject.id);
+       return res.status(200).json({
+         user,
+       });
+     });
+
    app.delete('/api/volunteer', isUserApproved, async (request, response) => {
       Logger.log('DELETE: Volunteer...');
-      // console.log(request.body)
-      // const validated = await checkAuth(response, request.body.role);
-      // console.log(validated)
-      // if (!validated) {
-      //    return;
-      // }
-
       const toDelete = {
          _id: request.body._id,
          firstName: request.body.firstName,
@@ -167,7 +182,7 @@ module.exports = (app) => {
          decisionMade:request.body.decisionMade,
          role:request.body.role,
       }
-      Logger.log("after assignment");
+
       const success = await MongooseConnector.deleteVolunteer(toDelete);
       checkSuccess(response, success)
      })

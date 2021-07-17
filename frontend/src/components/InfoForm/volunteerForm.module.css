@@ -1,9 +1,20 @@
 .InfoFormContainer{
-  padding: 4%;
-  background-color: floralwhite;
-  z-index: 2;
+  padding: 3%;
+  background-color: #FFFCEF;
+  border: 3px solid #004AAC;
+  border-radius: 10px;
+  box-shadow: -10px 10px 5px #F3D352;
 }
 
 .firstNameBox {
   display: flexbox;
+}
+
+.buttonSubmit {
+  background-color: #004AAC;
+  color:white;
+  text-decoration: none !important;
+  font-size: 15px;
+  border-radius: 12px;
+  padding:10px;
 }
