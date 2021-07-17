@@ -15,7 +15,9 @@ function Home(props) {
 
     if (!isUserApproved(props.user)) {
       return (
-        <h3>Please wait to be approved by an admin</h3>
+        <div className="waitContainer">
+          <h3>Please wait to be approved by an administrator!</h3>
+        </div>
       );
     }
 
