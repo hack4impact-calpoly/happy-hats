@@ -194,6 +194,8 @@ module.exports = (app) => {
 
     // This will require authentication
     app.post('/api/event/volunteer/custom-hours', isUserApproved, async (req, res) => {
+        Logger.log('POST: Custom hours');
+
         withEventChangeAndEventId(req, res, true, async (startDate, endDate, eventUser, eventId) => {
             const eventUserRole = req.locals.user?.role;
 
@@ -209,34 +211,36 @@ module.exports = (app) => {
                 return;
             }
 
-            const volunteerEvent = event.volunteers.find(v => volunteerId.equals(v.volunteer));
-            if (volunteerEvent && volunteerEvent.usingDefaultTimes) {
-                res.status(404).json({
-                    message: 'Volunteer has',
-                });
-                return;
-            }
-
             const usingDefaultTimes = userSelectedDefaultTime(startDate, endDate, event);
-            if (usingDefaultTimes) {
-                res.status(200).json({
-                    message: 'No need to request ',
-                });
-                return;
-            }
 
-            const newVolunteerEvent = {
+            const volunteerEvent = event.volunteers.find(v => eventUser.equals(v.volunteer?.id));
+            const { firstName, lastName, email } = req.locals.user;
+            const newVolunteer = volunteerEvent ? {
+                firstName,
+                lastName,
+                email,
+                id: eventUser,
+            } : volunteerEvent.volunteer;
+
+            const volunteer = {
                 start: startDate,
                 end: endDate,
                 usingDefaultTimes,
                 approved: eventUserRole === 'admin' || usingDefaultTimes,
-                volunteer: eventUser,
-                decisionMade: false,
+                volunteer: newVolunteer,
+                decisionMade: eventUserRole === 'admin' || usingDefaultTimes,
             };
 
-            const success = await MongooseConnector.approveCustomEventHours(eventId, volunteerId, approved);
-
-            checkSuccess(res, success);
+            let newEvent;
+            if (!volunteerEvent) {
+                newEvent = await MongooseConnector.addVolunteerToEvent(eventId, volunteer);
+            } else {
+                newEvent = await MongooseConnector.setCustomHoursForEvent(eventId, eventUser, volunteer);
+            }
+            
+            checkSuccessFull(res, newEvent, {
+                newEvent
+            });
         });
     });
 

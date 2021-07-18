@@ -64,6 +64,25 @@ const calendarEventFns = {
         
         return updateResult;
     },
+    setCustomHoursForEvent: async (eventId, volunteerId, eventData) => {
+        const updateResult = await CalendarEvent.findOneAndUpdate(
+            {
+                _id: eventId,
+                'volunteers.volunteer.id': volunteerId,
+            },
+            {
+                $set: {
+                    'volunteers.$': eventData,
+                }
+            },
+            {
+                new: true,
+                lean: true,
+            }
+        );
+
+        return updateResult;
+    },
     approveCustomEventHours: async (eventId, volunteerId, approved) => {
         const updateResult = await CalendarEvent.findOneAndUpdate(
             {

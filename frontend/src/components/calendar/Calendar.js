@@ -11,7 +11,7 @@ import DayInformation from './day-info/DayInformation';
 import withEventDialog from './event-dialog/WithEventDialog';
 import { IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-import { compareDatesWithoutTime, findNearestWeekday } from '../../utility/date-time';
+import { compareDatesWithoutTime, findNearestWeekday, getTopOfDay } from '../../utility/date-time';
 import { USER_ROLES } from '../../store/user/User';
 
 const localizer = momentLocalizer(moment);
@@ -62,7 +62,7 @@ class Calendar extends React.Component {
     super(props);
 
     this.state = {
-      currentViewDate: findNearestWeekday(new Date()),
+      currentViewDate: getTopOfDay(findNearestWeekday(new Date())),
       currentCalendarMonth: new Date().getMonth(),
       events: this.props?.fetchedData || [],
       eventEditor: null,
@@ -167,11 +167,11 @@ class Calendar extends React.Component {
     const day = new Date(date);
     day.setHours(0, 0, 0, 0);
 
-    return events.filter(ev => {
+    return events?.filter(ev => {
       const convertedDate = new Date(ev.start);
       convertedDate.setHours(0, 0, 0, 0); // Go to start of day
       return day.getTime() === convertedDate.getTime();
-    });
+    }) || [];
   }
 
   onEventSelected(event) {
@@ -179,10 +179,11 @@ class Calendar extends React.Component {
   }
 
   createNewEvent(day) {
-    this.props.dialogOptions.createEvent(day, this.state.eventEditor, this.getEventsOnDate(day));
+    this.props.dialogOptions.createEvent(day, this.state.eventEditor, this.getEventsOnDate(day, this.state.events));
   }
 
   onDrillDown(date) {
+    date = getTopOfDay(date);
     if (date !== this.state.currentViewDate) {
       this.setStateEasy({
         currentCalendarMonth: date.getMonth(),
@@ -229,6 +230,7 @@ class Calendar extends React.Component {
           onView={() => null}
           onNavigate={(d) => this.onNavigate(d)}
           onSelectEvent={(event) => this.onEventSelected(event)}
+          onSelectSlot={(slot) => this.onDrillDown(slot.start)}
           startAccessor="start"
           endAccessor="end"
           style={{ height: '80vh', width: '65vw', paddingLeft: '10%', margin: 0, }}
@@ -242,7 +244,13 @@ class Calendar extends React.Component {
   }
 }
 
-const calendarEventFormatter = ({events}) => {
+const calendarEventFormatter = (obj) => {
+  if (!obj) {
+    return;
+  }
+
+  const { events } = obj;
+
   if (!events) {
     return;
   }

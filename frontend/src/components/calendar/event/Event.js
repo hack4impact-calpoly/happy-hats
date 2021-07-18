@@ -1,7 +1,6 @@
 import './Event.css';
 
 export function EventComp(props) {
-  console.log(props);
   return <p className="event-month-view">{props.title}</p>;
 }
 

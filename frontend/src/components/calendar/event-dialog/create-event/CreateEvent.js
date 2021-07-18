@@ -7,7 +7,7 @@ import FormControl from "react-bootstrap/FormControl";
 import { Formik, Form as FormikForm, ErrorMessage } from "formik";
 import * as Yup from 'yup';
 import { getAuthHeaderFromSession, RequestPayloadHelpers } from '../../../../utility/request-helpers';
-import { getTopOfDay } from '../../../../utility/date-time';
+import { getTopOfDay, getAdjustedTimeFromDate } from '../../../../utility/date-time';
 import { eventTransformer } from '../../event/Event';
 
 const timeSlotOptions = [
@@ -30,10 +30,6 @@ const timeSlotToStartEndMap = new Map([
     end: (date, dateStr) => getAdjustedTimeFromDate(date, ...dateStr.split(':')),
   }],
 ]);
-
-const getAdjustedTimeFromDate = (topOfDay, hours, minutes = 0) => {
-  return topOfDay.getTime() + (hours * 1000 * 60 * 60) + (minutes * 1000 * 60);
-};
 
 const getCreateEventSchema = () => {
   const CreateEventSchema = Yup.object().shape({
@@ -118,9 +114,15 @@ export function CustomBasicFormControl(props) {
 function CreateEvent(props) {
   const { date, dailyEvents } = props;
   const startOfDayDate = getTopOfDay(date);
-  const [availableTimeSlots, setAvailableTimeSlots] = useState(timeSlotOptions);
+  // const [availableTimeSlots, setAvailableTimeSlots] = useState(timeSlotOptions);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [eventFormSchema, setEventFormSchema] = useState(getCreateEventSchema());
+
+  /* useEffect(() => {
+    const validTimeSlotOptions = timeSlotOptions.filter(slot => {
+      return slot !== 'Custom';
+    });
+  }, [props.dailyEvents]); */
 
   const createEvent = async (values) => {
     try {
