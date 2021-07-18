@@ -112,17 +112,10 @@ export function CustomBasicFormControl(props) {
 }
 
 function CreateEvent(props) {
-  const { date, dailyEvents } = props;
+  const { date } = props;
   const startOfDayDate = getTopOfDay(date);
-  // const [availableTimeSlots, setAvailableTimeSlots] = useState(timeSlotOptions);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [eventFormSchema, setEventFormSchema] = useState(getCreateEventSchema());
-
-  /* useEffect(() => {
-    const validTimeSlotOptions = timeSlotOptions.filter(slot => {
-      return slot !== 'Custom';
-    });
-  }, [props.dailyEvents]); */
 
   const createEvent = async (values) => {
     try {

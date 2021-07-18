@@ -120,20 +120,6 @@ module.exports = (app) => {
         return;
       }
 
-      const conflictingEvents = await MongooseConnector.getEventsWithFilter({
-        start: {
-          $lte: endDate,
-        },
-        end: {
-          $gte: startDate,
-        }
-      });
-
-      if (conflictingEvents && conflictingEvents.length > 0) {
-        onInvalidUserInput(res, 'Start date and end date overlap with another event');
-        return;
-      }
-
       const calendarEvent = {
         start: startDate,
         end: endDate,
