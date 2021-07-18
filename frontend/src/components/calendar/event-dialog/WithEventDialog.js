@@ -17,6 +17,7 @@ function withEventDialog(WrappedComponent) {
         open: false,
         newEvent: false,
         eventEditor: null,
+        dailyEvents: [],
         ...overrides,
       });
     };
@@ -36,8 +37,8 @@ function withEventDialog(WrappedComponent) {
       generateOptions({ open: false, });
     };
 
-    const createEvent = (day, eventEditor) => {
-      generateOptions({ open: true, newEvent: true, event: { start: day }, eventEditor });
+    const createEvent = (day, eventEditor, dailyEvents) => {
+      generateOptions({ open: true, newEvent: true, event: { start: day }, eventEditor, dailyEvents });
     };
 
     const updateEvent = (newEvent) => {

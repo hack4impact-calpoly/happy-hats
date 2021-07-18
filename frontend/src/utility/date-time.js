@@ -30,6 +30,14 @@ export function compareDatesWithoutTime(d1, d2) {
   return getTopOfDay(d1).getTime() === getTopOfDay(d2).getTime();
 }
 
+export function getTopOfDayAdjustedTime(date, hours, minutes = 0) {
+  return getAdjustedTimeFromDate(getTopOfDay(date), hours, minutes);
+}
+
+export function getAdjustedTimeFromDate(topOfDay, hours, minutes = 0) {
+  return topOfDay.getTime() + (hours * 1000 * 60 * 60) + (minutes * 1000 * 60);
+};
+
 export function getMilitaryTimeFromDate(date) {
   const timeStr = date.toTimeString();
   return timeStr.substring(0, timeStr.indexOf(' '));

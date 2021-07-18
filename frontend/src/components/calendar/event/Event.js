@@ -1,11 +1,7 @@
 import './Event.css';
 
 export function EventComp(props) {
-  return props.title.includes("title") ? <p className="event-month-view">{props.title}</p> : XEventComp(props);
-}
-
-function XEventComp(props) {
-  return <p>Other</p>;
+  return <p className="event-month-view">{props.title}</p>;
 }
 
 export function eventTransformer(ev) {

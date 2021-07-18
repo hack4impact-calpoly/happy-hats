@@ -20,7 +20,10 @@ const calendarEventFns = {
     saveCalendarEvent: async (calendarEvent) => {
         const newEvent = new CalendarEvent(calendarEvent);
         const savedDoc = await newEvent.save();
-        return savedDoc === newEvent;
+        if (savedDoc !== newEvent) {
+            return false;
+        }
+        return savedDoc;
     },
     deleteCalendarEvent: async (eventId) => {
         const resp = await CalendarEvent.deleteOne({
@@ -59,6 +62,25 @@ const calendarEventFns = {
             }
         );
         
+        return updateResult;
+    },
+    setCustomHoursForEvent: async (eventId, volunteerId, eventData) => {
+        const updateResult = await CalendarEvent.findOneAndUpdate(
+            {
+                _id: eventId,
+                'volunteers.volunteer.id': volunteerId,
+            },
+            {
+                $set: {
+                    'volunteers.$': eventData,
+                }
+            },
+            {
+                new: true,
+                lean: true,
+            }
+        );
+
         return updateResult;
     },
     approveCustomEventHours: async (eventId, volunteerId, approved) => {

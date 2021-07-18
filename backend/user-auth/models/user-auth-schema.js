@@ -16,7 +16,6 @@ const userSchema = new mongoose.Schema({
   nonCompletedHours: { type: Number, required: true, default: 0 },
   approved: {type: Boolean, required: true, default: false},
   decisionMade: {type: Boolean, required: true, default: false},
-  
 });
 
 module.exports = userSchema;

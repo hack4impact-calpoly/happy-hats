@@ -10,24 +10,19 @@ import {
   Tooltip,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button as BootstrapButton } from "react-bootstrap";
 import CloseIcon from "@material-ui/icons/Close";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import {
   getAMPMTimeRange,
   getDayMonthDateStr,
-  getMilitaryTimeFromDate,
 } from "../../../utility/date-time";
-import React, { useState } from "react";
-import CreateEvent, {
-  CustomBasicFormControl,
-} from "./create-event/CreateEvent";
-import { Formik, Form as FormikForm } from "formik";
-import * as Yup from "yup";
+import React, { useEffect, useState } from "react";
+import CreateEvent from "./create-event/CreateEvent";
 import { USER_ROLES } from "../../../store/user/User";
 import { getAuthHeaderFromSession, RequestPayloadHelpers } from "../../../utility/request-helpers";
 import { eventTransformer } from "../event/Event";
+import CustomHours from "./custom-hours/CustomHours";
 
 const useStyles = makeStyles({
   paper: {
@@ -141,116 +136,6 @@ function VolunteerInfo(props) {
   );
 }
 
-const SetCustomHoursSchema = Yup.object().shape({
-  startTime: Yup.string()
-    .required("Required")
-    .test(
-      "start_time_after_end_time",
-      "Start time must be less than end time",
-      function (value) {
-        // Must NOT be arrow function
-        const { endTime } = this.parent;
-
-        if (!endTime) {
-          return true;
-        }
-        return (
-          new Date(`01/01/2000 ${value}`).getTime() <
-          new Date(`01/01/2000 ${endTime}`).getTime()
-        );
-      }
-    ),
-  endTime: Yup.string()
-    .required("Required")
-    .test(
-      "end_time_after_start_time",
-      "End time must be after the start time",
-      function (value) {
-        // Must NOT be arrow function
-        const { startTime } = this.parent;
-
-        if (!startTime) {
-          return true;
-        }
-        return (
-          new Date(`01/01/2000 ${value}`).getTime() >
-          new Date(`01/01/2000 ${startTime}`).getTime()
-        );
-      }
-    ),
-});
-
-function CustomHours(props) {
-  const [doingRequest, setDoingRequest] = useState(false);
-
-  const makeCustomHourRequest = (fields) => {
-    console.log(fields);
-  };
-
-  const requestBtnHit = () => {
-    if (!doingRequest) {
-      setDoingRequest(true);
-    }
-  };
-
-  const renderForm = (formikProps) => (
-    <FormikForm noValidate>
-      <CustomBasicFormControl
-        size="small"
-        title="Start Time"
-        required
-        type="time"
-        name="startTime"
-        formikProps={formikProps}
-      />
-      <CustomBasicFormControl
-        size="small"
-        title="End Time"
-        required
-        type="time"
-        name="endTime"
-        formikProps={formikProps}
-      />
-      <BootstrapButton
-        type="submit"
-        style={{ margin: "5% 0" }}
-        onClick={(e) => formikProps.handleSubmit(e)}
-      >
-        {doingRequest ? "Request" : "Request Custom Hours"}
-      </BootstrapButton>
-    </FormikForm>
-  );
-
-  return (
-    <div>
-      {doingRequest && (
-        <Formik
-          enableReinitialize={true}
-          initialValues={{
-            startTime: getMilitaryTimeFromDate(props.eventStart),
-            endTime: getMilitaryTimeFromDate(props.eventEnd),
-          }}
-          validationSchema={SetCustomHoursSchema}
-          onSubmit={(values) => makeCustomHourRequest(values)}
-          validateOnChange={true}
-          validateOnBlur={true}
-        >
-          {(props) => renderForm(props)}
-        </Formik>
-      )}
-      {!doingRequest && (
-        <BootstrapButton
-          type="submit"
-          style={{ margin: "5% 0" }}
-          onClick={() => requestBtnHit()}
-        >
-          {doingRequest ? "Request" : "Request Custom Hours"}
-        </BootstrapButton>
-      )}
-    </div>
-  );
-}
-
 function EventDialogContent(props) {
   const {
     event,
@@ -259,13 +144,37 @@ function EventDialogContent(props) {
     approved,
     rejected,
     setVolunteers,
+    user,
+    eventEditor,
+    handleClose,
+    dailyEvents,
+    updateEvent,
   } = props;
 
-  switch (props.user.role) {
+  const userSignUpJSX = userSignedUp && (
+    <CustomHours
+      eventId={event._id}
+      user={user}
+      eventEditor={eventEditor}
+      updateEvent={updateEvent}
+      eventStart={event.start}
+      eventEnd={event.end}
+    />
+  );
+
+  switch (user.role) {
     case USER_ROLES.ADMIN:
       // Only admins can make events
       if (props.newEvent) {
-        return <CreateEvent date={event.start} />;
+        return (
+          <CreateEvent
+            eventEditor={eventEditor}
+            user={user}
+            date={event.start}
+            handleClose={handleClose}
+            dailyEvents={dailyEvents}
+          />
+        );
       }
 
       return (
@@ -278,6 +187,8 @@ function EventDialogContent(props) {
           <p>{event.description}</p>
 
           <section>
+            {userSignUpJSX}
+
             <h6>Pending ({pending?.length || 0})</h6>
             {pending?.map((volunteer, index) => {
               return (
@@ -328,24 +239,25 @@ function EventDialogContent(props) {
         </React.Fragment>
       );
     case USER_ROLES.VOLUNTEER:
-      <React.Fragment>
-        <p>
-          Default Time Slot: {getAMPMTimeRange(event.start, event.end)} on{" "}
-          {getDayMonthDateStr(event.start)}
-        </p>
+      return (
+        <React.Fragment>
+          <p>
+            Default Time Slot: {getAMPMTimeRange(event.start, event.end)} on{" "}
+            {getDayMonthDateStr(event.start)}
+          </p>
 
-        <p>{event.description}</p>
+          <p>{event.description}</p>
 
-        <section>
-          <h6>Volunteers ({event.volunteers?.length || 0})</h6>
-          {userSignedUp && (
-            <CustomHours eventStart={event.start} eventEnd={event.end} />
-          )}
-          {event.volunteers?.map((volunteer, index) => {
-            return <VolunteerInfo key={index} volunteer={volunteer} />;
-          })}
-        </section>
-      </React.Fragment>;
+          <section>
+            {userSignUpJSX}
+
+            <h6>Volunteers ({event.volunteers?.length || 0})</h6>
+            {approved?.map((volunteer, index) => {
+              return <VolunteerInfo key={index} volunteer={volunteer} />;
+            })}
+          </section>
+        </React.Fragment>
+      );
     default:
       return null;
   }
@@ -369,12 +281,13 @@ function EventDialog(props) {
     return volunteer.decisionMade && !volunteer.approved;
   });
 
-  const [userSignedUp, setUserSignedUp] = useState(
-    event?.volunteers?.some((v) => v.volunteer?.id && (v.volunteer?.id === user?.otherUserInfo?._id)) || false
-  );
+  const [userSignedUp, setUserSignedUp] = useState(false);
+
+  useEffect(() => {
+    setUserSignedUp(event?.volunteers?.some((v) => v.volunteer?.id && (v.volunteer?.id === user?.otherUserInfo?._id)));
+  }, [props.event, props.user]);
 
   const signUpUser = async () => {
-
     if (!userSignedUp) {
       const resp = await RequestPayloadHelpers.makeRequest('event/self-volunteer', 'POST', {
         start: event.start,
@@ -388,7 +301,6 @@ function EventDialog(props) {
       }
 
       eventTransformer(resp.newEvent);
-      // let resp = { newEvent: { _id: event._id, title: 'hello', volunteers: [], start: new Date(), end: new Date() } };
 
       props.eventEditor(resp.newEvent);
       setUserSignedUp(true);
@@ -422,7 +334,7 @@ function EventDialog(props) {
         <span id="volunteer-sign-up">
           {" "}
           {/* Hack to get tooltip to display when button is disabled */}
-          <Button disabled={tooltipError} onClick={signUpUser}>
+          <Button disabled={tooltipError} variant="outline-primary" onClick={signUpUser}>
             Sign Up
           </Button>
         </span>
@@ -439,6 +351,17 @@ function EventDialog(props) {
       onClose={props.handleClose}
       aria-labelledby="event-dialog-title"
       aria-describedby="event-dialog-description"
+      PaperProps={{
+        style: {
+          margin: "3%",
+          borderStyle: "solid",
+          borderRadius: "46px",
+          borderColor: "#004AAC",
+          backgroundColor: "#FFFCEF",
+          padding: "30px",
+          boxShadow: "-10px 10px 5px #F3D352",
+        },
+      }}
     >
       <DialogActions>
         <IconButton
@@ -449,8 +372,8 @@ function EventDialog(props) {
           <CloseIcon />
         </IconButton>
       </DialogActions>
-      <DialogTitle id="event-dialog-title">{eventTitle}</DialogTitle>
-      <DialogContent>
+      <DialogTitle disableTypography={true} style={{fontFamily: 'Raleway', fontSize:"25px", color: "#004AAC"}} id="event-dialog-title">{eventTitle}</DialogTitle>
+      <DialogContent style={{fontFamily: 'Raleway', fontSize:"17px", color: "#004AAC"}}>
         <EventDialogContent
           event={event}
           user={user}
@@ -461,6 +384,7 @@ function EventDialog(props) {
           newEvent={props.newEvent}
           volunteers={volunteers}
           setVolunteers={setVolunteers}
+          {...props}
         />
       </DialogContent>
     </Dialog>

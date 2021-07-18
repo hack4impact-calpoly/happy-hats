@@ -4,6 +4,7 @@ class CustomWebError extends Error {
   static getAppropriateErrorMsg(statCode) {
     switch (statCode) {
       case 200:
+      case 201:
         return 'No known error occurred';
       case 401:
         return 'User unauthorized';
@@ -30,6 +31,7 @@ class CustomWebError extends Error {
 }
 
 const basicResponseCheck = (response) => {
+  console.log(response);
   if (!response || !response.ok) {
     throw new CustomWebError(response.status);
   }
@@ -97,9 +99,12 @@ export class RequestPayloadHelpers {
         body: JSON.stringify(payload),
       }));
 
+      console.log(response);
+
       if (asJSON) {
         return await getJsonResponse(response);
       }
+
       return response;
     } catch (e) {
       return false;
