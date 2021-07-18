@@ -252,7 +252,7 @@ function EventDialogContent(props) {
             {userSignUpJSX}
 
             <h6>Volunteers ({event.volunteers?.length || 0})</h6>
-            {event.volunteers?.map((volunteer, index) => {
+            {approved?.map((volunteer, index) => {
               return <VolunteerInfo key={index} volunteer={volunteer} />;
             })}
           </section>
