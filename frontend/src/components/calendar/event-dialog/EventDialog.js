@@ -11,6 +11,8 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
+import EditIcon from "@material-ui/icons/Edit";
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
 import {
@@ -19,122 +21,20 @@ import {
 } from "../../../utility/date-time";
 import React, { useEffect, useState } from "react";
 import CreateEvent from "./create-event/CreateEvent";
-import { USER_ROLES } from "../../../store/user/User";
-import { getAuthHeaderFromSession, RequestPayloadHelpers } from "../../../utility/request-helpers";
+import { isUserAdmin, USER_ROLES } from "../../../store/user/User";
+import {
+  getAuthHeaderFromSession,
+  RequestPayloadHelpers,
+} from "../../../utility/request-helpers";
 import { eventTransformer } from "../event/Event";
 import CustomHours from "./custom-hours/CustomHours";
+import EditEvent from "./edit-event/EditEvent";
 
 const useStyles = makeStyles({
   paper: {
     width: "40%",
   },
 });
-
-function EventVolunteerInfo({ volunteer }) {
-  return (
-    <>
-      {`${volunteer?.volunteer?.firstName} ${volunteer?.volunteer?.lastName}: `}
-      <span className="volunteer-time">
-        {getAMPMTimeRange(volunteer.start, volunteer.end)}
-      </span>
-    </>
-  );
-}
-
-function PendingVolunteerInfo(props) {
-  const { volunteer, volunteers, setVolunteers, user } = props;
-
-  return (
-    <li>
-      <EventVolunteerInfo volunteer={volunteer} />
-      <IconButton
-        style={{ padding: 5 }}
-        aria-label="approve"
-        onClick={() => handleApprove(volunteer, volunteers, setVolunteers, props.event, user)}
-      >
-        <ThumbUpIcon />
-      </IconButton>
-      <IconButton
-        style={{ padding: 0 }}
-        aria-label="reject"
-        onClick={() => handleReject(volunteer, volunteers, setVolunteers, props.event, user)}
-      >
-        <ThumbDownIcon />
-      </IconButton>
-    </li>
-  );
-}
-
-function ApprovedVolunteerInfo(props) {
-  const { volunteer, volunteers, setVolunteers, user } = props;
-
-  return (
-    <li>
-      <EventVolunteerInfo volunteer={volunteer} />
-      <IconButton
-        style={{ padding: 5 }}
-        aria-label="reject"
-        onClick={() => handleReject(volunteer, volunteers, setVolunteers, props.event, user)}
-      >
-        <ThumbDownIcon />
-      </IconButton>
-    </li>
-  );
-}
-
-function RejectedVolunteerInfo(props) {
-  const { volunteer, volunteers, setVolunteers, user } = props;
-
-  return (
-    <li>
-      <EventVolunteerInfo volunteer={volunteer} />
-      <IconButton
-        style={{ padding: 5 }}
-        aria-label="approve"
-        onClick={() => handleApprove(volunteer, volunteers, setVolunteers, props.event, user)}
-      >
-        <ThumbUpIcon />
-      </IconButton>
-    </li>
-  );
-}
-
-const adminAction = async (volunteer, volunteers, setVolunteers, approved, event, user) => {
-  const resp = await RequestPayloadHelpers.makeRequest('event/volunteer/approve', 'PUT', {
-    eventId: event._id,
-    volunteer: volunteer.volunteer.id,
-    approved,
-  }, getAuthHeaderFromSession(user.cognitoSession), true);
-
-  if (!resp) {
-    alert('Admin action done failed! Refresh and try again.');
-    return;
-  }
-
-  volunteer.decisionMade = true;
-  volunteer.approved = approved;
-  let newVolunteers = [...volunteers];
-  setVolunteers(newVolunteers);
-};
-
-const handleApprove = async (volunteer, volunteers, setVolunteers, event, user) => {
-  adminAction(volunteer, volunteers, setVolunteers, true, event, user);
-};
-
-const handleReject = (volunteer, volunteers, setVolunteers, event, user) => {
-  adminAction(volunteer, volunteers, setVolunteers, false, event, user);
-};
-
-function VolunteerInfo(props) {
-  const { volunteer } = props;
-  console.log(volunteer);
-
-  return (
-    <li>
-      <EventVolunteerInfo volunteer={volunteer} />
-    </li>
-  );
-}
 
 function EventDialogContent(props) {
   const {
@@ -173,6 +73,17 @@ function EventDialogContent(props) {
             date={event.start}
             handleClose={handleClose}
             dailyEvents={dailyEvents}
+          />
+        );
+      } else if (props.editEvent) {
+        return (
+          <EditEvent
+            eventEditor={eventEditor}
+            updateEvent={updateEvent}
+            event={event}
+            user={user}
+            onEditMade={() => props.setInEventEdit(false)}
+            date={event.start}
           />
         );
       }
@@ -282,21 +193,38 @@ function EventDialog(props) {
   });
 
   const [userSignedUp, setUserSignedUp] = useState(false);
+  const [inEventEdit, setInEventEdit] = useState(false);
+
+  const onClose = () => {
+    if (inEventEdit) {
+      setInEventEdit(false);
+    }
+    props.handleClose();
+  };
 
   useEffect(() => {
-    setUserSignedUp(event?.volunteers?.some((v) => v.volunteer?.id && (v.volunteer?.id === user?.otherUserInfo?._id)));
+    setUserSignedUp(
+      event?.volunteers?.some(
+        (v) => v.volunteer?.id && v.volunteer?.id === user?.otherUserInfo?._id
+      )
+    );
   }, [props.event, props.user]);
 
   const signUpUser = async () => {
     if (!userSignedUp) {
-      const resp = await RequestPayloadHelpers.makeRequest('event/self-volunteer', 'POST', {
-        start: event.start,
-        end: event.end,
-        eventId: event._id,
-      }, getAuthHeaderFromSession(user.cognitoSession), true);
+      const resp = await RequestPayloadHelpers.makeRequest(
+        `event/${event._id}/self-volunteer`,
+        "POST",
+        {
+          start: event.start,
+          end: event.end,
+        },
+        getAuthHeaderFromSession(user.cognitoSession),
+        true
+      );
 
       if (!resp || !resp.newEvent) {
-        alert('error occurred. try again later');
+        alert("error occurred. try again later");
         return;
       }
 
@@ -306,6 +234,14 @@ function EventDialog(props) {
       setUserSignedUp(true);
       props.updateEvent(resp.newEvent);
     }
+  };
+
+  const editEvent = () => {
+    setInEventEdit(true);
+  };
+
+  const showEditBtn = () => {
+    return !inEventEdit && !props.newEvent && isUserAdmin(props.user);
   };
 
   if (!event) {
@@ -320,7 +256,8 @@ function EventDialog(props) {
     tooltipTitle = "Sorry, 20 volunteers already signed up!";
   } else {
     tooltipError = false;
-    tooltipTitle = "This will sign you up with default hours. You can change this later.";
+    tooltipTitle =
+      "This will sign you up with default hours. You can change this later.";
   }
 
   const eventTitle = props.newEvent ? (
@@ -330,15 +267,19 @@ function EventDialog(props) {
   ) : (
     <React.Fragment>
       {event.title}
-      <Tooltip title={tooltipTitle}>
+      {!inEventEdit && <Tooltip title={tooltipTitle}>
         <span id="volunteer-sign-up">
           {" "}
           {/* Hack to get tooltip to display when button is disabled */}
-          <Button disabled={tooltipError} variant="outline-primary" onClick={signUpUser}>
+          <Button
+            disabled={tooltipError}
+            variant="outline-primary"
+            onClick={signUpUser}
+          >
             Sign Up
           </Button>
         </span>
-      </Tooltip>
+      </Tooltip>}
     </React.Fragment>
   );
 
@@ -348,7 +289,7 @@ function EventDialog(props) {
         paper: classes.paper,
       }}
       open={props.open}
-      onClose={props.handleClose}
+      onClose={onClose}
       aria-labelledby="event-dialog-title"
       aria-describedby="event-dialog-description"
       PaperProps={{
@@ -364,16 +305,44 @@ function EventDialog(props) {
       }}
     >
       <DialogActions>
+        {inEventEdit &&
+          <IconButton
+            style={{position: 'absolute', left: '5%' }}
+            aria-label="go back"
+            onClick={() => setInEventEdit(false)}
+          >
+            <ArrowBackIcon />
+          </IconButton>
+        }
         <IconButton
           style={{ padding: 0 }}
           aria-label="close"
-          onClick={props.handleClose}
+          onClick={onClose}
         >
           <CloseIcon />
         </IconButton>
       </DialogActions>
-      <DialogTitle disableTypography={true} style={{fontFamily: 'Raleway', fontSize:"25px", color: "#004AAC"}} id="event-dialog-title">{eventTitle}</DialogTitle>
-      <DialogContent style={{fontFamily: 'Raleway', fontSize:"17px", color: "#004AAC"}}>
+      <DialogTitle
+        disableTypography={true}
+        style={{ fontFamily: "Raleway", fontSize: "25px", color: "#004AAC" }}
+        id="event-dialog-title"
+      >
+        {showEditBtn() &&
+          <>
+            <IconButton
+              style={{ position: 'absolute', 'left': '10px', marginTop: '-2px' }}
+              aria-label="edit event"
+              onClick={editEvent}
+            >
+              <EditIcon />
+            </IconButton>
+          </>}
+        {inEventEdit && <>EDIT:&nbsp;</>}
+        {eventTitle}
+      </DialogTitle>
+      <DialogContent
+        style={{ fontFamily: "Raleway", fontSize: "17px", color: "#004AAC" }}
+      >
         <EventDialogContent
           event={event}
           user={user}
@@ -384,10 +353,145 @@ function EventDialog(props) {
           newEvent={props.newEvent}
           volunteers={volunteers}
           setVolunteers={setVolunteers}
+          editEvent={inEventEdit}
+          handleClose={onClose}
+          setInEventEdit={setInEventEdit}
           {...props}
         />
       </DialogContent>
     </Dialog>
+  );
+}
+
+function EventVolunteerInfo({ volunteer }) {
+  return (
+    <>
+      {`${volunteer?.volunteer?.firstName} ${volunteer?.volunteer?.lastName}: `}
+      <span className="volunteer-time">
+        {getAMPMTimeRange(volunteer.start, volunteer.end)}
+      </span>
+    </>
+  );
+}
+
+function PendingVolunteerInfo(props) {
+  const { volunteer, volunteers, setVolunteers, user } = props;
+
+  return (
+    <li>
+      <EventVolunteerInfo volunteer={volunteer} />
+      <IconButton
+        style={{ padding: 5 }}
+        aria-label="approve"
+        onClick={() =>
+          handleApprove(volunteer, volunteers, setVolunteers, props.event, user)
+        }
+      >
+        <ThumbUpIcon />
+      </IconButton>
+      <IconButton
+        style={{ padding: 0 }}
+        aria-label="reject"
+        onClick={() =>
+          handleReject(volunteer, volunteers, setVolunteers, props.event, user)
+        }
+      >
+        <ThumbDownIcon />
+      </IconButton>
+    </li>
+  );
+}
+
+function ApprovedVolunteerInfo(props) {
+  const { volunteer, volunteers, setVolunteers, user } = props;
+
+  return (
+    <li>
+      <EventVolunteerInfo volunteer={volunteer} />
+      <IconButton
+        style={{ padding: 5 }}
+        aria-label="reject"
+        onClick={() =>
+          handleReject(volunteer, volunteers, setVolunteers, props.event, user)
+        }
+      >
+        <ThumbDownIcon />
+      </IconButton>
+    </li>
+  );
+}
+
+function RejectedVolunteerInfo(props) {
+  const { volunteer, volunteers, setVolunteers, user } = props;
+
+  return (
+    <li>
+      <EventVolunteerInfo volunteer={volunteer} />
+      <IconButton
+        style={{ padding: 5 }}
+        aria-label="approve"
+        onClick={() =>
+          handleApprove(volunteer, volunteers, setVolunteers, props.event, user)
+        }
+      >
+        <ThumbUpIcon />
+      </IconButton>
+    </li>
+  );
+}
+
+const adminAction = async (
+  volunteer,
+  volunteers,
+  setVolunteers,
+  approved,
+  event,
+  user
+) => {
+  const resp = await RequestPayloadHelpers.makeRequest(
+    `event/${event._id}/volunteer/approve`,
+    "PUT",
+    {
+      volunteer: volunteer.volunteer.id,
+      approved,
+    },
+    getAuthHeaderFromSession(user.cognitoSession),
+    true
+  );
+
+  if (!resp) {
+    alert("Admin action done failed! Refresh and try again.");
+    return;
+  }
+
+  volunteer.decisionMade = true;
+  volunteer.approved = approved;
+  let newVolunteers = [...volunteers];
+  setVolunteers(newVolunteers);
+};
+
+const handleApprove = async (
+  volunteer,
+  volunteers,
+  setVolunteers,
+  event,
+  user
+) => {
+  adminAction(volunteer, volunteers, setVolunteers, true, event, user);
+};
+
+const handleReject = (volunteer, volunteers, setVolunteers, event, user) => {
+  adminAction(volunteer, volunteers, setVolunteers, false, event, user);
+};
+
+function VolunteerInfo(props) {
+  const { volunteer } = props;
+  console.log(volunteer);
+
+  return (
+    <li>
+      <EventVolunteerInfo volunteer={volunteer} />
+    </li>
   );
 }
 

@@ -1,9 +1,7 @@
-import './CreateEvent.css';
-
 import { getAuthHeaderFromSession, RequestPayloadHelpers } from '../../../../utility/request-helpers';
-import { getTopOfDay, getAdjustedTimeFromDate } from '../../../../utility/date-time';
+import { getTopOfDay, getAdjustedTimeFromDate, getHoursMinutesStr } from '../../../../utility/date-time';
 import { eventTransformer } from '../../event/Event';
-import EventForm from '../event-form/EventForm';
+import EventForm, { getTimeSlotFromEvent } from '../event-form/EventForm';
 
 const timeSlotToStartEndMap = new Map([
   ['10AM - 12PM', {
@@ -20,11 +18,11 @@ const timeSlotToStartEndMap = new Map([
   }],
 ]);
 
-function CreateEvent(props) {
+function EditEvent(props) {
   const { date } = props;
   const startOfDayDate = getTopOfDay(date);
 
-  const createEvent = async (values) => {
+  const editEvent = async (values) => {
     try {
       let start, end;
       if (values.timeSlot !== 'Custom') {
@@ -42,17 +40,18 @@ function CreateEvent(props) {
         description: values.description,
       };
 
-      const resp = await RequestPayloadHelpers.makeRequest('event', 'POST', event,
+      const resp = await RequestPayloadHelpers.makeRequest(`event/${props.event._id}`, 'PUT', event,
         getAuthHeaderFromSession(props.user.cognitoSession), true);
       
       if (!resp || !resp.newEvent) {
-        alert('Create event failed. Please try again later!');
+        alert('Edit event failed. Please try again later!');
         return;
       }
 
       eventTransformer(resp.newEvent);
       props.eventEditor(resp.newEvent);
-      props.handleClose();
+      props.updateEvent(resp.newEvent);
+      props.onEditMade();
     } catch (err) {
       console.log(err);
     }
@@ -60,10 +59,17 @@ function CreateEvent(props) {
 
   return (
     <EventForm
-      onSubmit={createEvent}
-      buttonText="Create Event"
+      onSubmit={editEvent}
+      initialValues={{
+        ...props.event,
+        startTime: getHoursMinutesStr(props.event.start),
+        endTime: getHoursMinutesStr(props.event.end),
+        timeSlot: getTimeSlotFromEvent(props.event),
+      }}
+      buttonText="Edit Event"
+      disableTime={props.event?.volunteers && props.event.volunteers.length > 0}
     />
   );
 }
 
-export default CreateEvent;
+export default EditEvent;

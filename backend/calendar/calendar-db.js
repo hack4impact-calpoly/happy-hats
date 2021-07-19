@@ -40,13 +40,22 @@ const calendarEventFns = {
         return val;
     },
     updateCalendarEvent: async (eventId, calendarEvent) => {
-        const oldDoc = await CalendarEvent.findOneAndReplace(
+        const newDoc = await CalendarEvent.findOneAndReplace(
             {
                 _id: eventId,
             },
-            calendarEvent
+            calendarEvent,
+            {
+                new: true,
+                lean: true,
+            }
         );
-        return eventId.equals(oldDoc?._id);
+
+        if (!eventId.equals(newDoc?._id)) {
+            return false;
+        }
+
+        return newDoc;
     },
     addVolunteerToEvent: async (eventId, volunteer) => {
         const updateResult = await CalendarEvent.findByIdAndUpdate(

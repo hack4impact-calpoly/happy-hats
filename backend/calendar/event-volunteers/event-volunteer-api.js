@@ -5,10 +5,7 @@ const { CalendarEventTypes } = require('../models/calendar-schema');
 
 const {
     withEventChangeAndEventId,
-    checkResourceAndAuth,
-    checkSuccess,
-    checkEventChangeEndpointBody,
-    onInvalidEventId,
+    checkAndRetrieveEvent,
     confirmValidObjectId,
     onInvalidUserInput,
     checkSuccessFull,
@@ -20,17 +17,6 @@ const validVolunteeringRoles = new Set(['volunteer', 'admin']);
 const validHourApprovalRoles = new Set(['admin']);
 // ==============================================
 
-// Assume eventId is mongoose object ID
-const checkAndRetrieveEvent = async (eventId, res) => {
-    const event = await MongooseConnector.findCalendarEventById(eventId);
-    if (!event) {
-        onInvalidEventId(res);
-        return null;
-    }
-
-    return event;
-};
-
 const userSelectedDefaultTime = (startDate, endDate, event) => {
     return event && startDate.getTime() === event.start.getTime() &&
         endDate.getTime() === event.end.getTime();
@@ -38,7 +24,7 @@ const userSelectedDefaultTime = (startDate, endDate, event) => {
 
 module.exports = (app) => {
     // This will require authentication
-    app.post('/api/event/self-volunteer', isUserApproved, async (req, res) => {
+    app.post('/api/event/:eventId/self-volunteer', isUserApproved, async (req, res) => {
         withEventChangeAndEventId(req, res, false, async (startDate, endDate, eventUser, eventId) => {
             if (!eventUser?.equals(req.locals.user?._id)) {
                 res.status(400).json({
@@ -139,7 +125,7 @@ module.exports = (app) => {
     });
 
     // This will require authentication
-    app.put('/api/event/volunteer/approve', isUserAdmin, async (req, res) => {
+    app.put('/api/event/:eventId/volunteer/approve', isUserAdmin, async (req, res) => {
         withEventChangeAndEventId(req, res, false, async (startDate, endDate, eventUser, eventId) => {
             let volunteerId = req.body.volunteer;
             const approved = req.body.approved;
@@ -193,7 +179,7 @@ module.exports = (app) => {
     });
 
     // This will require authentication
-    app.post('/api/event/volunteer/custom-hours', isUserApproved, async (req, res) => {
+    app.post('/api/event/:eventId/volunteer/custom-hours', isUserApproved, async (req, res) => {
         Logger.log('POST: Custom hours');
 
         withEventChangeAndEventId(req, res, true, async (startDate, endDate, eventUser, eventId) => {
@@ -241,28 +227,6 @@ module.exports = (app) => {
             checkSuccessFull(res, newEvent, {
                 newEvent
             });
-        });
-    });
-
-    // This will require authentication
-    app.put('/api/event/volunteer', isUserApproved, async (req, res) => {
-        checkEventChangeEndpointBody(req, res, false, async (startDate, endDate, eventUser) => {
-            const { eventId } = req.body;
-            const everythingValidated = await checkResourceAndAuth(res, eventId, eventUser);
-            // We already sent a response
-            if (!everythingValidated) {
-                return;
-            }
-            
-            const calendarEvent = {
-                start: startDate,
-                end: endDate,
-                eventUser: eventUserObjectId,
-                eventType: CalendarEventTypes.VOLUNTEER,
-            };
-            const success = await MongooseConnector.updateCalendarEvent(eventObjectId, calendarEvent);
-        
-            checkSuccess(res, success);
         });
     });
 }

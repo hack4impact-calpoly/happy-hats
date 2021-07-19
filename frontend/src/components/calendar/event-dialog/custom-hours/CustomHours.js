@@ -4,7 +4,7 @@ import {
   getMilitaryTimeFromDate,
   getTopOfDayAdjustedTime,
 } from "../../../../utility/date-time";
-import { CustomBasicFormControl } from "../create-event/CreateEvent";
+import { CustomBasicFormControl } from "../../../../utility/form-helpers/form-helpers";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { getAuthHeaderFromSession, RequestPayloadHelpers } from "../../../../utility/request-helpers";
@@ -61,12 +61,11 @@ function CustomHours(props) {
     const customHourPostBody = {
       start: getTopOfDayAdjustedTime(props.eventStart, ...fields.startTime.split(':')),
       end: getTopOfDayAdjustedTime(props.eventEnd, ...fields.endTime.split(':')),
-      eventId: props.eventId,
     };
 
     try {
-      const resp = await RequestPayloadHelpers.makeRequest('event/volunteer/custom-hours', 'POST', customHourPostBody,
-        getAuthHeaderFromSession(props.user.cognitoSession), true);
+      const resp = await RequestPayloadHelpers.makeRequest(`event/${props.eventId}/volunteer/custom-hours`, 'POST',
+        customHourPostBody, getAuthHeaderFromSession(props.user.cognitoSession), true);
       
       if (!resp || !resp.newEvent) {
         alert('Could not update hours. Please try again later!');
