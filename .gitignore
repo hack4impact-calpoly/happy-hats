@@ -45,3 +45,10 @@ amplify-build-config.json
 amplify-gradle-config.json
 amplifytools.xcconfig
 .secret-*
+amplify/cli.json
+amplify/backend/tags.json
+amplify/team-provider-info.json
+amplify/backend/backend-config.json
+amplify/backend/auth/
+amplify/.config/project-config.json
+
