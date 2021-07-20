@@ -12,6 +12,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
 import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownIcon from "@material-ui/icons/ThumbDown";
@@ -229,7 +230,6 @@ function EventDialog(props) {
       }
 
       eventTransformer(resp.newEvent);
-
       props.eventEditor(resp.newEvent);
       setUserSignedUp(true);
       props.updateEvent(resp.newEvent);
@@ -240,7 +240,29 @@ function EventDialog(props) {
     setInEventEdit(true);
   };
 
-  const showEditBtn = () => {
+  const deleteEvent = async () => {
+    try {
+      const resp = await RequestPayloadHelpers.makeRequest(
+        `event/${event._id}`,
+        "DELETE",
+        {},
+        getAuthHeaderFromSession(user.cognitoSession),
+        false
+      );
+
+      if (!resp) {
+        alert('Could not delete event. Please try again later');
+        return;
+      }
+
+      props.eventEditor(event, true);
+      onClose();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const showActionBtns = () => {
     return !inEventEdit && !props.newEvent && isUserAdmin(props.user);
   };
 
@@ -327,22 +349,29 @@ function EventDialog(props) {
         style={{ fontFamily: "Raleway", fontSize: "25px", color: "#004AAC" }}
         id="event-dialog-title"
       >
-        {showEditBtn() &&
-          <>
-            <IconButton
-              style={{ position: 'absolute', 'left': '10px', marginTop: '-2px' }}
-              aria-label="edit event"
-              onClick={editEvent}
-            >
-              <EditIcon />
-            </IconButton>
-          </>}
         {inEventEdit && <>EDIT:&nbsp;</>}
         {eventTitle}
       </DialogTitle>
       <DialogContent
         style={{ fontFamily: "Raleway", fontSize: "17px", color: "#004AAC" }}
       >
+        {showActionBtns() &&
+        <>
+          <IconButton
+            style={{ padding: 0 }}
+            aria-label="edit event"
+            onClick={editEvent}
+          >
+            <EditIcon />
+          </IconButton>
+          <IconButton
+            style={{ padding: 0 }}
+            aria-label="delete event"
+            onClick={deleteEvent}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </>}
         <EventDialogContent
           event={event}
           user={user}

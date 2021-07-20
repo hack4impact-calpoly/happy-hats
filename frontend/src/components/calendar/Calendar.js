@@ -81,9 +81,9 @@ class Calendar extends React.Component {
 
       const eventEditorFn = getRemoveAndAddEventFn(this.props.fetchedData);
 
-      const newFn = (ev) => {
+      const newFn = (...args) => {
         this.setStateEasy({
-          events: eventEditorFn(ev) || [],
+          events: eventEditorFn(...args) || [],
         });
       };
 
@@ -276,13 +276,17 @@ const getRemoveAndAddEventFn = (events) => {
     eventMap.set(ev._id, ev);
   }
 
-  return (newEvent) => {
+  return (newEvent, shouldDelete=false) => {
     if (!newEvent || !newEvent._id) {
-      return [];
+      return [...eventMap.values()];
     }
 
-    // const prevEvent = eventMap.get(newEvent._id);
-    eventMap.set(newEvent._id, newEvent);
+    if (shouldDelete && eventMap.get(newEvent._id)) {
+      eventMap.delete(newEvent._id);
+    } else if (!shouldDelete) {
+      // const prevEvent = eventMap.get(newEvent._id);
+      eventMap.set(newEvent._id, newEvent);
+    }
 
     return [...eventMap.values()];
   };

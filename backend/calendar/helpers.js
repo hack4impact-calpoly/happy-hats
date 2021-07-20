@@ -43,19 +43,23 @@ const checkSuccessFull = (res, toCheck, retObj, status = 200) => {
     return;
   }
 
-  res.status(status).json(retObj);
+  return res.status(status).json(retObj);
 };
 
 const onInvalidUserInput = (res, message = "Bad given input") => {
   res.status(400).json({
     message,
   });
+
+  return false;
 };
 
 const onInvalidEventId = (res) => {
   res.status(404).json({
     message: "Event not found",
   });
+
+  return false;
 };
 
 const checkVolunteerExistence = async (v, res) => {

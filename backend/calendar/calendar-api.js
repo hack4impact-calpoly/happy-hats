@@ -181,25 +181,40 @@ module.exports = (app) => {
 
       checkSuccessFull(res, !!eventCreated, {
         newEvent: eventCreated,
-      }, 201);
+      }, 200);
     });
   });
 
   // This will require authentication
-  app.delete('/api/event/:eventId', isUserApproved, async (req, res) => {
-    const { eventId } = req.body;
+  app.delete('/api/event/:eventId', isUserAdmin, async (req, res) => {
+    Logger.log("DELETE: Deleting Calendar Event...");
 
-    const everythingValidated = await checkResourceAndAuth(res, eventId, req.locals.user.role);
-    // We already sent a response
-    if (!everythingValidated) {
+    let eventId = req.params.eventId;
+
+    if (!confirmValidObjectId(eventId)) {
+      onInvalidUserInput(res);
       return;
     }
 
-    const success = await MongooseConnector.deleteCalendarEvent(mongoose.Types.ObjectId(eventId));
+    eventId = mongoose.Types.ObjectId(eventId);
+
+    if (!validEventCreationRoles.has(req.locals.user.role)) {
+      res.status(403).json({
+        message: 'Only admins can create events',
+      });
+      return;
+    }
+
+    const event = await checkAndRetrieveEvent(eventId, res);
+    if (!event) {
+      onInvalidEventId(res);
+      return;
+    }
+
+    const success = await MongooseConnector.deleteCalendarEvent(eventId);
 
     checkSuccess(res, success);
   });
 
   eventVolunteerApi(app);
-
 };
