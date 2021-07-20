@@ -211,13 +211,14 @@ class Calendar extends React.Component {
     }
 
     return (
-      <main>
+      <main style={{marginBottom: "2%"}}>
         <DayInformation
           date={this.state.currentViewDate}
           events={this.getEventsOnDate(this.state.currentViewDate, events)}
           onEventSelected={(event) => this.onEventSelected(event)}
         />
         <BigCalendar
+          
           localizer={localizer}
           defaultDate={new Date()}
           timeslots={2}
