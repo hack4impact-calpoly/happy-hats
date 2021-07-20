@@ -30,6 +30,9 @@ import {
 import { eventTransformer } from "../event/Event";
 import CustomHours from "./custom-hours/CustomHours";
 import EditEvent from "./edit-event/EditEvent";
+import { Accordion, AccordionSummary } from "@material-ui/core";
+import ExpandMore from '@material-ui/icons/ExpandMore'
+
 
 const useStyles = makeStyles({
   paper: {
@@ -91,17 +94,24 @@ function EventDialogContent(props) {
 
       return (
         <React.Fragment>
-          <p>
-            Default Time Slot: {getAMPMTimeRange(event.start, event.end)} on{" "}
+          <h4>
+            {getAMPMTimeRange(event.start, event.end)} on{" "}
             {getDayMonthDateStr(event.start)}
-          </p>
+          </h4>
 
           <p>{event.description}</p>
 
-          <section>
-            {userSignUpJSX}
+          {userSignUpJSX}
+          <Accordion
+            style={{ padding: "5px", backgroundColor: "#FFFCEF", color: "#004AAC" }}
+            sx={{
+              '&:before': {
+                display: 'none',
+              }}}>
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <h6>Pending ({pending?.length || 0})</h6>
+            </AccordionSummary>
 
-            <h6>Pending ({pending?.length || 0})</h6>
             {pending?.map((volunteer, index) => {
               return (
                 <PendingVolunteerInfo
@@ -112,11 +122,16 @@ function EventDialogContent(props) {
                 />
               );
             })}
-            <br />
-          </section>
-
-          <section>
-            <h6>Approved ({approved?.length || 0})</h6>
+          </Accordion>
+          <Accordion
+            style={{ padding: "5px", backgroundColor: "#FFFCEF", color: "#004AAC" }}
+            sx={{
+              '&:before': {
+                display: 'none',
+              }}}>
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <h6>Approved ({approved?.length || 0})</h6>
+            </AccordionSummary>
             {approved?.map((volunteer, index) => {
               return (
                 <ApprovedVolunteerInfo
@@ -130,10 +145,16 @@ function EventDialogContent(props) {
               );
             })}
             <br />
-          </section>
-
-          <section>
-            <h6>Rejected ({rejected?.length || 0})</h6>
+          </Accordion>
+          <Accordion
+            style={{ padding: "5px", backgroundColor: "#FFFCEF", color: "#004AAC" }}
+            sx={{
+              '&:before': {
+                display: 'none',
+              }}}>
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <h6>Rejected ({rejected?.length || 0})</h6>
+            </AccordionSummary>
             {rejected?.map((volunteer, index) => {
               return (
                 <RejectedVolunteerInfo
@@ -147,8 +168,8 @@ function EventDialogContent(props) {
               );
             })}
             <br />
-          </section>
-        </React.Fragment>
+          </Accordion>
+        </React.Fragment >
       );
     case USER_ROLES.VOLUNTEER:
       return (
@@ -294,8 +315,8 @@ function EventDialog(props) {
           {" "}
           {/* Hack to get tooltip to display when button is disabled */}
           <Button
+            className="signup-button"
             disabled={tooltipError}
-            variant="outline-primary"
             onClick={signUpUser}
           >
             Sign Up
@@ -329,7 +350,7 @@ function EventDialog(props) {
       <DialogActions>
         {inEventEdit &&
           <IconButton
-            style={{position: 'absolute', left: '5%' }}
+            style={{ position: 'absolute', left: '5%' }}
             aria-label="go back"
             onClick={() => setInEventEdit(false)}
           >
@@ -346,7 +367,7 @@ function EventDialog(props) {
       </DialogActions>
       <DialogTitle
         disableTypography={true}
-        style={{ fontFamily: "Raleway", fontSize: "25px", color: "#004AAC" }}
+        style={{ fontFamily: "Raleway", fontSize: "30px", color: "#004AAC" }}
         id="event-dialog-title"
       >
         {inEventEdit && <>EDIT:&nbsp;</>}
@@ -356,22 +377,24 @@ function EventDialog(props) {
         style={{ fontFamily: "Raleway", fontSize: "17px", color: "#004AAC" }}
       >
         {showActionBtns() &&
-        <>
-          <IconButton
-            style={{ padding: 0 }}
-            aria-label="edit event"
-            onClick={editEvent}
-          >
-            <EditIcon />
-          </IconButton>
-          <IconButton
-            style={{ padding: 0 }}
-            aria-label="delete event"
-            onClick={deleteEvent}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </>}
+          <>
+          <div style={{float: "right"}}>
+            <IconButton
+              style={{ padding: 0}}
+              aria-label="edit event"
+              onClick={editEvent}
+            >
+              <EditIcon style={{color: "#004AAC"}}/>
+            </IconButton>
+            <IconButton
+              style={{ padding: 0 }}
+              aria-label="delete event"
+              onClick={deleteEvent}
+            >
+              <DeleteIcon style={{color: "#004AAC"}}/>
+            </IconButton>
+            </div>
+          </>}
         <EventDialogContent
           event={event}
           user={user}
@@ -416,7 +439,7 @@ function PendingVolunteerInfo(props) {
           handleApprove(volunteer, volunteers, setVolunteers, props.event, user)
         }
       >
-        <ThumbUpIcon />
+        <ThumbUpIcon style={{color: "#004AAC"}}/>
       </IconButton>
       <IconButton
         style={{ padding: 0 }}
@@ -425,7 +448,7 @@ function PendingVolunteerInfo(props) {
           handleReject(volunteer, volunteers, setVolunteers, props.event, user)
         }
       >
-        <ThumbDownIcon />
+        <ThumbDownIcon style={{color: "#004AAC"}}/>
       </IconButton>
     </li>
   );
@@ -444,7 +467,7 @@ function ApprovedVolunteerInfo(props) {
           handleReject(volunteer, volunteers, setVolunteers, props.event, user)
         }
       >
-        <ThumbDownIcon />
+        <ThumbDownIcon style={{color: "#004AAC"}}/>
       </IconButton>
     </li>
   );
@@ -463,7 +486,7 @@ function RejectedVolunteerInfo(props) {
           handleApprove(volunteer, volunteers, setVolunteers, props.event, user)
         }
       >
-        <ThumbUpIcon />
+        <ThumbUpIcon style={{color: "#004AAC"}}/>
       </IconButton>
     </li>
   );

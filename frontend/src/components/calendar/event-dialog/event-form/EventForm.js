@@ -38,7 +38,7 @@ const getCreateEventSchema = () => {
     startTime: Yup.string().when('timeSlot', {
       is: 'Custom',
       then: Yup.string().required('Required')
-        .test('start_time_valid', 'Start time must be less than end time', function(value) { // Must NOT be arrow function
+        .test('start_time_valid', 'Start time must be less than end time', function (value) { // Must NOT be arrow function
           const { endTime } = this.parent;
 
           if (!endTime) {
@@ -50,7 +50,7 @@ const getCreateEventSchema = () => {
     endTime: Yup.string().when('timeSlot', {
       is: 'Custom',
       then: Yup.string().required('Required')
-        .test('end_time_valid', 'End time must be after the start time', function(value) { // Must NOT be arrow function
+        .test('end_time_valid', 'End time must be after the start time', function (value) { // Must NOT be arrow function
           const { startTime } = this.parent;
 
           if (!startTime) {
@@ -108,7 +108,15 @@ function EventForm(props) {
         {props.disableTime && <p><i>Time is not editable. Once there are volunteers for an event, the timeframe may not be changed.</i></p>}
         <CustomBasicFormControl formikProps={formikProps} name="title" required type="text" title="Event Title" placeholder="Enter title" />
         <CustomBasicFormControl formikProps={formikProps} name="description" title="Event Description" placeholder="Enter description" />
-        <Button disabled={isSubmitting} className="float-right" variant="primary" type="submit">
+        <Button
+          style={{
+            backgroundColor: "#004AAC",
+            color: "white",
+            textDecoration: "none !important",
+            borderRadius: "25px",
+            border: "none"
+          }}
+          disabled={isSubmitting} className="float-right" variant="primary" type="submit">
           {props.buttonText}
         </Button>
       </FormikForm>

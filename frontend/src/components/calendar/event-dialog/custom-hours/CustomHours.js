@@ -66,7 +66,7 @@ function CustomHours(props) {
     try {
       const resp = await RequestPayloadHelpers.makeRequest(`event/${props.eventId}/volunteer/custom-hours`, 'POST',
         customHourPostBody, getAuthHeaderFromSession(props.user.cognitoSession), true);
-      
+
       if (!resp || !resp.newEvent) {
         alert('Could not update hours. Please try again later!');
         return;
@@ -108,7 +108,14 @@ function CustomHours(props) {
       />
       <BootstrapButton
         type="submit"
-        style={{ margin: "5% 0" }}
+        style={{
+          margin: "5% 0",
+          backgroundColor: "#004AAC",
+          color: "white",
+          textDecoration: "none !important",
+          borderRadius: "25px",
+          border: "none"
+        }}
         onClick={(e) => formikProps.handleSubmit(e)}
       >
         {doingRequest ? "Request" : "Request Custom Hours"}
@@ -145,7 +152,21 @@ function CustomHours(props) {
       {!doingRequest && (
         <BootstrapButton
           type="submit"
-          style={doingRequest ? { margin: "5% 0" } : {margin: "0 0 2%"}}
+          style={doingRequest ? {
+            margin: "5% 0",
+            backgroundColor: "#004AAC",
+            color: "white",
+            textDecoration: "none !important",
+            borderRadius: "25px", 
+            border: "none"
+          } : {
+            margin: "0 0 2%",
+            backgroundColor: "#004AAC",
+            color: "white",
+            textDecoration: "none !important",
+            borderRadius: "25px",
+            border: "none"
+          }}
           onClick={() => requestBtnHit()}
         >
           {doingRequest ? "Request" : "Request Custom Hours"}
