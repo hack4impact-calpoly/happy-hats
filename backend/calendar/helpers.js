@@ -43,19 +43,23 @@ const checkSuccessFull = (res, toCheck, retObj, status = 200) => {
     return;
   }
 
-  res.status(status).json(retObj);
+  return res.status(status).json(retObj);
 };
 
 const onInvalidUserInput = (res, message = "Bad given input") => {
   res.status(400).json({
     message,
   });
+
+  return false;
 };
 
 const onInvalidEventId = (res) => {
   res.status(404).json({
     message: "Event not found",
   });
+
+  return false;
 };
 
 const checkVolunteerExistence = async (v, res) => {
@@ -133,14 +137,25 @@ const checkEventChangeEndpointBody = (
 };
 
 const checkAndGetEventId = (req, res, onSuccess) => {
-  const { eventId } = req.body;
+  const eventId = req.params.eventId || req.body.eventId;
 
   if (!eventId || !confirmValidObjectId(eventId)) {
-    onInvalidUserInput(res);
+    onInvalidUserInput(res, 'Invalid object ID');
     return;
   }
 
   onSuccess(mongoose.Types.ObjectId(eventId));
+};
+
+// Assume eventId is mongoose object ID
+const checkAndRetrieveEvent = async (eventId, res) => {
+  const event = await MongooseConnector.findCalendarEventById(eventId);
+  if (!event) {
+      onInvalidEventId(res);
+      return null;
+  }
+
+  return event.toObject();
 };
 
 const withEventChangeAndEventId = (req, res, requiresValidDates, onSuccess, roundDates = true) => {
@@ -195,6 +210,7 @@ module.exports = {
   confirmValidDate,
   confirmValidObjectId,
   checkCapeOrderEndpointBody,
+  checkAndRetrieveEvent,
   checkAndGetEventId,
   checkVolunteerExistence,
   checkResourceAndAuth,

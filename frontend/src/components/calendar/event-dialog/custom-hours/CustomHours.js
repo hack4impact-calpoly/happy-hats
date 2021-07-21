@@ -4,7 +4,7 @@ import {
   getMilitaryTimeFromDate,
   getTopOfDayAdjustedTime,
 } from "../../../../utility/date-time";
-import { CustomBasicFormControl } from "../create-event/CreateEvent";
+import { CustomBasicFormControl } from "../../../../utility/form-helpers/form-helpers";
 import { Formik, Form as FormikForm } from "formik";
 import * as Yup from "yup";
 import { getAuthHeaderFromSession, RequestPayloadHelpers } from "../../../../utility/request-helpers";
@@ -61,13 +61,12 @@ function CustomHours(props) {
     const customHourPostBody = {
       start: getTopOfDayAdjustedTime(props.eventStart, ...fields.startTime.split(':')),
       end: getTopOfDayAdjustedTime(props.eventEnd, ...fields.endTime.split(':')),
-      eventId: props.eventId,
     };
 
     try {
-      const resp = await RequestPayloadHelpers.makeRequest('event/volunteer/custom-hours', 'POST', customHourPostBody,
-        getAuthHeaderFromSession(props.user.cognitoSession), true);
-      
+      const resp = await RequestPayloadHelpers.makeRequest(`event/${props.eventId}/volunteer/custom-hours`, 'POST',
+        customHourPostBody, getAuthHeaderFromSession(props.user.cognitoSession), true);
+
       if (!resp || !resp.newEvent) {
         alert('Could not update hours. Please try again later!');
         return;
@@ -109,7 +108,14 @@ function CustomHours(props) {
       />
       <BootstrapButton
         type="submit"
-        style={{ margin: "5% 0" }}
+        style={{
+          margin: "5% 0",
+          backgroundColor: "#004AAC",
+          color: "white",
+          textDecoration: "none !important",
+          borderRadius: "25px",
+          border: "none"
+        }}
         onClick={(e) => formikProps.handleSubmit(e)}
       >
         {doingRequest ? "Request" : "Request Custom Hours"}
@@ -146,7 +152,21 @@ function CustomHours(props) {
       {!doingRequest && (
         <BootstrapButton
           type="submit"
-          style={doingRequest ? { margin: "5% 0" } : {margin: "0 0 2%"}}
+          style={doingRequest ? {
+            margin: "5% 0",
+            backgroundColor: "#004AAC",
+            color: "white",
+            textDecoration: "none !important",
+            borderRadius: "25px", 
+            border: "none"
+          } : {
+            margin: "0 0 2%",
+            backgroundColor: "#004AAC",
+            color: "white",
+            textDecoration: "none !important",
+            borderRadius: "25px",
+            border: "none"
+          }}
           onClick={() => requestBtnHit()}
         >
           {doingRequest ? "Request" : "Request Custom Hours"}

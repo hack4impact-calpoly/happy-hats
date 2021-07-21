@@ -8,7 +8,7 @@ import styles from "./volunteerForm.module.css";
 import { Formik, Form as FormikForm } from "formik";
 import { Button } from "react-bootstrap";
 import * as Yup from 'yup';
-import { CustomBasicFormControl } from "../calendar/event-dialog/create-event/CreateEvent";
+import { CustomBasicFormControl } from "../../utility/form-helpers/form-helpers";
 
 const VolunteerInfoSchema = Yup.object().shape({
   firstName: Yup.string().max(50, "First name too long!").required("Required"),

@@ -1,8 +1,0 @@
-p.form-error-msg {
-  color: red;
-  font-size: small;
-}
-
-form button[type="submit"] {
-  margin-top: 10px;
-}

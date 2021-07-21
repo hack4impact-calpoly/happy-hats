@@ -54,3 +54,11 @@ export function findNearestWeekday(oldDate) {
 
   return date;
 }
+
+export function getHoursMinutesStr(date) {
+  return `${padTimeZeroes(date.getHours())}:${padTimeZeroes(date.getMinutes())}`;
+}
+
+export function padTimeZeroes(num) {
+  return String(num).padStart(2, '0');
+};

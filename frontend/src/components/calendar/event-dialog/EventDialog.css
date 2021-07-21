@@ -21,6 +21,8 @@
 #volunteer-sign-up button {
   background-color: rgb(96, 211, 96);
   color: white;
+  text-decoration: none !important;
+  border-radius: 18px;
 }
 
 #volunteer-sign-up button:hover {
