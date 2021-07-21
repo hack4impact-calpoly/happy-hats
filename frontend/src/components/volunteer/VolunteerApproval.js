@@ -8,9 +8,11 @@ import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import Button from '@material-ui/core/Button';
 import { getAuthHeaderFromSession, getJsonResponse, RequestPayloadHelpers } from '../../utility/request-helpers';
 import withUser from "../../store/user/WithUser";
+import { Accordion, AccordionSummary } from "@material-ui/core";
+import ExpandMore from '@material-ui/icons/ExpandMore'
 
 class VolunteerApproval extends React.Component {
-  
+
   render() {
     if (!this.props.users) {
       return null;
@@ -19,96 +21,119 @@ class VolunteerApproval extends React.Component {
 
     const handleApprove = async (email) => {
       const vData = {
-        "email" : email,
+        "email": email,
       }
       try {
-          const resp = await RequestPayloadHelpers.makeRequest('updateApproved', 'POST', vData, getAuthHeaderFromSession(this.props.user.cognitoSession));
-          const userJson = await getJsonResponse(resp);
-          if (!resp || !resp.ok || !userJson) {
-              throw new Error('Error occurred updating User');
-          }
+        const resp = await RequestPayloadHelpers.makeRequest('updateApproved', 'POST', vData, getAuthHeaderFromSession(this.props.user.cognitoSession));
+        const userJson = await getJsonResponse(resp);
+        if (!resp || !resp.ok || !userJson) {
+          throw new Error('Error occurred updating User');
+        }
 
-          this.props.updateUser(userJson.user);
+        this.props.updateUser(userJson.user);
       } catch (error) {
-          console.error(error);
+        console.error(error);
       }
     }
 
     const handleReject = async (email) => {
-        const vData = {
-          "email" : email,
+      const vData = {
+        "email": email,
+      }
+      try {
+        const resp = await RequestPayloadHelpers.makeRequest('updateRejected', 'POST', vData, getAuthHeaderFromSession(this.props.user.cognitoSession));
+        const userJson = await getJsonResponse(resp);
+        if (!resp || !resp.ok || !userJson) {
+          throw new Error('Error occurred updating User');
         }
-        try {
-          const resp = await RequestPayloadHelpers.makeRequest('updateRejected', 'POST', vData, getAuthHeaderFromSession(this.props.user.cognitoSession));
-          const userJson = await getJsonResponse(resp);
-          if (!resp || !resp.ok || !userJson) {
-              throw new Error('Error occurred updating User');
-          }
 
-          this.props.updateUser(userJson.user);
-        } catch (error) {
-            console.error(error);
-        }
+        this.props.updateUser(userJson.user);
+      } catch (error) {
+        console.error(error);
+      }
     }
-  
+
 
     return (
       <>
         <Container>
           <Row>
             <Col>
-            <h1 className={styles.title}>Volunteers</h1>
+              <h1 className={styles.title}>Volunteers</h1>
             </Col>
             <Col>
-            <div className={styles.ApprovalSection}> 
-            <h4> Approve Volunteers </h4>
-              <h5> Pending: </h5>
-              {us.map(({
-                email,
-                role,
-                firstName, 
-                lastName, 
-                approved, 
-                decisionMade, 
-              }, index) => {
-                if(!approved && !decisionMade){
-                    return (
-                      <div className={styles.personRow} key={`pending-volunteer-${index}`}>
-                        <p> {firstName} {lastName}, {email} </p>
-                        <div className={styles.approvalButtons}>
-                            <Button onClick={() => handleApprove(email)} ><ThumbUpIcon className={styles.thumbs} color="primary"></ThumbUpIcon> </Button> 
-                            <Button onClick={() => handleReject(email)} ><ThumbDownIcon className={styles.thumbs} color="primary"> </ThumbDownIcon> </Button> 
-                        </div>
-                      </div>
-                    );
-                }
-                return null;
-              })}
-              <h5> Rejected: </h5>
-              {us.map(({
-                email, 
-                role,
-                firstName, 
-                lastName, 
-                approved, 
-                decisionMade, 
-              }, index) => {
+              <div className={styles.ApprovalSection}>
+                <h4> Approve Volunteers </h4>
+                <Accordion
+                  disableGutters
+                  elevation={0}
+                  style={{ backgroundColor: "#FFFCEF", color: "#004AAC" }}
+                  sx={{
+                    '&:before': {
+                      display: 'none',
+                    }
+                  }}>
+                  <AccordionSummary expandIcon={<ExpandMore />}>
+                    <h5> Pending: </h5>
+                  </AccordionSummary>
 
-                if(!approved && decisionMade){
-                    return (
-                      <div className={styles.personRow} key={`rejected-volunteer-${index}`}>
-                        <p> {firstName} {lastName}, {email} </p>
-                        <div className={styles.approvalButtons}>
-                          <Button onClick={() => handleApprove(email)} ><ThumbUpIcon className={styles.thumbs} color="primary"></ThumbUpIcon> </Button> 
+                  {us.map(({
+                    email,
+                    role,
+                    firstName,
+                    lastName,
+                    approved,
+                    decisionMade,
+                  }, index) => {
+                    if (!approved && !decisionMade) {
+                      return (
+                        <div className={styles.personRow} key={`pending-volunteer-${index}`}>
+                          <p> {firstName} {lastName}, {email} </p>
+                          <div className={styles.approvalButtons}>
+                            <Button onClick={() => handleApprove(email)} ><ThumbUpIcon className={styles.thumbs} color="primary"></ThumbUpIcon> </Button>
+                            <Button onClick={() => handleReject(email)} ><ThumbDownIcon className={styles.thumbs} color="primary"> </ThumbDownIcon> </Button>
+                          </div>
                         </div>
-                      </div>
-                    );
-                }
+                      );
+                    }
+                    return null;
+                  })}
+                </Accordion>
+                <Accordion
+                  disableGutters
+                  elevation={0}
+                  style={{ backgroundColor: "#FFFCEF", color: "#004AAC" }}
+                  sx={{
+                    '&:before': {
+                      display: 'none',
+                    }
+                  }}>
+                  <AccordionSummary expandIcon={<ExpandMore />}>
+                    <h5>Rejected:</h5>
+                  </AccordionSummary>
+                  {us.map(({
+                    email,
+                    firstName,
+                    lastName,
+                    approved,
+                    decisionMade,
+                  }, index) => {
 
-                return null;
-              })}
-              
-            </div>
+                    if (!approved && decisionMade) {
+                      return (
+                        <div className={styles.personRow} key={`rejected-volunteer-${index}`}>
+                          <p> {firstName} {lastName}, {email} </p>
+                          <div className={styles.approvalButtons}>
+                            <Button onClick={() => handleApprove(email)} ><ThumbUpIcon className={styles.thumbs} color="primary"></ThumbUpIcon> </Button>
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    return null;
+                  })}
+                </Accordion>
+              </div>
             </Col>
           </Row>
         </Container>
