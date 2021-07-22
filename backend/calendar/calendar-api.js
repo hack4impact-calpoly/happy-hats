@@ -217,7 +217,7 @@ module.exports = (app) => {
     checkSuccess(res, success);
   });
 
-  app.post('/api/event/:eventId/approval-all-hours', isUserAdmin, async (req, res) => {
+  app.post('/api/event/:eventId/approve-scheduled-hours', isUserAdmin, async (req, res) => {
     Logger.log("POST: Approving all hours of event...");
 
     let eventId = req.params.eventId;
