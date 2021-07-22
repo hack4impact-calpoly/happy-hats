@@ -20,25 +20,28 @@ MongooseConnector.saveCalendarEventCustom = async (obj) => {
 };
 
 async function setupCalendarEvents(useExistingEvents = true) {
-  if (!useExistingEvents) {
+  /* if (!useExistingEvents) {
     await CalendarEvent.deleteMany({});
-  }
+  } */
+  await CalendarEvent.deleteMany({
+    eventUser: "60f0494c4b7a31f3a179ba8a"
+  });
 
   const curDate = getStartOfDay(new Date());
 
   const event1 = await MongooseConnector.saveCalendarEventCustom({
     start: addTime(curDate, (hours = 10)),
     end: addTime(curDate, (hours = 12)),
-    eventUser: "6099cafda79e8c1b64e9cf3a",
+    eventUser: "60f0494c4b7a31f3a179ba8a",
     eventType: CalendarEventTypes.VOLUNTEER,
     title: "First test title",
-    description: "First test description, it;s a little longer",
+    description: "First test description, it's a little longer",
   });
 
   const event2 = await MongooseConnector.saveCalendarEventCustom({
     start: addTime(curDate, (hours = 14)),
     end: addTime(curDate, (hours = 16)),
-    eventUser: "6099cafda79e8c1b64e9cf3a",
+    eventUser: "60f0494c4b7a31f3a179ba8a",
     eventType: CalendarEventTypes.VOLUNTEER,
     title: "Second test title",
     description: "Second test description, a little longer",
@@ -53,7 +56,7 @@ async function setupCalendarEvents(useExistingEvents = true) {
     decisionMade: true,
     usingDefaultTimes: true,
     volunteer: {
-      id: '6099cafda79e8c1b64e9cf3a',
+      id: '609b6d3ade638b2b73892519',
       firstName: 'ben',
       lastName: 'last1',
       email: 'someemail@email.com'
@@ -79,11 +82,11 @@ async function setupCalendarEvents(useExistingEvents = true) {
     // name: "Freddie J Numero tres",
     start: addTime(event2.start),
     end: addTime(event2.start, 0, minutes = 30),
-    approved: false,
-    decisionMade: false,
+    approved: true,
+    decisionMade: true,
     usingDefaultTimes: false,
     volunteer: {
-      id: '60aeafc512a2d3081264c468',
+      id: '60c66ea8d519ea620f739f93',
       firstName: 'ben',
       lastName: 'last3',
       email: 'someemail3@email.com'
@@ -99,7 +102,7 @@ async function setupCalendarEvents(useExistingEvents = true) {
   const event3 = await MongooseConnector.saveCalendarEventCustom({
     start: addTime(curDate, (hours = 14)),
     end: addTime(curDate, (hours = 16)),
-    eventUser: "6099cafda79e8c1b64e9cf3a",
+    eventUser: "60f0494c4b7a31f3a179ba8a",
     eventType: CalendarEventTypes.VOLUNTEER,
     title: "Third test title",
     description: "Third test description, a little longer",

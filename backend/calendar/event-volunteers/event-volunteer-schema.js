@@ -15,6 +15,7 @@ const eventVolunteerSchema = new mongoose.Schema({
     usingDefaultTimes: { type: Boolean, required: true },
     approved: { type: Boolean, required: false },
     decisionMade: { type: Boolean, required: false, default: false },
+    completed: { type: Boolean, required: false, default: false },
 });
 
 module.exports = {

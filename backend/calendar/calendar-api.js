@@ -11,7 +11,6 @@ const {
   confirmValidObjectId,
   checkSuccess,
   checkSuccessFull,
-  checkResourceAndAuth,
   onInvalidEventId,
   withEventChangeAndEventId,
   checkAndRetrieveEvent,
@@ -20,6 +19,10 @@ const {
 // ================  Data  ======================
 const validEventCreationRoles = new Set(['admin']);
 // ==============================================
+
+const hoursBetween = (d1, d2) => {
+  return Math.abs(Math.round(((d1.getTime() - d2.getTime()) / (1000 * 60 * 60)) * 100) / 100);
+};
 
 module.exports = (app) => {
   app.get('/api/all-events', isUserApproved, async (req, res) => {
@@ -158,7 +161,6 @@ module.exports = (app) => {
 
       const event = await checkAndRetrieveEvent(eventId, res);
       if (!event) {
-        onInvalidEventId(res);
         return;
       }
 
@@ -207,13 +209,57 @@ module.exports = (app) => {
 
     const event = await checkAndRetrieveEvent(eventId, res);
     if (!event) {
-      onInvalidEventId(res);
       return;
     }
 
     const success = await MongooseConnector.deleteCalendarEvent(eventId);
 
     checkSuccess(res, success);
+  });
+
+  app.post('/api/event/:eventId/approval-all-hours', isUserAdmin, async (req, res) => {
+    Logger.log("POST: Approving all hours of event...");
+
+    let eventId = req.params.eventId;
+
+    if (!confirmValidObjectId(eventId)) {
+      onInvalidUserInput(res);
+      return;
+    }
+
+    eventId = mongoose.Types.ObjectId(eventId);
+
+    const event = await checkAndRetrieveEvent(eventId, res);
+    if (!event) {
+      return;
+    }
+
+    if (event.adminFinished) {
+      return res.status(403).json({
+        message: 'Event has already been marked as finished and hours approved',
+      });
+    }
+
+    const defaultHoursBetween = hoursBetween(event.end, event.start);
+
+    const volunteerIdAndHours = event.volunteers?.filter(v => v.approved && v.decisionMade && !v.completed)?.map((v) => {
+        let timeBetween;
+        if (v.usingDefaultTimes) {
+          timeBetween = defaultHoursBetween;
+        } else if (v.start && v.end) {
+          timeBetween = hoursBetween(v.end, v.start);
+        } else {
+          return null;
+        }
+
+        return [v.volunteer.id, timeBetween];
+    }).filter(arr => !!arr);
+
+    const newEvent = await MongooseConnector.addCompletedHoursForVolunteers(eventId, volunteerIdAndHours);
+
+    checkSuccessFull(res, !!newEvent, {
+      newEvent,
+    }, 200);
   });
 
   eventVolunteerApi(app);
