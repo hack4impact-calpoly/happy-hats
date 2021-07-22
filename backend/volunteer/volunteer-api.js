@@ -161,8 +161,33 @@ module.exports = (app) => {
            message: "User email not found",
          });
        }
-   
        const user = await MongooseConnector.saveUserRejected(volunteerObject.id);
+       
+       const calendarEvents = await MongooseConnector.getAllCalendarEvents(
+       );
+       if (!calendarEvents) {
+         return res.status(404).json({
+           message: "Calendar Events not found.",
+         });
+       }
+       else{
+          calendarVolunteer = {
+             firstName: volunteerObject.firstName,
+             lastName: volunteerObject.lastName,
+             email: volunteerObject.email,
+             id: mongoose.Types.ObjectId(volunteerObject.id),
+          }
+          console.log(calendarVolunteer)
+         for(var calendarEvent of Object.values(calendarEvents)){
+            var result = await MongooseConnector.deleteVolunteerFromEvent(calendarEvent._id, calendarVolunteer);
+            if(!result){
+               return res.status(404).json({
+                     message: "Error removing from events.",
+                  });
+            }
+          }
+       }
+
        return res.status(200).json({
          user,
        });

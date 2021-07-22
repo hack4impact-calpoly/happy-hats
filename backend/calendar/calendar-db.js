@@ -73,6 +73,23 @@ const calendarEventFns = {
         
         return updateResult;
     },
+    deleteVolunteerFromEvent: async (eventId, volunteerId) => {
+        const updateResult = await CalendarEvent.findByIdAndUpdate(
+            eventId, 
+            {
+                $pull: {
+                    volunteers: {
+                       volunteer: volunteerId
+                    }
+                }
+            }, 
+            { 
+                safe: true, 
+                multi:true 
+            }
+        );
+        return updateResult;
+    },
     setCustomHoursForEvent: async (eventId, volunteerId, eventData) => {
         const updateResult = await CalendarEvent.findOneAndUpdate(
             {

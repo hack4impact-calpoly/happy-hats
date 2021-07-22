@@ -22,7 +22,8 @@ const validEventCreationRoles = new Set(['admin']);
 // ==============================================
 
 module.exports = (app) => {
-  app.get('/api/all-events', isUserApproved, async (req, res) => {
+  app.get('/api/all-events', async (req, res) => {
+    Logger.log("GET: All calendar events...")
     const events = await MongooseConnector.getAllCalendarEvents();
     res.status(200).json({
       events: events
