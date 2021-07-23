@@ -18,6 +18,7 @@ const calendarEventSchema = new mongoose.Schema({
     volunteers: { type: [eventVolunteerSchema], required: false, default: [] },
     title: { type: String, required: true },
     description: { type: String, required: false },
+    adminFinished: { type: Boolean, required: false, default: false },
 },
 {
     collection: COLLECTION_NAME,

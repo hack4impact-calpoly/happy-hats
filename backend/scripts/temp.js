@@ -1,7 +1,12 @@
+require("dotenv").config({
+    path: "../.env",
+});
+
 const MongooseConnector = require('../db-helper');
+const { CalendarEvent } = require("../calendar/calendar-db");
 
 (async () => {
     await MongooseConnector.connect();
-    await MongooseConnector.updateCalendarEvent('4edd40c86762e0fb12000003', { 'hi' : 'hi' });
+    console.log(await CalendarEvent.updateMany({}, {$set: {allDay: true}}));
     await MongooseConnector.disconnect();
 })();

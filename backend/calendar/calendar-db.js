@@ -1,5 +1,7 @@
+const { default: Logger } = require('@hack4impact/logger');
 const mongoose = require('mongoose');
-const { calendarEventSchema, COLLECTION_NAME, CalendarEventTypes } = require('./models/calendar-schema');
+const { volunteerFns } = require('../volunteer/volunteer-db');
+const { calendarEventSchema, COLLECTION_NAME } = require('./models/calendar-schema');
 
 /* Create calendar model */
 const CalendarEvent = mongoose.model('CalendarEvent', calendarEventSchema, COLLECTION_NAME);
@@ -128,6 +130,61 @@ const calendarEventFns = {
         );
 
         return updateResult;
+    },
+    addCompletedHoursForVolunteers: async (eventId, volunteerIdAndHours) => {
+        if (volunteerIdAndHours && volunteerIdAndHours.length > 0) {
+            const [successIds, failIds] = await volunteerFns.addCompletedHoursToVolunteers(volunteerIdAndHours);
+
+            if (failIds.length > 0) {
+                Logger.error(`[ERROR]: Failed to update hours on event ${eventId} for volunteers ${failIds}`);
+            }
+
+            if (successIds.length > 0) {
+                try {
+                    const res = await CalendarEvent.findByIdAndUpdate(
+                        eventId,
+                        {
+                            $set: {
+                                'volunteers.$[v].completed': true,
+                            }
+                        },
+                        {
+                            new: true,
+                            lean: true,
+                            arrayFilters: [ { 'v.volunteer.id': { $in: successIds }, } ],
+                        }
+                    ).exec();
+
+                    const successIdsSet = new Set(successIds);
+                    const filteredSuccessVolunteers = res?.volunteers?.filter(v => {
+                        return v.completed && successIdsSet.has(v.volunteer.id);
+                    });
+
+                    if (!res ||
+                            filteredSuccessVolunteers?.length !== successIdsSet.size) {
+                        throw new Error("Did not set all successful volunteers added hours to");
+                    }
+                } catch (err) {
+                    Logger.error(`[ERROR]: Failed to set volunteers as completed on ${eventId} for volunteers ${successIds}`);
+                    return false;
+                }
+            }
+        }
+
+        const newEvent = await CalendarEvent.findByIdAndUpdate(
+            eventId,
+            {
+                $set: {
+                    adminFinished: true,
+                }
+            },
+            {
+                new: true,
+                lean: true,
+            }
+        );
+
+        return newEvent;
     },
 };
 

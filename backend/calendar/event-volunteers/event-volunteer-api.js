@@ -75,6 +75,12 @@ module.exports = (app) => {
                 return;
             }
 
+            if ((new Date()).getTime() >= event.start) {
+                return res.status(403).json({
+                    message: 'The event is past the start time. No one may sign up anymore',
+                });
+            }
+
             // TODO: add check here where if user has been rejected for CUSTOM hours and is signing up for default ones, it deletes rejected request and makes a new one
 
             const alreadySignedUp = event.volunteers.find(v => eventUser.equals(v.volunteer?.id));
@@ -195,6 +201,12 @@ module.exports = (app) => {
             const event = await checkAndRetrieveEvent(eventId, res);
             if (!event) {
                 return;
+            }
+
+            if ((new Date()).getTime() >= event.start) {
+                return res.status(403).json({
+                    message: 'The event is past the start time. No one may sign up anymore',
+                });
             }
 
             const usingDefaultTimes = userSelectedDefaultTime(startDate, endDate, event);
