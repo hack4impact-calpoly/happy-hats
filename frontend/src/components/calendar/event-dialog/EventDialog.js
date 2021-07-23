@@ -364,7 +364,11 @@ function EventDialog(props) {
   };
 
   const showActionBtns = () => {
-    return !inEventEdit && !props.newEvent && signupAvailable && isUserAdmin(props.user);
+    return !inEventEdit && !props.newEvent && isUserAdmin(props.user);
+  };
+
+  const showEditBtn = () => {
+    return showActionBtns() && signupAvailable;
   };
 
   if (!event) {
@@ -459,15 +463,14 @@ function EventDialog(props) {
         style={{ fontFamily: "Raleway", fontSize: "17px", color: "#004AAC" }}
       >
         {showActionBtns() &&
-          <>
           <div style={{float: "right"}}>
-            <IconButton
+            {(showEditBtn() && <IconButton
               style={{ padding: 0}}
               aria-label="edit event"
               onClick={editEvent}
             >
               <EditIcon style={{color: "#004AAC"}}/>
-            </IconButton>
+            </IconButton>)}
             <IconButton
               style={{ padding: 0 }}
               aria-label="delete event"
@@ -475,8 +478,7 @@ function EventDialog(props) {
             >
               <DeleteIcon style={{color: "#004AAC"}}/>
             </IconButton>
-            </div>
-          </>}
+            </div>}
         <EventDialogContent
           event={event}
           user={user}

@@ -53,8 +53,8 @@ const volunteerFns = {
     ).exec();
   },
   addCompletedHoursToVolunteers: async (volunteerIdAndHours) => {
-    const promises = volunteerIdAndHours.map(async ([vId, hours]) => {
-      return await Volunteer.findByIdAndUpdate(
+    const promises = volunteerIdAndHours.map(([vId, hours]) => {
+      return Volunteer.findByIdAndUpdate(
         vId,
         {
           $inc: {

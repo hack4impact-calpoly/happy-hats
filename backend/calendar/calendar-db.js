@@ -162,7 +162,10 @@ const calendarEventFns = {
 
                     if (!res ||
                             filteredSuccessVolunteers?.length !== successIdsSet.size) {
-                        throw new Error("Did not set all successful volunteers added hours to");
+                        const filteredFailedVolunteers = res?.volunteers?.filter(v => {
+                            return !v.completed && successIdsSet.has(v.volunteer.id);
+                        });
+                        throw new Error(`Did not set all successful volunteers added hours to (${filteredFailedVolunteers})`);
                     }
                 } catch (err) {
                     Logger.error(`[ERROR]: Failed to set volunteers as completed on ${eventId} for volunteers ${successIds}`);
