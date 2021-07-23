@@ -189,14 +189,7 @@ module.exports = (app) => {
         Logger.log('POST: Custom hours');
 
         withEventChangeAndEventId(req, res, true, async (startDate, endDate, eventUser, eventId) => {
-            const eventUserRole = req.locals.user?.role;
-
-            if (!validHourApprovalRoles.has(eventUserRole)) {
-                res.status(403).json({
-                    message: 'Invalid role permissions to approve hours',
-                });
-                return;
-            }
+            const eventUserRole = req.locals.user.role;
 
             const event = await checkAndRetrieveEvent(eventId, res);
             if (!event) {

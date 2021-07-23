@@ -19,7 +19,6 @@ const AlertDialog = (props) => {
 
   const handleDelete = async () => {
     setOpen(false);
-    console.log("here")
     const aData = {
       "_id": props.post._id,
       "firstName": props.post.firstName,
@@ -33,7 +32,6 @@ const AlertDialog = (props) => {
       "role":props.post.role,
     }
     try {
-      // const resp = await RequestPayloadHelpers.makeRequest('updateRejected', 'POST', vData, getAuthHeaderFromSession(this.props.user.cognitoSession));
       const resp = await RequestPayloadHelpers.makeRequest('updateDisabled', 'POST', aData, getAuthHeaderFromSession(props.user.cognitoSession));
       if (!resp || !resp.ok) {
         throw new Error('Error occurred deleting user');
