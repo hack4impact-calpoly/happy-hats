@@ -14,15 +14,12 @@ const {
   onInvalidEventId,
   withEventChangeAndEventId,
   checkAndRetrieveEvent,
+  hoursBetween,
 } = require('./helpers');
 
 // ================  Data  ======================
 const validEventCreationRoles = new Set(['admin']);
 // ==============================================
-
-const hoursBetween = (d1, d2) => {
-  return Math.abs(Math.round(((d1.getTime() - d2.getTime()) / (1000 * 60 * 60)) * 100) / 100);
-};
 
 module.exports = (app) => {
   app.get('/api/all-events', isUserApproved, async (req, res) => {

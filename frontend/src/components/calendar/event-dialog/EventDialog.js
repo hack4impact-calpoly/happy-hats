@@ -41,6 +41,32 @@ const useStyles = makeStyles({
   },
 });
 
+function SignupStatus({ userSignedUp, currentUserInEvent }) {
+  let signupStatus;
+
+  if (userSignedUp && currentUserInEvent) {
+    if (currentUserInEvent.approved && currentUserInEvent.decisionMade) {
+      signupStatus = 'APPROVED';
+    } else if (!currentUserInEvent.approved && currentUserInEvent.decisionMade) {
+      signupStatus = 'REJECTED';
+    } else {
+      signupStatus = 'PENDING';
+    }
+  } else {
+    signupStatus = 'Not signed up';
+  }
+
+  return (
+    <p class="signup-status">Your sign up status: {signupStatus}</p>
+  );
+}
+
+function CompletedHoursNotice({ completed }) {
+  return (
+    <p class="font-italic m-0">Hours marked as completed: {completed ? 'YES' : 'NO'}</p>
+  );
+}
+
 function EventDialogContent(props) {
   const {
     event,
@@ -122,6 +148,8 @@ function EventDialogContent(props) {
         );
       }
 
+      const currentUserInEvent = event?.volunteers?.find(v => v.volunteer?.id && v.volunteer?.id === user?.otherUserInfo?._id);
+
       let tooltipTitle;
       let tooltipError = true;
       if (event?.adminFinished) {
@@ -165,6 +193,12 @@ function EventDialogContent(props) {
                 </span>
               </Tooltip>}
           </div>
+          {userSignedUp && (
+            <SignupStatus currentUserInEvent={currentUserInEvent} userSignedUp={userSignedUp} />
+          )}
+          {userSignedUp && currentUserInEvent.approved && eventFinished && (
+            <p class="signup-status">NOTE: Your scheduled hours for this event {currentUserInEvent.completed ? 'HAVE' : 'HAVE NOT'} been approved</p>
+          )}
           <Accordion
             style={{ padding: "5px", backgroundColor: "#FFFCEF", color: "#004AAC" }}
             sx={{
@@ -203,6 +237,7 @@ function EventDialogContent(props) {
                   key={index}
                   volunteer={volunteer}
                   event={event}
+                  eventFinished={eventFinished}
                   user={props.user}
                 />
               );
@@ -235,6 +270,8 @@ function EventDialogContent(props) {
         </React.Fragment >
       );
     case USER_ROLES.VOLUNTEER:
+      const currentUserInEventVolunteer = event?.volunteers?.find(v => v.volunteer?.id && v.volunteer?.id === user?.otherUserInfo?._id);
+
       return (
         <React.Fragment>
           <p>
@@ -247,10 +284,26 @@ function EventDialogContent(props) {
           <section>
             {userSignUpJSX}
 
-            <h6>Volunteers ({event.volunteers?.length || 0})</h6>
+            {userSignedUp && (
+              <SignupStatus currentUserInEvent={currentUserInEventVolunteer} userSignedUp={userSignedUp} />
+            )}
+
+            {userSignedUp && currentUserInEventVolunteer.approved && eventFinished && (
+              <p class="signup-status">NOTE: Your scheduled hours for this event {currentUserInEventVolunteer.completed ? 'HAVE' : 'HAVE NOT'} been approved</p>
+            )}
+          <Accordion
+            style={{ padding: "5px", backgroundColor: "#FFFCEF", color: "#004AAC" }}
+            sx={{
+              '&:before': {
+                display: 'none',
+              }}}>
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <h6>Volunteers ({event.volunteers?.length || 0})</h6>
+            </AccordionSummary>
             {approved?.map((volunteer, index) => {
               return <VolunteerInfo key={index} volunteer={volunteer} />;
             })}
+            </Accordion>
           </section>
         </React.Fragment>
       );
@@ -465,7 +518,7 @@ function EventDialog(props) {
         {showActionBtns() &&
           <div style={{float: "right"}}>
             {(showEditBtn() && <IconButton
-              style={{ padding: 0}}
+              style={{ padding: 0, marginRight: '10px'}}
               aria-label="edit event"
               onClick={editEvent}
             >
@@ -541,7 +594,39 @@ function PendingVolunteerInfo(props) {
 }
 
 function ApprovedVolunteerInfo(props) {
-  const { volunteer, volunteers, setVolunteers, user } = props;
+  const { volunteer, volunteers, setVolunteers, user, eventFinished, event } = props;
+
+  const [completed, setCompleted] = useState(volunteer.completed);
+
+  /* const completed = useEffect(() => {
+
+  }, [volunteer.completed]); */
+
+  const updateCompletedHours = async (newCompleteStatus) => {
+    try {
+      const resp = await RequestPayloadHelpers.makeRequest(
+        `event/${event._id}/volunteer/${volunteer.volunteer.id}/update-hours-completed`,
+        'PUT',
+        {
+          newCompleteStatus,
+        },
+        getAuthHeaderFromSession(user.cognitoSession),
+        false
+      );
+
+      if (!resp) {
+        alert("Could not updated hours completed status! Refresh and try again.");
+        return;
+      }
+
+      volunteer.completed = newCompleteStatus;
+      setCompleted(!!newCompleteStatus);
+      let newVolunteers = [...volunteers];
+      setVolunteers(newVolunteers);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <li>
@@ -550,11 +635,30 @@ function ApprovedVolunteerInfo(props) {
         style={{ padding: 5 }}
         aria-label="reject"
         onClick={() =>
-          handleReject(volunteer, volunteers, setVolunteers, props.event, user)
+          handleReject(volunteer, volunteers, setVolunteers, event, user)
         }
       >
         <ThumbDownIcon style={{color: "#004AAC"}}/>
       </IconButton>
+      {eventFinished && (
+        <div class="d-flex w-100 justify-content-between align-items-center">
+          <CompletedHoursNotice completed={volunteer.completed} />
+          <BootstrapButton
+            // disabled={tooltipError}
+            style={{
+              margin: "0 10px",
+              backgroundColor: "#004AAC",
+              color: "white",
+              textDecoration: "none !important",
+              border: "none"
+            }}
+            onClick={() => updateCompletedHours(!completed)}
+          >
+            {volunteer.completed ? 'Undo' : 'Set'}
+          </BootstrapButton>
+        </div>
+      )}
+      <br />
     </li>
   );
 }

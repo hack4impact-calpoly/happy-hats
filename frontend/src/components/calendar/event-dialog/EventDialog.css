@@ -40,3 +40,8 @@
 h6 {
   font-size: 1.2rem;
 }
+
+.signup-status {
+  font-style: italic;
+  font-weight: bold;
+}

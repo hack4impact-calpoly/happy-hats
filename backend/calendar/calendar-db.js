@@ -155,9 +155,9 @@ const calendarEventFns = {
                         }
                     ).exec();
 
-                    const successIdsSet = new Set(successIds);
+                    const successIdsSet = new Set(successIds.map(s => String(s)));
                     const filteredSuccessVolunteers = res?.volunteers?.filter(v => {
-                        return v.completed && successIdsSet.has(v.volunteer.id);
+                        return v.completed && successIdsSet.has(String(v.volunteer.id));
                     });
 
                     if (!res ||
@@ -168,6 +168,7 @@ const calendarEventFns = {
                         throw new Error(`Did not set all successful volunteers added hours to (${filteredFailedVolunteers})`);
                     }
                 } catch (err) {
+                    Logger.err(err);
                     Logger.error(`[ERROR]: Failed to set volunteers as completed on ${eventId} for volunteers ${successIds}`);
                     return false;
                 }
@@ -188,6 +189,39 @@ const calendarEventFns = {
         );
 
         return newEvent;
+    },
+    updateHoursAsComplete: async (eventId, helperList, newCompleteStatus) => {
+        const vId = helperList[0][0];
+
+        if (!newCompleteStatus) {
+            // Invert timeBetween
+            helperList[0][1] *= -1;
+        }
+
+        const [successIds, failIds] = await volunteerFns.addCompletedHoursToVolunteers(helperList);
+
+        if (successIds.length !== 1 || !helperList[0][0].equals(successIds[0])) {
+            Logger.error(`[ERROR]: Did not update the hour completion status for ${vId} correctly for event ${eventId} to ${newCompleteStatus}... failed on setting new hour increment to ${helperList[0][1]}`);
+            return false;
+        }
+
+        const updateResult = await CalendarEvent.findOneAndUpdate(
+            {
+                _id: eventId,
+                'volunteers.volunteer.id': vId,
+            },
+            {
+                $set: {
+                    'volunteers.$.completed': !!newCompleteStatus,
+                }
+            },
+            {
+                new: true,
+                lean: true,
+            }
+        );
+
+        return updateResult;
     },
 };
 
