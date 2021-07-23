@@ -31,7 +31,6 @@ class CustomWebError extends Error {
 }
 
 const basicResponseCheck = (response) => {
-  console.log(response);
   if (!response || !response.ok) {
     throw new CustomWebError(response.status);
   }
@@ -98,8 +97,6 @@ export class RequestPayloadHelpers {
         redirect: 'follow',
         body: JSON.stringify(payload),
       }));
-
-      console.log(response);
 
       if (asJSON) {
         return await getJsonResponse(response);

@@ -9,6 +9,7 @@ import {
   Button,
   Tooltip,
 } from "@material-ui/core";
+import { Button as BootstrapButton } from "react-bootstrap";
 import { makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@material-ui/icons/Close";
 import EditIcon from "@material-ui/icons/Edit";
@@ -51,11 +52,40 @@ function EventDialogContent(props) {
     user,
     eventEditor,
     handleClose,
+    eventFinished,
+    signupAvailable,
     dailyEvents,
     updateEvent,
   } = props;
 
-  const userSignUpJSX = userSignedUp && (
+  const approveCompletedHours = async () => {
+    let resp;
+
+    try {
+      resp = await RequestPayloadHelpers.makeRequest(
+        `event/${event._id}/approve-scheduled-hours`,
+        "POST",
+        {},
+        getAuthHeaderFromSession(user.cognitoSession),
+        true
+      );
+
+      if (!resp || !resp.newEvent) {
+        alert("error occurred. try again later");
+        alert(resp.message);
+        return;
+      }
+    } catch (err) {
+      console.log(err);
+      return;
+    }
+
+    eventTransformer(resp.newEvent);
+    props.eventEditor(resp.newEvent);
+    props.updateEvent(resp.newEvent);
+  };
+
+  const userSignUpJSX = userSignedUp && signupAvailable && (
     <CustomHours
       eventId={event._id}
       user={user}
@@ -92,6 +122,16 @@ function EventDialogContent(props) {
         );
       }
 
+      let tooltipTitle;
+      let tooltipError = true;
+      if (event?.adminFinished) {
+        tooltipTitle = "Event hours after already been approved and distributed!";
+      } else {
+        tooltipError = false;
+        tooltipTitle =
+          "This will look at all approved volunteers and set their scheduled hours for this event to completed.";
+      }
+
       return (
         <React.Fragment>
           <h4>
@@ -101,7 +141,30 @@ function EventDialogContent(props) {
 
           <p>{event.description}</p>
 
-          {userSignUpJSX}
+          <div class="d-flex w-100 justify-content-center">
+            {userSignUpJSX}
+            {eventFinished &&
+              <Tooltip title={tooltipTitle}>
+                <span id="completed-hours-approval">
+                  {" "}
+                  {/* Hack to get tooltip to display when button is disabled */}
+                  <BootstrapButton
+                    disabled={tooltipError}
+                    style={{
+                      margin: "5% 0",
+                      backgroundColor: "#004AAC",
+                      color: "white",
+                      textDecoration: "none !important",
+                      borderRadius: "25px",
+                      border: "none"
+                    }}
+                    onClick={() => approveCompletedHours()}
+                  >
+                    Distribute Completed Hours
+                  </BootstrapButton>
+                </span>
+              </Tooltip>}
+          </div>
           <Accordion
             style={{ padding: "5px", backgroundColor: "#FFFCEF", color: "#004AAC" }}
             sx={{
@@ -196,6 +259,16 @@ function EventDialogContent(props) {
   }
 }
 
+// ===================  Helper Functions  ======================= //
+const isEventFinished = (event) => {
+  return event?.end && (new Date()).getTime() > event.end.getTime();
+};
+
+const isSignupAvailable = (event) => {
+  return event?.start && (new Date()).getTime() < event.start.getTime();
+};
+// ============================================================= //
+
 function EventDialog(props) {
   const { event, user } = props;
   const classes = useStyles();
@@ -216,13 +289,8 @@ function EventDialog(props) {
 
   const [userSignedUp, setUserSignedUp] = useState(false);
   const [inEventEdit, setInEventEdit] = useState(false);
-
-  const onClose = () => {
-    if (inEventEdit) {
-      setInEventEdit(false);
-    }
-    props.handleClose();
-  };
+  const [eventFinished, setEventFinished] = useState(isEventFinished(props.event));
+  const [signupAvailable, setSignupAvailable] = useState(isSignupAvailable(props.event));
 
   useEffect(() => {
     setUserSignedUp(
@@ -231,6 +299,18 @@ function EventDialog(props) {
       )
     );
   }, [props.event, props.user]);
+
+  useEffect(() => {
+    setEventFinished(isEventFinished(props.event));
+    setSignupAvailable(isSignupAvailable(props.event));
+  }, [props.event]);
+
+  const onClose = () => {
+    if (inEventEdit) {
+      setInEventEdit(false);
+    }
+    props.handleClose();
+  };
 
   const signUpUser = async () => {
     if (!userSignedUp) {
@@ -284,7 +364,7 @@ function EventDialog(props) {
   };
 
   const showActionBtns = () => {
-    return !inEventEdit && !props.newEvent && isUserAdmin(props.user);
+    return !inEventEdit && !props.newEvent && signupAvailable && isUserAdmin(props.user);
   };
 
   if (!event) {
@@ -297,6 +377,8 @@ function EventDialog(props) {
     tooltipTitle = "You are already signed up!";
   } else if (event.volunteers?.length >= 20) {
     tooltipTitle = "Sorry, 20 volunteers already signed up!";
+  } else if (!signupAvailable) {
+    tooltipTitle = "The event is past the start date. You cannot sign up for this event anymore";
   } else {
     tooltipError = false;
     tooltipTitle =
@@ -406,6 +488,8 @@ function EventDialog(props) {
           volunteers={volunteers}
           setVolunteers={setVolunteers}
           editEvent={inEventEdit}
+          eventFinished={eventFinished}
+          signupAvailable={signupAvailable}
           handleClose={onClose}
           setInEventEdit={setInEventEdit}
           {...props}
