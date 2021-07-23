@@ -270,6 +270,8 @@ function EventDialogContent(props) {
         </React.Fragment >
       );
     case USER_ROLES.VOLUNTEER:
+      const currentUserInEventVolunteer = event?.volunteers?.find(v => v.volunteer?.id && v.volunteer?.id === user?.otherUserInfo?._id);
+
       return (
         <React.Fragment>
           <p>
@@ -283,17 +285,25 @@ function EventDialogContent(props) {
             {userSignUpJSX}
 
             {userSignedUp && (
-              <SignupStatus currentUserInEvent={currentUserInEvent} userSignedUp={userSignedUp} />
+              <SignupStatus currentUserInEvent={currentUserInEventVolunteer} userSignedUp={userSignedUp} />
             )}
 
-            {userSignedUp && currentUserInEvent.approved && eventFinished && (
-              <p class="signup-status">NOTE: Your scheduled hours for this event {currentUserInEvent.completed ? 'HAVE' : 'HAVE NOT'} been approved</p>
+            {userSignedUp && currentUserInEventVolunteer.approved && eventFinished && (
+              <p class="signup-status">NOTE: Your scheduled hours for this event {currentUserInEventVolunteer.completed ? 'HAVE' : 'HAVE NOT'} been approved</p>
             )}
-
-            <h6>Volunteers ({event.volunteers?.length || 0})</h6>
+          <Accordion
+            style={{ padding: "5px", backgroundColor: "#FFFCEF", color: "#004AAC" }}
+            sx={{
+              '&:before': {
+                display: 'none',
+              }}}>
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <h6>Volunteers ({event.volunteers?.length || 0})</h6>
+            </AccordionSummary>
             {approved?.map((volunteer, index) => {
               return <VolunteerInfo key={index} volunteer={volunteer} />;
             })}
+            </Accordion>
           </section>
         </React.Fragment>
       );
