@@ -204,7 +204,7 @@ class Calendar extends React.Component {
 
   render() {
     const events = this.state.events;
-    console.log(events); // Leaving in for now cuz convenient sometimes
+    // console.log(events); // Leaving in for now cuz convenient sometimes
 
     if (this.props.user.role === USER_ROLES.NONE) {
       return null;
@@ -218,7 +218,6 @@ class Calendar extends React.Component {
           onEventSelected={(event) => this.onEventSelected(event)}
         />
         <BigCalendar
-          
           localizer={localizer}
           defaultDate={new Date()}
           timeslots={2}

@@ -1,7 +1,6 @@
 const MongooseConnector = require('../../db-helper');
 const { Types: { ObjectId } } = require('mongoose');
 const { Logger } = require("@hack4impact/logger");
-const { CalendarEventTypes } = require('../models/calendar-schema');
 
 const {
     withEventChangeAndEventId,
@@ -9,6 +8,8 @@ const {
     confirmValidObjectId,
     onInvalidUserInput,
     checkSuccessFull,
+    hoursBetween,
+    checkSuccess,
 } = require('../helpers');
 const { isUserApproved, isUserAdmin } = require('../../middleware');
 
@@ -233,5 +234,67 @@ module.exports = (app) => {
                 newEvent
             });
         });
+    });
+
+    app.put('/api/event/:eventId/volunteer/:volunteerId/update-hours-completed', isUserAdmin, async (req, res) => {
+        Logger.log("PUT: Updating Individual Hour Completion Status...");
+
+        const { newCompleteStatus } = req.body;
+
+        if (newCompleteStatus === null || newCompleteStatus === undefined) {
+            onInvalidUserInput(res, 'Completion status missing');
+            return;
+        }
+
+        let eventId = req.params.eventId;
+
+        if (!confirmValidObjectId(eventId)) {
+            onInvalidUserInput(res, 'Bad object ID for eventId');
+            return;
+        }
+
+        eventId = ObjectId(eventId);
+
+        let volunteerId = req.params.volunteerId;
+
+        if (!confirmValidObjectId(volunteerId)) {
+            onInvalidUserInput(res, 'Bad object ID for volunteerId');
+            return;
+        }
+
+        volunteerId = ObjectId(volunteerId);
+
+        const event = await checkAndRetrieveEvent(eventId, res);
+        if (!event) {
+            return;
+        }
+
+        const volunteerEvent = event.volunteers.find(v => volunteerId.equals(v.volunteer?.id));
+        if (!volunteerEvent) {
+            return res.status(404).json({
+                message: 'Volunteer not signed up for event',
+            });
+        }
+
+        if (volunteerEvent.completed === newCompleteStatus) {
+            return res.status(200).json({
+                successful: true,
+            });
+        }
+
+        const defaultHoursBetween = hoursBetween(event.end, event.start);
+        let timeBetween;
+        if (volunteerEvent.usingDefaultTimes) {
+            timeBetween = defaultHoursBetween;
+        } else if (volunteerEvent.start && volunteerEvent.end) {
+            timeBetween = hoursBetween(volunteerEvent.end, volunteerEvent.start);
+        } else {
+            timeBetween = defaultHoursBetween;
+        }
+
+        const helperList = [[volunteerId, timeBetween]];
+        const success = await MongooseConnector.updateHoursAsComplete(eventId, helperList, newCompleteStatus);
+
+        checkSuccess(res, success);
     });
 }

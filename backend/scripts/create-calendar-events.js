@@ -6,6 +6,7 @@ const { CalendarEvent } = require("../calendar/calendar-db");
 const MongooseConnector = require("../db-helper");
 const { getStartOfDay } = require("../calendar/helpers");
 const { CalendarEventTypes } = require("../calendar/models/calendar-schema");
+const { Types: { ObjectId } } = require("mongoose");
 
 function addTime(date, hours = 0, minutes = 0) {
   const newTime = date.getTime() + hours * 1000 * 3600 + minutes * 1000 * 60;
@@ -28,6 +29,8 @@ async function setupCalendarEvents(useExistingEvents = true) {
   });
 
   const curDate = getStartOfDay(new Date());
+
+  curDate.setTime(curDate.getTime() - (1000 * 3600 * 23.99));
 
   const event1 = await MongooseConnector.saveCalendarEventCustom({
     start: addTime(curDate, (hours = 10)),
@@ -56,7 +59,7 @@ async function setupCalendarEvents(useExistingEvents = true) {
     decisionMade: true,
     usingDefaultTimes: true,
     volunteer: {
-      id: '609b6d3ade638b2b73892519',
+      id: ObjectId('609b6d3ade638b2b73892519'),
       firstName: 'ben',
       lastName: 'last1',
       email: 'someemail@email.com'
@@ -71,7 +74,7 @@ async function setupCalendarEvents(useExistingEvents = true) {
     decisionMade: true,
     usingDefaultTimes: false,
     volunteer: {
-      id: '60a1dbaede6fa124b6afda14',
+      id: ObjectId('60a1dbaede6fa124b6afda14'),
       firstName: 'ben',
       lastName: 'last2',
       email: 'someemail2@email.com'
@@ -86,10 +89,40 @@ async function setupCalendarEvents(useExistingEvents = true) {
     decisionMade: true,
     usingDefaultTimes: false,
     volunteer: {
-      id: '60c66ea8d519ea620f739f93',
+      id: ObjectId('60c66ea8d519ea620f739f93'),
       firstName: 'ben',
       lastName: 'last3',
       email: 'someemail3@email.com'
+    },
+  };
+
+  const volunteer4 = {
+    // name: "Freddie J Numero tres",
+    start: addTime(event2.start),
+    end: addTime(event2.end),
+    approved: true,
+    decisionMade: true,
+    usingDefaultTimes: false,
+    volunteer: {
+      id: ObjectId('60e47478c70bcc4721756f31'),
+      firstName: 'ben',
+      lastName: 'last4',
+      email: 'someemail4@email.com'
+    },
+  };
+
+  const volunteer5 = {
+    // name: "Freddie J Numero tres",
+    start: addTime(event2.start),
+    end: addTime(event2.end),
+    approved: true,
+    decisionMade: true,
+    usingDefaultTimes: false,
+    volunteer: {
+      id: ObjectId('60eca07c7b1135223b686293'),
+      firstName: 'ben',
+      lastName: 'last5',
+      email: 'someemail5@email.com'
     },
   };
 
@@ -97,6 +130,8 @@ async function setupCalendarEvents(useExistingEvents = true) {
     MongooseConnector.addVolunteerToEvent(event2._id, volunteer1),
     MongooseConnector.addVolunteerToEvent(event2._id, volunteer2),
     MongooseConnector.addVolunteerToEvent(event2._id, volunteer3),
+    MongooseConnector.addVolunteerToEvent(event2._id, volunteer4),
+    MongooseConnector.addVolunteerToEvent(event2._id, volunteer5),
   ]);
 
   const event3 = await MongooseConnector.saveCalendarEventCustom({

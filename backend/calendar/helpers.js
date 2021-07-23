@@ -203,6 +203,10 @@ const roundToMinute = (date) => {
   return new Date(Math.floor(date.getTime() / coeff) * coeff);
 };
 
+const hoursBetween = (d1, d2) => {
+  return Math.abs(Math.round(((d1.getTime() - d2.getTime()) / (1000 * 60 * 60)) * 100) / 100);
+};
+
 module.exports = {
   confirmValidCompDate,
   getDateObject,
@@ -220,4 +224,5 @@ module.exports = {
   onInvalidUserInput,
   checkSuccess,
   checkSuccessFull,
+  hoursBetween,
 };
