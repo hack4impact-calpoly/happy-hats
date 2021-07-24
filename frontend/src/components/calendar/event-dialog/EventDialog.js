@@ -212,10 +212,12 @@ function EventDialogContent(props) {
             {pending?.map((volunteer, index) => {
               return (
                 <PendingVolunteerInfo
+                  user={user}
                   volunteers={event.volunteers}
                   setVolunteers={setVolunteers}
                   key={index}
                   volunteer={volunteer}
+                  event={event}
                 />
               );
             })}
@@ -567,7 +569,7 @@ function EventVolunteerInfo({ volunteer }) {
 
 function PendingVolunteerInfo(props) {
   const { volunteer, volunteers, setVolunteers, user } = props;
-
+  console.log(props.event)
   return (
     <li>
       <EventVolunteerInfo volunteer={volunteer} />
@@ -690,6 +692,7 @@ const adminAction = async (
   event,
   user
 ) => {
+  console.log(user)
   const resp = await RequestPayloadHelpers.makeRequest(
     `event/${event._id}/volunteer/approve`,
     "PUT",
