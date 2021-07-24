@@ -8,6 +8,14 @@ const timeSlotToStartEndMap = new Map([
     start: (date) => getAdjustedTimeFromDate(date, 10),
     end: (date) => getAdjustedTimeFromDate(date, 12),
   }],
+  ['12PM - 2PM', {
+    start: (date) => getAdjustedTimeFromDate(date, 12),
+    end: (date) => getAdjustedTimeFromDate(date, 14),
+  }],
+  ['12PM - 3PM', {
+    start: (date) => getAdjustedTimeFromDate(date, 12),
+    end: (date) => getAdjustedTimeFromDate(date, 15),
+  }],
   ['1PM - 3PM', {
     start: (date) => getAdjustedTimeFromDate(date, 13),
     end: (date) => getAdjustedTimeFromDate(date, 15),
