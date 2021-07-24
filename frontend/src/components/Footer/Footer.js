@@ -10,13 +10,13 @@ function Footer() {
                 <Col> 
                     <div className="contact-num">
                         <h1 className="Contact">Contact: </h1>
-                        <h2 className="number"> (310) 7887-0970 </h2>
+                        <h2 className="number"> (310) 787-0970 </h2>
                     </div>
                 </Col>
                 <Col> 
                     <p className="middle-info"> &copy; 2019 Happy Hats for Kids in Hospitals</p>
                     <p className="middle-info"> Happy hats For Kids In Hospitals is a California 501(C)(3) Nonprofit Organization</p>
-                    <p className="middle-info"> Founded in 1991 by Sheri Schrier</p>
+                    <p className="middle-info"> Founded in 1991 by Sheri Waldstein</p>
                 </Col>
                 <Col> 
                     <div className="title"> 
@@ -27,7 +27,7 @@ function Footer() {
                         alt="Happy Hats"
                         />
                     </div>
-                    <p className="hack"> Made with &hearts; by Hack4Impact </p>
+                    <p className="hack"> Made with &hearts; by Hack4Impact Cal Poly </p>
                 </Col>
             </Row>
         </Container>
