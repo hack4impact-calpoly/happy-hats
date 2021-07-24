@@ -159,7 +159,6 @@ function EventDialogContent(props) {
         tooltipTitle =
           "This will look at all approved volunteers and set their scheduled hours for this event to completed.";
       }
-
       return (
         <React.Fragment>
           <h4>
@@ -196,7 +195,7 @@ function EventDialogContent(props) {
           {userSignedUp && (
             <SignupStatus currentUserInEvent={currentUserInEvent} userSignedUp={userSignedUp} />
           )}
-          {userSignedUp && currentUserInEvent.approved && eventFinished && (
+          {userSignedUp && currentUserInEvent && eventFinished && (
             <p class="signup-status">NOTE: Your scheduled hours for this event {currentUserInEvent.completed ? 'HAVE' : 'HAVE NOT'} been approved</p>
           )}
           <Accordion
@@ -271,7 +270,7 @@ function EventDialogContent(props) {
       );
     case USER_ROLES.VOLUNTEER:
       const currentUserInEventVolunteer = event?.volunteers?.find(v => v.volunteer?.id && v.volunteer?.id === user?.otherUserInfo?._id);
-
+            console.log(currentUserInEventVolunteer)
       return (
         <React.Fragment>
           <p>
@@ -288,7 +287,7 @@ function EventDialogContent(props) {
               <SignupStatus currentUserInEvent={currentUserInEventVolunteer} userSignedUp={userSignedUp} />
             )}
 
-            {userSignedUp && currentUserInEventVolunteer.approved && eventFinished && (
+            {userSignedUp && currentUserInEventVolunteer && eventFinished && (
               <p class="signup-status">NOTE: Your scheduled hours for this event {currentUserInEventVolunteer.completed ? 'HAVE' : 'HAVE NOT'} been approved</p>
             )}
           <Accordion
