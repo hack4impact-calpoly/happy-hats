@@ -9,13 +9,17 @@ import { getHoursMinutesStr } from '../../../../utility/date-time';
 
 const timeSlotOptions = [
   '10AM - 12PM',
+  '12PM - 2PM',
+  '12PM - 3PM',
   '1PM - 3PM',
   'Custom',
 ];
 
 const timeSlotMapper = new Map([
   ['10:00-12:00', timeSlotOptions[0]],
-  ['13:00-15:00', timeSlotOptions[1]],
+  ['12:00-14:00', timeSlotOptions[1]],
+  ['12:00-15:00', timeSlotOptions[2]],
+  ['13:00-15:00', timeSlotOptions[3]],
 ]);
 
 export const getTimeSlotFromEvent = (event) => {
