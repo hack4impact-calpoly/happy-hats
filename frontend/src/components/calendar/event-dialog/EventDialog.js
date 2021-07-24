@@ -288,7 +288,7 @@ function EventDialogContent(props) {
               <SignupStatus currentUserInEvent={currentUserInEventVolunteer} userSignedUp={userSignedUp} />
             )}
 
-            {eventFinished && userSignedUp && currentUserInEvent && currentUserInEventVolunteer.approved && (
+            {eventFinished && userSignedUp && currentUserInEventVolunteer && currentUserInEventVolunteer.approved && (
               <p class="signup-status">NOTE: Your scheduled hours for this event {currentUserInEventVolunteer.completed ? 'HAVE' : 'HAVE NOT'} been approved</p>
             )}
           <Accordion
