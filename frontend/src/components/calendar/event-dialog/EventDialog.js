@@ -270,7 +270,6 @@ function EventDialogContent(props) {
       );
     case USER_ROLES.VOLUNTEER:
       const currentUserInEventVolunteer = event?.volunteers?.find(v => v.volunteer?.id && v.volunteer?.id === user?.otherUserInfo?._id);
-            console.log(currentUserInEventVolunteer)
       return (
         <React.Fragment>
           <p>
