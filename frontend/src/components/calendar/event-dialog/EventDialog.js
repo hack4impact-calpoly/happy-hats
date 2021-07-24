@@ -196,7 +196,7 @@ function EventDialogContent(props) {
           {userSignedUp && (
             <SignupStatus currentUserInEvent={currentUserInEvent} userSignedUp={userSignedUp} />
           )}
-          {userSignedUp && currentUserInEvent.approved && eventFinished && (
+          {eventFinished && userSignedUp && currentUserInEvent && currentUserInEvent.approved && (
             <p class="signup-status">NOTE: Your scheduled hours for this event {currentUserInEvent.completed ? 'HAVE' : 'HAVE NOT'} been approved</p>
           )}
           <Accordion
@@ -288,7 +288,7 @@ function EventDialogContent(props) {
               <SignupStatus currentUserInEvent={currentUserInEventVolunteer} userSignedUp={userSignedUp} />
             )}
 
-            {userSignedUp && currentUserInEventVolunteer.approved && eventFinished && (
+            {eventFinished && userSignedUp && currentUserInEvent && currentUserInEventVolunteer.approved && (
               <p class="signup-status">NOTE: Your scheduled hours for this event {currentUserInEventVolunteer.completed ? 'HAVE' : 'HAVE NOT'} been approved</p>
             )}
           <Accordion
@@ -385,8 +385,8 @@ function EventDialog(props) {
 
       eventTransformer(resp.newEvent);
       props.eventEditor(resp.newEvent);
-      setUserSignedUp(true);
       props.updateEvent(resp.newEvent);
+      setUserSignedUp(true);
     }
   };
 
