@@ -5,13 +5,14 @@ The Hack4Impact Cal Poly Nonprofit Project: Happy Hats for Kids in Hospitals
 Hello everyone! Welcome to our Happy Hats for Kids in Hospitals GitHub! To give a brief overview of our project, we created a web application using the MERN stack that allows Happy Hats for Kids in Hospitals to manage the signup and tracking of volunteer hours. 
 
 Created by:
+
 Tech Lead: Anna Reid
 
 Designer: Liana Hess
 
 Project Manager: Fin Piroth
 
-Developers: Ben Glossner, Rupal Totale, McKenna Reed, Shad Hussain, Parker Landsman, Carter Selman, and Divya Satrawata
+Developers: Ben Glossner, Rupal Totale, McKenna Reed, Shad Hussain, Parker Landsman, Carter Selman, and Divya Satrawada
 
 
 Below are a few screenshots of the application!
