@@ -52,13 +52,65 @@ const volunteerFns = {
       }
     ).exec();
   },
+  addDefaultScheduledHoursToVolunteer: async (vId, hours) => {
+    return await Volunteer.findByIdAndUpdate(
+      vId,
+      {
+        $inc: {
+          scheduledHours: hours,
+        }
+      }
+    ).exec();
+  },
+  addCustomScheduledHoursToVolunteer: async (vId, originalHours, hours) => {
+    return await Volunteer.findByIdAndUpdate(
+      vId,
+      {
+        $set: {
+          scheduledHours: scheduledHours - originalHours + hours,
+        }
+      }
+    ).exec();
+  },
+  subtractCompletedHoursFromVolunteer: async (vId, hours) => {
+    const decrementHours = hours * -1
+    return await Volunteer.findByIdAndUpdate(
+      vId,
+      {
+        $inc: {
+          scheduledHours: decrementHours,
+        },
+        $inc: {
+          nonCompletedHours: hours,
+        }
+      }
+    ).exec();
+  },
+  reapproveNonCompletedHoursFromVolunteer: async (vId, hours) => {
+    const decrementHours = hours * -1
+    return await Volunteer.findByIdAndUpdate(
+      vId,
+      {
+        $inc: {
+          scheduledHours: hours,
+        },
+        $inc: {
+          nonCompletedHours: decrementHours,
+        }
+      }
+    ).exec();
+  },
   addCompletedHoursToVolunteers: async (volunteerIdAndHours) => {
     const promises = volunteerIdAndHours.map(([vId, hours]) => {
+      const decrementHours = hours * -1
       return Volunteer.findByIdAndUpdate(
         vId,
         {
           $inc: {
             completedHours: hours,
+          },
+          $inc: {
+            scheduledHours: decrementHours,
           }
         }
       ).exec();

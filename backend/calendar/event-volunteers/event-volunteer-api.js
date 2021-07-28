@@ -124,7 +124,8 @@ module.exports = (app) => {
             };
 
             const newEvent = await MongooseConnector.addVolunteerToEvent(eventId, volunteer);
-            
+            const hoursBetweenTimes = hoursBetween(event.end, event.start);
+            await MongooseConnector.addDefaultScheduledHoursToVolunteer(volunteer.volunteer.id, hoursBetweenTimes);
             checkSuccessFull(res, newEvent, {
                 newEvent
             });
