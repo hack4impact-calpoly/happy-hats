@@ -45,13 +45,22 @@ const Login = (props) => {
   };
 
   React.useEffect(() => {
-    if (authState === undefined) {
-      Auth.currentAuthenticatedUser().then(authData => {
-        setAuthState(AuthState.SignedIn);
-        signInUser(authData);
-      }).catch(err => {
-        setAuthState(AuthState.SignIn);
+    if (props.user.cognitoSession && props.user.loggedIn) {
+      Auth.currentSession().then(data => {
+        props.modifyUser({
+          ...props.user,
+          cognitoSession: data,
+        });
       });
+    } else {
+      if (authState === undefined) {
+        Auth.currentAuthenticatedUser().then(authData => {
+          setAuthState(AuthState.SignedIn);
+          signInUser(authData);
+        }).catch(err => {
+          setAuthState(AuthState.SignIn);
+        });
+      }
     }
 
     return onAuthUIStateChange(async (nextAuthState, authData) => {
