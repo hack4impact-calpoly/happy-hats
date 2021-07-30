@@ -240,7 +240,7 @@ module.exports = (app) => {
 
     const defaultHoursBetween = hoursBetween(event.end, event.start);
 
-    const volunteerIdAndHours = event.volunteers?.filter(v => v.approved && v.decisionMade && !v.completed)?.map((v) => {
+    const volunteerIdAndHours = event.volunteers?.filter(v => v.approved && v.decisionMade && !v.completed && !v.completedStatusSet)?.map((v) => {
         let timeBetween;
         if (v.usingDefaultTimes) {
           timeBetween = defaultHoursBetween;

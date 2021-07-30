@@ -84,16 +84,16 @@ module.exports = (app) => {
 
             // TODO: add check here where if user has been rejected for CUSTOM hours and is signing up for default ones, it deletes rejected request and makes a new one
 
-            const alreadySignedUp = event.volunteers.find(v => eventUser.equals(v.volunteer?.id));
-            if (alreadySignedUp) {
-                if (alreadySignedUp.decisionMade) {
-                    if (alreadySignedUp.approved === true) {
+            const volunteerEvent = event.volunteers.find(v => eventUser.equals(v.volunteer?.id));
+            if (volunteerEvent) {
+                if (volunteerEvent.decisionMade) {
+                    if (volunteerEvent.approved === true) {
                         res.status(403).json({
                             message: 'Already signed up',
                         });
                         return;
-                    } else if ((alreadySignedUp.start && (startDate.getTime() == alreadySignedUp.start)) &&
-                        (alreadySignedUp.end && (endDate.getTime() == alreadySignedUp.end))) {
+                    } else if ((volunteerEvent.start && (startDate.getTime() == volunteerEvent.start)) &&
+                        (volunteerEvent.end && (endDate.getTime() == volunteerEvent.end))) {
                         res.status(403).json({
                             message: 'Invalid times given. Those times have already been rejected',
                         });
@@ -108,6 +108,11 @@ module.exports = (app) => {
             }
 
             const usingDefaultTimes = userSelectedDefaultTime(startDate, endDate, event);
+            if (!usingDefaultTimes) {
+                return res.status(400).json({
+                    message: 'Must use default hours upon initial signup',
+                });
+            }
 
             const volunteer = {
                 start: startDate,
@@ -124,8 +129,10 @@ module.exports = (app) => {
             };
 
             const newEvent = await MongooseConnector.addVolunteerToEvent(eventId, volunteer);
-            
-            checkSuccessFull(res, newEvent, {
+
+            const hoursBetweenTimes = hoursBetween(event.end, event.start);
+            const success = await MongooseConnector.addScheduledHoursToVolunteer(volunteer.volunteer.id, hoursBetweenTimes);
+            checkSuccessFull(res, newEvent && success, {
                 newEvent
             });
         });
@@ -161,16 +168,16 @@ module.exports = (app) => {
                 return;
             }
 
-            const alreadySignedUp = event.volunteers.find(v => volunteerId.equals(v.volunteer.id));
-            if (!alreadySignedUp) {
+            const volunteerEvent = event.volunteers.find(v => volunteerId.equals(v.volunteer.id));
+            if (!volunteerEvent) {
                 res.status(404).json({
                     message: 'Volunteer not signed up for event',
                 });
                 return;
             }
 
-            if ((alreadySignedUp.decisionMade && (alreadySignedUp.approved === approved)) ||
-                ((alreadySignedUp.approved === approved) && alreadySignedUp.usingDefaultTimes)) {
+            if ((volunteerEvent.decisionMade && (volunteerEvent.approved === approved)) ||
+                ((volunteerEvent.approved === approved) && volunteerEvent.usingDefaultTimes)) {
                 res.status(200).json({
                     message: 'Already has same approval status',
                 });
@@ -178,8 +185,18 @@ module.exports = (app) => {
             }
 
             const newEvent = await MongooseConnector.approveCustomEventHours(eventId, volunteerId, approved);
+
+            let success = true;
+            if (!volunteerEvent.completedStatusSet) {
+                const customHours = hoursBetween(volunteerEvent.end, volunteerEvent.start);
+                if (approved) {
+                    success = await MongooseConnector.addScheduledHoursToVolunteer(volunteerId, customHours);
+                } else if (volunteerEvent.decisionMade) {
+                    success = await MongooseConnector.addScheduledHoursToVolunteer(volunteerId, -1 * customHours);
+                }
+            }
             
-            checkSuccessFull(res, newEvent, {
+            checkSuccessFull(res, newEvent && success, {
                 newEvent
             });
         });
@@ -206,14 +223,13 @@ module.exports = (app) => {
             const usingDefaultTimes = userSelectedDefaultTime(startDate, endDate, event);
 
             const volunteerEvent = event.volunteers.find(v => eventUser.equals(v.volunteer?.id));
-            const { firstName, lastName, email } = req.locals.user;
-            const newVolunteer = volunteerEvent ? {
-                firstName,
-                lastName,
-                email,
-                id: eventUser,
-            } : volunteerEvent.volunteer;
+            if (!volunteerEvent) {
+                return res.status(403).json({
+                    message: 'Must sign up for the event before requesting custom hours',
+                });
+            }
 
+            const newVolunteer = volunteerEvent.volunteer;
             const volunteer = {
                 start: startDate,
                 end: endDate,
@@ -223,14 +239,29 @@ module.exports = (app) => {
                 decisionMade: eventUserRole === 'admin' || usingDefaultTimes,
             };
 
-            let newEvent;
-            if (!volunteerEvent) {
-                newEvent = await MongooseConnector.addVolunteerToEvent(eventId, volunteer);
-            } else {
-                newEvent = await MongooseConnector.setCustomHoursForEvent(eventId, eventUser, volunteer);
+            let newEvent = await MongooseConnector.setCustomHoursForEvent(eventId, eventUser, volunteer);
+
+            let hoursAdjustment = 0;
+            if (volunteer.approved && volunteerEvent.approved) {
+                // User was approved before and is still approved but hours is changing
+                hoursAdjustment = hoursBetween(volunteer.start, volunteer.end) -
+                                    hoursBetween(volunteerEvent.start, volunteerEvent.end);
+            } else if (!volunteer.approved && volunteerEvent.approved) {
+                // User needs their scheduled hours removed since they will now be pending
+                hoursAdjustment = -1 * hoursBetween(volunteerEvent.start, volunteerEvent.end);
+            } else if (volunteer.approved && !volunteerEvent.approved) {
+                // User now just needs to have the new hours scheduled
+                hoursAdjustment = hoursBetween(volunteer.start, volunteer.end);
+            }
+            // If none of the above conditions are true, then the user moved into rejected from pending state
+
+            console.log(`Making scheduled hours adjustment of ${hoursAdjustment}`);
+            let success = true;
+            if (hoursAdjustment !== 0) {
+                success = await MongooseConnector.addScheduledHoursToVolunteer(eventUser, hoursAdjustment);
             }
             
-            checkSuccessFull(res, newEvent, {
+            checkSuccessFull(res, newEvent && success, {
                 newEvent
             });
         });
@@ -276,7 +307,7 @@ module.exports = (app) => {
             });
         }
 
-        if (volunteerEvent.completed === newCompleteStatus) {
+        if (volunteerEvent.completedStatusSet && (volunteerEvent.completed === newCompleteStatus)) {
             return res.status(200).json({
                 successful: true,
             });
@@ -292,8 +323,11 @@ module.exports = (app) => {
             timeBetween = defaultHoursBetween;
         }
 
-        const helperList = [[volunteerId, timeBetween]];
-        const success = await MongooseConnector.updateHoursAsComplete(eventId, helperList, newCompleteStatus);
+        const success = await MongooseConnector.updateHoursAsComplete(eventId,
+                                                                    volunteerId,
+                                                                    timeBetween,
+                                                                    volunteerEvent,
+                                                                    newCompleteStatus);
 
         checkSuccess(res, success);
     });

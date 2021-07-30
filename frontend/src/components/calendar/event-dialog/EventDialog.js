@@ -61,9 +61,9 @@ function SignupStatus({ userSignedUp, currentUserInEvent }) {
   );
 }
 
-function CompletedHoursNotice({ completed }) {
+function CompletedHoursNotice({ completed, completedStatusSet }) {
   return (
-    <p class="font-italic m-0">Hours marked as completed: {completed ? 'YES' : 'NO'}</p>
+    <p class="font-italic m-0">Hours marked as (in)completed: {completed ? 'YES' : (completedStatusSet ? 'NO' : 'UNSET')}</p>
   );
 }
 
@@ -216,6 +216,8 @@ function EventDialogContent(props) {
                   volunteers={event.volunteers}
                   setVolunteers={setVolunteers}
                   key={index}
+                  user={user}
+                  event={event}
                   volunteer={volunteer}
                   event={event}
                 />
@@ -599,10 +601,7 @@ function ApprovedVolunteerInfo(props) {
   const { volunteer, volunteers, setVolunteers, user, eventFinished, event } = props;
 
   const [completed, setCompleted] = useState(volunteer.completed);
-
-  /* const completed = useEffect(() => {
-
-  }, [volunteer.completed]); */
+  const [completedStatusSet, setCompletedStatusSet] = useState(!!volunteer.completedStatusSet);
 
   const updateCompletedHours = async (newCompleteStatus) => {
     try {
@@ -623,6 +622,7 @@ function ApprovedVolunteerInfo(props) {
 
       volunteer.completed = newCompleteStatus;
       setCompleted(!!newCompleteStatus);
+      setCompletedStatusSet(true);
       let newVolunteers = [...volunteers];
       setVolunteers(newVolunteers);
     } catch (err) {
@@ -643,21 +643,52 @@ function ApprovedVolunteerInfo(props) {
         <ThumbDownIcon style={{color: "#004AAC"}}/>
       </IconButton>
       {eventFinished && (
-        <div class="d-flex w-100 justify-content-between align-items-center">
-          <CompletedHoursNotice completed={volunteer.completed} />
-          <BootstrapButton
-            // disabled={tooltipError}
-            style={{
-              margin: "0 10px",
-              backgroundColor: "#004AAC",
-              color: "white",
-              textDecoration: "none !important",
-              border: "none"
-            }}
-            onClick={() => updateCompletedHours(!completed)}
-          >
-            {volunteer.completed ? 'Undo' : 'Set'}
-          </BootstrapButton>
+        <div class="w-100">
+          <CompletedHoursNotice completed={completed} completedStatusSet={completedStatusSet} />
+          {completedStatusSet ? (
+            <BootstrapButton
+              // disabled={tooltipError}
+              style={{
+                margin: "0 10px",
+                backgroundColor: "#004AAC",
+                color: "white",
+                textDecoration: "none !important",
+                border: "none"
+              }}
+              onClick={() => updateCompletedHours(!completed)}
+            >
+              {volunteer.completed ? 'Set Incompleted' : 'Set Completed'}
+            </BootstrapButton>
+          ) : (
+            <div>
+              <BootstrapButton
+                // disabled={tooltipError}
+                style={{
+                  margin: "0 10px",
+                  backgroundColor: "#004AAC",
+                  color: "white",
+                  textDecoration: "none !important",
+                  border: "none"
+                }}
+                onClick={() => updateCompletedHours(true)}
+              >
+                Set Completed
+              </BootstrapButton>
+              <BootstrapButton
+                // disabled={tooltipError}
+                style={{
+                  margin: "0 10px",
+                  backgroundColor: "#004AAC",
+                  color: "white",
+                  textDecoration: "none !important",
+                  border: "none"
+                }}
+                onClick={() => updateCompletedHours(false)}
+              >
+                Set Incompleted
+              </BootstrapButton>
+            </div>
+          )}
         </div>
       )}
       <br />

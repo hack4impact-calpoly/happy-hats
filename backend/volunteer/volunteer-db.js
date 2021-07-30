@@ -52,13 +52,37 @@ const volunteerFns = {
       }
     ).exec();
   },
+  addScheduledHoursToVolunteer: async (vId, hours) => {
+    return await Volunteer.findByIdAndUpdate(
+      vId,
+      {
+        $inc: {
+          scheduledHours: hours,
+        }
+      }
+    ).exec();
+  },
+  changeVolunteerHours: async (vId, incrementerObj) => {
+    return await Volunteer.findByIdAndUpdate(
+      vId,
+      {
+        $inc: incrementerObj,
+      },
+      {
+        new: true,
+        lean: true,
+      }
+    ).exec();
+  },
   addCompletedHoursToVolunteers: async (volunteerIdAndHours) => {
     const promises = volunteerIdAndHours.map(([vId, hours]) => {
+      const decrementHours = hours * -1;
       return Volunteer.findByIdAndUpdate(
         vId,
         {
           $inc: {
             completedHours: hours,
+            scheduledHours: decrementHours,
           }
         }
       ).exec();

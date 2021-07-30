@@ -146,6 +146,7 @@ const calendarEventFns = {
                         {
                             $set: {
                                 'volunteers.$[v].completed': true,
+                                'volunteers.$[v].completedStatusSet': true,
                             }
                         },
                         {
@@ -190,18 +191,44 @@ const calendarEventFns = {
 
         return newEvent;
     },
-    updateHoursAsComplete: async (eventId, helperList, newCompleteStatus) => {
-        const vId = helperList[0][0];
+    updateHoursAsComplete: async (
+            eventId,
+            volunteerId,
+            timeBetween,
+            volunteerEvent,
+            newCompleteStatus) => {
+        const vId = volunteerId;
 
-        if (!newCompleteStatus) {
-            // Invert timeBetween
-            helperList[0][1] *= -1;
+        timeBetween = Math.abs(timeBetween);
+        const negTimeBetween = -1 * timeBetween;
+
+        const incChanger = {};
+        if (!volunteerEvent.completedStatusSet && !volunteerEvent.completed) {
+            // If not set completed field yet, we can remove from scheduled hours
+            incChanger.scheduledHours = negTimeBetween;
         }
 
-        const [successIds, failIds] = await volunteerFns.addCompletedHoursToVolunteers(helperList);
+        if (!newCompleteStatus) {
+            incChanger.nonCompletedHours = timeBetween;
+            if (volunteerEvent.completedStatusSet) {
+                incChanger.completedHours = negTimeBetween;
+            }
+        } else {
+            incChanger.completedHours = timeBetween;
+            if (volunteerEvent.completedStatusSet) {
+                incChanger.nonCompletedHours = negTimeBetween;
+            }
+        }
 
-        if (successIds.length !== 1 || !helperList[0][0].equals(successIds[0])) {
-            Logger.error(`[ERROR]: Did not update the hour completion status for ${vId} correctly for event ${eventId} to ${newCompleteStatus}... failed on setting new hour increment to ${helperList[0][1]}`);
+        let success;
+        try {
+            success = await volunteerFns.changeVolunteerHours(volunteerId, incChanger);
+        } catch (err) {
+            success = false;
+        }
+
+        if (!success) {
+            Logger.error(`[ERROR]: Did not update the hour completion status for ${vId} correctly for event ${eventId} to ${newCompleteStatus}... failed on setting new hour increment to ${timeBetween}`);
             return false;
         }
 
@@ -213,6 +240,7 @@ const calendarEventFns = {
             {
                 $set: {
                     'volunteers.$.completed': !!newCompleteStatus,
+                    'volunteers.$.completedStatusSet': true,
                 }
             },
             {
